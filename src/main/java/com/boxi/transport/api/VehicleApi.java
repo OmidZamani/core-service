@@ -201,7 +201,7 @@ public class VehicleApi {
                                                @RequestBody FilterVehicle request) {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return _service.listOfVehicleInHub(request, pageable);
+        return _service.listOfVehicleInHub(request, pageable).stream().collect(Collectors.toList());
     }
 
 

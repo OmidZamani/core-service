@@ -394,7 +394,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleDto> listOfVehicleInHub(FilterVehicle filter, Pageable pageable) {
+    public Page<VehicleDto> listOfVehicleInHub(FilterVehicle filter, Pageable pageable) {
         Page<Vehicle> res = vehicleRepository
                 .findAll((Specification<Vehicle>) (root, query, criteriaBuilder) -> {
                     List<Predicate> predicates = new ArrayList<>();
@@ -450,7 +450,7 @@ public class VehicleServiceImpl implements VehicleService {
 
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 }, pageable);
-        return res.map(vehicleConverter::fromModelToDto).stream().collect(Collectors.toList());
+        return res.map(vehicleConverter::fromModelToDto);
     }
 
     private CarTagDto tocartagenumber(Vehicle vehicle) {

@@ -49,5 +49,5 @@ public interface VehicleService {
 
     List<VehicleExceptionsDto> findVehicleException(VehicleExceptionsDto dto);
 
-    List<VehicleDto> listOfVehicleInHub(FilterVehicle request, Pageable pageable);
+    Page<VehicleDto> listOfVehicleInHub(FilterVehicle request, Pageable pageable);
 }
