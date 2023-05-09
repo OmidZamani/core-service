@@ -1,0 +1,1651 @@
+{
+	"info": {
+		"_postman_id": "9f3588b2-1323-4cec-b150-de0ceaa4cb40",
+		"name": "boxi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "00_countryDevision",
+			"item": [
+				{
+					"name": "countryDevision/provinces",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"تهران\",\r\n    \"code\":12,\r\n    \"description\":\"-\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/countryDevision",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"countryDevision"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "countryDevision/province_city",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"تهران\",\r\n    \"code\":12,\r\n    \"description\":\"-\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/countryDevision/province/1/city",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"countryDevision",
+								"province",
+								"1",
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "countryDevision/city_loc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"تهران\",\r\n    \"code\":12,\r\n    \"description\":\"-\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/countryDevision/city/2/loc",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"countryDevision",
+								"city",
+								"2",
+								"loc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "01_hubCategory",
+			"item": [
+				{
+					"name": "getParentHubByName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hubCategory/parentHub?name=",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hubCategory",
+								"parentHub"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createHubCategory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"زنجان\",\r\n    \"code\":13,\r\n    \"description\":\"-\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hubCategory",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hubCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHubCategories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6IlNhcmRhYmlyIiwiaWF0IjoxNjU5MzU1MjI4LCJleHAiOjE2NjI4MTEyMjh9.RkIrpwtpj97xAiXZp0Jj0U4CLPyvUivvw9htx4pYhvM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hubCategory/select?filter=",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hubCategory",
+								"select"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHubTypes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6IlJvbGVfTWFuYWdlciIsImlhdCI6MTY2MDQ4OTY4NiwiZXhwIjoxNjYzOTQ1Njg2fQ.xt2QHtfsByEQZ88-7yQCoIiRozvsyAfWBjnb_7G9PoE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hubCategory/selectHubTypes",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hubCategory",
+								"selectHubTypes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02_hub",
+			"item": [
+				{
+					"name": "filterHubs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"4356\",\r\n  \"name\": \"تهران\",\r\n  \"hubTypeId\": 1,\r\n  \"hubCategoryId\": 21,\r\n  \"parentHubId\":0 ,\r\n  \"siteCode\": \"\",\r\n  \"locationStartDate\": \"\",\r\n  \"mandatoryArrivalScan\": true,\r\n  \"isActive\": true,\r\n  \"dropOffAllowed\": true,\r\n  \"stateId\": 0,\r\n  \"cityId\": 0,\r\n  \"regionId\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hub/filter?pageNumber=1&pageSize=20",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hub",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pinCode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hub/genPinCode",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hub",
+								"genPinCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createHub",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": 23234,\r\n  \"name\": \"هاب زابل\",\r\n  \"selectHubType\": {\"id\": 1,\"text\": \"\"},\r\n  \"selectHubCategory\": {\"id\":1,\"text\":\"\"},\r\n  \"selectParentHub\": {\"id\":9,\"text\":\"\"},\r\n  \"pinCode\": \"779f0fbf-0de8-41ac-a230-728d8340cf36\",\r\n  \"locationStartDate\": \"2022-07-09\",\r\n  \"mandatoryArrivalScan\": true,\r\n  \"isActive\": true,\r\n  \"dropOffAllowed\": true,\r\n  \"selectState\":{\"id\":1,\"text\":\"\"},\r\n  \"selectCity\":{\"id\":2,\"text\":\"\"},\r\n  \"selectRegion\":{\"id\":3,\"text\":\"\"},\r\n  \"plateNumber\": \"98345\",\r\n  \"addressLine1\": \"تهران سعادت آباد\",\r\n  \"addressLine2\": \"بالاتر از شهرداری\",\r\n  \"locLate\": 134123515.320,\r\n  \"locLong\": 5656745642.34,\r\n  \"selectManager\": {\"id\":0,\"text\":\"\"}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hub",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hub"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createHubsByExcel",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Ali/Desktop/new hub/sample excels/sample_csv_create_hub(1).xlsx"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hub/createHubsByExcel",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hub",
+								"createHubsByExcel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "selectHub",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{base_url}}:8090/core-api/hub/select?filter=",
+							"protocol": "http",
+							"host": [
+								"{{base_url}}"
+							],
+							"port": "8090",
+							"path": [
+								"core-api",
+								"hub",
+								"select"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03_transport",
+			"item": [
+				{
+					"name": "vendor",
+					"item": [
+						{
+							"name": "selectVendor",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": false,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor/select?filter=خود",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "خود"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createVendor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": false,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "selectVendor",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": false,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor/select?filter=",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteVendor",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": true,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor/3",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filter",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"search\": \"\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editVendor",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"سایپا\",\r\n  \"isActive\": true,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vendor",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vendor"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "vehicleCategory",
+					"item": [
+						{
+							"name": "createVehicleCategory",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"isActive\": true,\r\n  \"name\": \"کامیون\",\r\n  \"code\": \"234523\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleCategory",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleCategory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteVehicleCategory",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": true,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleCategory/2",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleCategory",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filter",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"search\": \"\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleCategory/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleCategory",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editVendor",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 2,\r\n  \"isActive\": true,\r\n  \"name\": \"ژیان\",\r\n  \"code\": \"2345233\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleCategory",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleCategory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "selectVehicleCategory",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": false,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleCategory/select?filter=",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleCategory",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "vehicleModel",
+					"item": [
+						{
+							"name": "createVehicleModel",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"isActive\": true,\r\n  \"name\": \"ولوو\",\r\n  \"code\": \"43525\",\r\n  \"weightCapacity\": 12.0,\r\n  \"volumeCapacity\": 20.0,\r\n  \"consignmentCapacity\": 11.0,\r\n  \"fuelTypeSelect\": {\r\n    \"id\": 1,\r\n    \"text\": \"\"\r\n  },\r\n  \"vendorSelect\":{\r\n   \"id\": 1,\r\n    \"text\": \"\"      \r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteVehicleModel",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": true,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake/2",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filter",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"search\": \"\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "selectVehicleMake",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"search\": \"\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake/select?filter=",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editVehicleModel",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 27,\r\n  \"isActive\": true,\r\n  \"name\": \"هوو\",\r\n  \"code\": \"43525\",\r\n  \"weightCapacity\": 12.0,\r\n  \"volumeCapacity\": 20.0,\r\n  \"consignmentCapacity\": 11.0,\r\n  \"fuelTypeSelect\": {\r\n    \"id\": 1,\r\n    \"text\": \"\"\r\n  },\r\n  \"vendorSelect\":{\r\n   \"id\": 4,\r\n    \"text\": \"ایران خودرو 3542435\"      \r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fuelTypes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake/selectFuelTypes",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake",
+										"selectFuelTypes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "vehicle",
+					"item": [
+						{
+							"name": "createVehicle",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"isActive\": false,\r\n  \"vehicleNumber\": \"ایران ج 15656\",\r\n  \"fleetTypeSelect\": {\r\n    \"id\": 0,\r\n    \"text\": \"\"\r\n  },\r\n    \"selectHub\": {\r\n    \"id\": 28,\r\n    \"text\": \"\"\r\n  },\r\n    \"vehicleMakeSelect\": {\r\n    \"id\": 27,\r\n    \"text\": \"\"\r\n  },\r\n    \"vehicleCategorySelect\": {\r\n    \"id\": 1,\r\n    \"text\": \"\"\r\n  },\r\n  \"availableForLocalTrips\": true,\r\n  \"availableForUpCountry\": true,\r\n  \"availableForMidMile\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicle",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicle"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteVehicle",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 4,\r\n  \"name\": \"ایران خودرو\",\r\n  \"isActive\": true,\r\n  \"code\": \"3542435\",\r\n  \"contactNumber\": \"+984376473\",\r\n  \"nationalCode\": \"1235465468\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake/2",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterVehicle",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"vehicleNumber\": \"ایران ج 15656\",\r\n  \"hubName\": \"\",\r\n  \"hubCode\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicle/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicle",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editVehicle",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"isActive\": false,\r\n  \"vehicleNumber\": \"ایران ج 15656\",\r\n  \"fleetTypeSelect\": {\r\n    \"id\": 0,\r\n    \"text\": \"\"\r\n  },\r\n    \"selectHub\": {\r\n    \"id\": 28,\r\n    \"text\": \"\"\r\n  },\r\n    \"vehicleMakeSelect\": {\r\n    \"id\": 27,\r\n    \"text\": \"\"\r\n  },\r\n    \"vehicleCategorySelect\": {\r\n    \"id\": 1,\r\n    \"text\": \"\"\r\n  },\r\n  \"availableForLocalTrips\": true,\r\n  \"availableForUpCountry\": false,\r\n  \"availableForMidMile\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicleMake",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicleMake"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FleetTypeSelect",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/vehicle/selectFleetTypes",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"vehicle",
+										"selectFleetTypes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "route",
+					"item": [
+						{
+							"name": "createRoute",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"code\": \"123\",\r\n  \"name\": \"مسیر تهران به زنجان\",\r\n  \"selectSourceHub\": {\r\n    \"id\": 81,\r\n    \"text\": \"\"\r\n  },\r\n  \"selectTargetHub\": {\r\n    \"id\": 31,\r\n    \"text\": \"\"\r\n  },\r\n  \"isActive\": true,\r\n  \"nodes\": 3,\r\n  \"connections\": [\r\n      {\r\n      \"selectHub\":{\r\n        \"id\": 31,\r\n        \"text\": \"\"\r\n          },\r\n      \"id\": 0,    \r\n      \"distanceFromPreviousHub\": 0.0,\r\n      \"distanceVariance\": 0.0,\r\n      \"transitTime\": 0.0,\r\n      \"timeStoppage\": 0.0\r\n    },\r\n    {\r\n      \"selectHub\":{\r\n        \"id\": 82,\r\n        \"text\": \"\"\r\n          },\r\n      \"id\": 0,    \r\n      \"distanceFromPreviousHub\": 3234.0,\r\n      \"distanceVariance\": 2324.0,\r\n      \"transitTime\": 7.0,\r\n      \"timeStoppage\": 30.0\r\n    },\r\n    {\r\n      \"selectHub\":{\r\n        \"id\": 81,\r\n        \"text\": \"\"\r\n          },\r\n      \"id\": 0,    \r\n      \"distanceFromPreviousHub\": 800.0,\r\n      \"distanceVariance\": 290.0,\r\n      \"transitTime\": 12.0,\r\n      \"timeStoppage\": 30.0\r\n    }\r\n\r\n  ]\r\n}\r\n\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/route",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"route"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterRoute",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"زنجان\",\r\n  \"hubName\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/route/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"route",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteRoute",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"زنجان\",\r\n  \"hubName\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/route/29",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"route",
+										"29"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateRoute",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n     \"id\": 25,\r\n        \"code\": \"434\",\r\n        \"name\": \"مسیر تهران به زنجان\",\r\n        \"selectSourceHub\": {\r\n            \"id\": 81,\r\n            \"text\": \"هاب زنجان 32452345\"\r\n        },\r\n        \"selectTargetHub\": {\r\n            \"id\": 31,\r\n            \"text\": \"هاب تهران 23452354\"\r\n        },\r\n        \"isActive\": true,\r\n        \"nodes\": 3,\r\n        \"connections\": [\r\n            {\r\n                \"id\": 11,\r\n                \"selectHub\": {\r\n                    \"id\": 31,\r\n                    \"text\": \"هاب تهران 23452354\"\r\n                },\r\n                \"distanceFromPreviousHub\": 0.0,\r\n                \"distanceVariance\": 0.0,\r\n                \"transitTime\": 0.0,\r\n                \"timeStoppage\": 0.0\r\n            },\r\n\r\n            {\r\n                \"id\": 13,\r\n                \"selectHub\": {\r\n                    \"id\": 81,\r\n                    \"text\": \"هاب زنجان 32452345\"\r\n                },\r\n                \"distanceFromPreviousHub\": 800.0,\r\n                \"distanceVariance\": 290.0,\r\n                \"transitTime\": 12.0,\r\n                \"timeStoppage\": 30.0\r\n            }\r\n        ]\r\n}\r\n    \r\n\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/route",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"route"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "gate",
+					"item": [
+						{
+							"name": "createGate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"code\": \"98709\",\r\n  \"name\": \"اصلی\",\r\n  \"selectHub\": {\r\n    \"id\": 38,\r\n    \"text\": \"\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/gate",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"gate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterGate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"زنجان\",\r\n  \"hub\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/gate/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"gate",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteGate",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"زنجان\",\r\n  \"hubName\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/gate/6",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"gate",
+										"6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateGate",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 5,\r\n  \"code\": \"444\",\r\n  \"name\": \"اصلی\",\r\n  \"selectHub\": {\r\n    \"id\": 38,\r\n    \"text\": \"\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/gate",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"gate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "selectGate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/gate/select?filter=",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"gate",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "dock",
+					"item": [
+						{
+							"name": "createDock",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"code\": \"98709\",\r\n  \"name\": \"2اصلی بارانداز\",\r\n  \"selectHub\": {\r\n    \"id\": 38,\r\n    \"text\": \"\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/dock",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"dock"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterDock",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"tvud\",\r\n  \"hub\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/dock/filter?pageNumber=1&pageSize=20",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"dock",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteDock",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"زنجان\",\r\n  \"hubName\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/dock/6",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"dock",
+										"6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateDock",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 5,\r\n  \"code\": \"444\",\r\n  \"name\": \"اصلی\",\r\n  \"selectHub\": {\r\n    \"id\": 38,\r\n    \"text\": \"\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/dock",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"dock"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "selectDock",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{base_url}}:8090/core-api/dock/select?filter=",
+									"protocol": "http",
+									"host": [
+										"{{base_url}}"
+									],
+									"port": "8090",
+									"path": [
+										"core-api",
+										"dock",
+										"select"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
