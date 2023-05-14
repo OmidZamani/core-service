@@ -244,8 +244,7 @@
 
                     <allowInsecureRegistries>true</allowInsecureRegistries>
                     <from>
-                        <image>docker://m.docker-registry.ir/openjdk:11.0.4-jre-slim</image>
-                    <!--    <image>192.168.1.101:5000/openjdk:11-jre</image>-->
+                        <image>registry.datsa.ir:5000/openjdk:11-jre</image>
                         <auth>
                             <username>ali</username>
                             <password>qaz123WSX</password>
