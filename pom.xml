@@ -260,8 +260,7 @@
                     </to>
                     <container>
                         <jvmFlags>
-                            <jvmFlag>-Xms512m</jvmFlag>
-                            <jvmFlag>-Xdebug</jvmFlag>
+                            <jvmFlag>-Xms2024m</jvmFlag>             
                             <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
                         </jvmFlags>
 
