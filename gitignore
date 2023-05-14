@@ -1,8 +1,0 @@
-*.idea
-idea
-*iml
-*.iml
-*.jar
-target
-/keycloak-19.0.3/data/h2/keycloakdb.lock.db
-/keycloak-19.0.3/data/h2/keycloakdb.mv.db
