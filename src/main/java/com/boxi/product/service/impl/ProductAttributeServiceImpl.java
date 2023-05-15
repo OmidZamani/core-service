@@ -224,8 +224,10 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                     c.setIsActive(true);
                     c.setIsDeleted(false);
                     c.setProductAttribute(save);
-                    c.setToCountryDevision(new CountryDevision().setId(productAttributeDevisionDto.getToCountryDevision().getId()));
-                    c.setFromCountryDevision(new CountryDevision().setId(productAttributeDevisionDto.getFromCountryDevision().getId()));
+                    if (productAttributeDevisionDto.getToCountryDevision() != null)
+                        c.setToCountryDevision(new CountryDevision().setId(productAttributeDevisionDto.getToCountryDevision().getId()));
+                    if (productAttributeDevisionDto.getFromCountryDevision() != null)
+                        c.setFromCountryDevision(new CountryDevision().setId(productAttributeDevisionDto.getFromCountryDevision().getId()));
                     ProductAttributeDevision save1 = productAttributeDevisionRepository.save(c);
                     productAttributeDevisions.add(save1);
                 }

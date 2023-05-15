@@ -165,25 +165,18 @@ public class ExceptionServiceImpl implements ExceptionService {
 
     @Override
     public List<SelectResponse> selectByType(String filter, Long type) {
-        Pageable pageable = PageRequest.of(0, 100);
-
         List<Exception> all = exceptionRepository.findAll((Specification<Exception>) (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
             predicates.add(criteriaBuilder.equal(root.get("type"), type));
-
             if (StringUtils.isNotBlank(filter)) {
                 Predicate code = criteriaBuilder.like(root.get("code"), "%" + filter.trim() + "%");
                 Predicate name = criteriaBuilder.like(root.get("name"), "%" + filter.trim() + "%");
                 predicates.add(criteriaBuilder.or(code, name));
             }
-
-
-
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-
         });
 
         return all.stream().map(this::toselect).collect(Collectors.toList());
@@ -193,7 +186,6 @@ public class ExceptionServiceImpl implements ExceptionService {
 
     @Override
     public List<ExceptionDto> vehicleException(FindVehicleInException vehicle) {
-
         return null;
     }
 

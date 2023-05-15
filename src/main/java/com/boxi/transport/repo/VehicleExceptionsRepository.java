@@ -11,5 +11,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface VehicleExceptionsRepository extends JpaRepository<VehicleExceptions,Long>  , JpaSpecificationExecutor<VehicleExceptions> {
-    List<VehicleExceptions> findAllByCreatedDateAndVehicle(Date createDate, Vehicle vehicle);
+    List<VehicleExceptions> findAllByCreatedDateBetweenAndVehicle(Date createDate,Date createTo, Vehicle vehicle);
 }

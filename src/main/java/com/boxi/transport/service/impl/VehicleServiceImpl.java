@@ -389,7 +389,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleExceptionsDto> findVehicleException(VehicleExceptionsDto dto) {
         Date date = DateUtil.convertDateToJalaliDateDto(dto.getDateDto());
-        List<VehicleExceptions> allByCreatedDateAndVehicle = vehicleExceptionsRepository.findAllByCreatedDateAndVehicle(date, new Vehicle().setId(dto.getSelectVehicle().getId()));
+        List<VehicleExceptions> allByCreatedDateAndVehicle = vehicleExceptionsRepository.findAllByCreatedDateBetweenAndVehicle(date,date , new Vehicle().setId(dto.getSelectVehicle().getId()));
         return allByCreatedDateAndVehicle.stream().map(vehicleExceptionsConverter::fromModelToDto).collect(Collectors.toList());
     }
 
