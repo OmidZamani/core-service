@@ -79,7 +79,7 @@ public class ServiceApi {
 
     @GetMapping("/{id}")
     public Response getByid(@PathVariable Long id) {
-        return Response.ok().setPayload(serviceService.findByid(id));
+        return Response.ok().setPayload(serviceService.findById(id));
     }
 
     // @PreAuthorize("hasPermission('hasAccess','100503')")

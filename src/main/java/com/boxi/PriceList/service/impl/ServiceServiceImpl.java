@@ -13,6 +13,7 @@ import com.boxi.PriceList.repo.ServiceDeliveryRepository;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.payload.request.FilterService;
 import com.boxi.PriceList.service.ServiceService;
+import com.boxi.PriceList.service.TermsOfServicesService;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -46,6 +47,7 @@ public class ServiceServiceImpl implements ServiceService {
     private final ProductRepository productRepository;
     private final ServiceDeliveryRepository serviceDeliveryRepository;
     private final ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository;
+    private final TermsOfServicesService termsOfServicesService;
 
 
     public ServiceServiceImpl(ServiceRepository serviceRepository,
@@ -54,7 +56,8 @@ public class ServiceServiceImpl implements ServiceService {
                               PriceListConverter priceListConverter,
                               ProductRepository productRepository,
                               ServiceDeliveryRepository serviceDeliveryRepository,
-                              ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository) {
+                              ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository,
+                              TermsOfServicesService termsOfServicesService) {
         this.serviceRepository = serviceRepository;
         this.serviceConvertor = serviceConvertor;
         this.priceListRepository = priceListRepository;
@@ -62,6 +65,7 @@ public class ServiceServiceImpl implements ServiceService {
         this.productRepository = productRepository;
         this.serviceDeliveryRepository = serviceDeliveryRepository;
         this.serviceDeliveryCustomersRepository = serviceDeliveryCustomersRepository;
+        this.termsOfServicesService = termsOfServicesService;
     }
 
     public ServiceDto createService(ServiceDto request) {
@@ -98,6 +102,9 @@ public class ServiceServiceImpl implements ServiceService {
         request.setIsDeleted(false);
 
         Services save = serviceRepository.save(serviceConvertor.fromDtoToModel(request));
+
+        termsOfServicesService.createAsService(save);
+
         request.setId(save.getId());
 
         return request;
@@ -160,7 +167,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public void deletedetails(Long id) {
+    public void deleteDetails(Long id) {
         serviceDeliveryCustomersRepository.deleteById(id);
     }
 
@@ -255,7 +262,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public ServiceDto findByPricelist(PriceListDto dto) {
+    public ServiceDto findByPriceList(PriceListDto dto) {
         Services byPriceList = serviceRepository.findByPriceList(priceListConverter.fromDtoToModel(dto));
         return serviceConvertor.fromModelToDto(byPriceList);
     }
@@ -276,7 +283,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public ServiceDto findByid(Long id) {
+    public ServiceDto findById(Long id) {
 
         return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
     }

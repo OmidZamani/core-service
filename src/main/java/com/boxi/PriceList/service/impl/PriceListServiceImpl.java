@@ -509,7 +509,7 @@ public class PriceListServiceImpl implements PriceListService {
                 }, pageable);
         List<PriceListSuggestDto> priceListFilterDtos = new ArrayList<>();
         for (PriceList re : res) {
-            ServiceDto serviceDto = serviceService.findByPricelist(priceListConverter.fromModelToDto(re));
+            ServiceDto serviceDto = serviceService.findByPriceList(priceListConverter.fromModelToDto(re));
             if (serviceDto != null) {
                 PriceListSuggestDto priceListSuggestDto = new PriceListSuggestDto();
                 priceListSuggestDto.setPrice(re.getPriceListDetails().get(0).getPrice());

@@ -6,7 +6,6 @@ import com.boxi.PriceList.payload.dto.ServiceDto;
 import com.boxi.PriceList.payload.request.FilterService;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.payload.CreateServiceExcelRequest;
-import com.boxi.hub.entity.CustomDevisionDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,7 +21,8 @@ public interface ServiceService {
     ServiceDto SelectEdit(String filter);
 
     void delete(Long id);
-    void deletedetails(Long id);
+
+    void deleteDetails(Long id);
 
     ServiceDto edit(ServiceDto request);
 
@@ -32,7 +32,7 @@ public interface ServiceService {
 
     List<SelectResponse> select(String filter);
 
-    ServiceDto findByPricelist(PriceListDto dto);
+    ServiceDto findByPriceList(PriceListDto dto);
 
     List<SelectResponse> baseTypeSelect();
 
@@ -40,5 +40,5 @@ public interface ServiceService {
 
     SelectResponse toSelect(Services services);
 
-    ServiceDto findByid(Long id);
+    ServiceDto findById(Long id);
 }

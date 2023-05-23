@@ -42,6 +42,6 @@ public class AvailableServiceExchange {
 
     @GetMapping("/exchange/findById/{id}")
     public ServiceDto ServicefindByid(@PathVariable Long id) {
-        return serviceService.findByid(id);
+        return serviceService.findById(id);
     }
 }
