@@ -50,7 +50,7 @@ public class BagApi {
 
     // @PreAuthorize("hasPermission('hasAccess','10080703')")
     @PutMapping
-    public Response edit(@Valid @RequestBody BagDto request) {
+    public Response edit(@Valid @RequestBody BagDto request) {//TODO Transactional
         log.warn(request.toJson());
         BagDto response = _service.edit(request);
         return Response.ok().setPayload(response);

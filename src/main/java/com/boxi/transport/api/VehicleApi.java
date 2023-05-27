@@ -43,21 +43,21 @@ public class VehicleApi {
     }
 
     @PostMapping("/client")
-    public VehicleDto clientCreate(@RequestBody VehicleDto request) {
+    public VehicleDto clientCreate(@RequestBody VehicleDto request) {//TODO Transactional
         log.warn(request.toJson());
 
         return _service.createClient(request);
     }
 
     @PutMapping("/client")
-    public VehicleDto clientUpdate(@RequestBody VehicleDto request) {
+    public VehicleDto clientUpdate(@RequestBody VehicleDto request) {//TODO Transactional
         log.warn(request.toJson());
 
         return _service.edit(request);
     }
 
     @PostMapping("/addvehicleclinet")
-    public VehicleDto createClient(@RequestBody VehicleDto request) {
+    public VehicleDto createClient(@RequestBody VehicleDto request) {//TODO Transactional
         log.warn(request.toJson());
         request.setFleetTypeSelect(new SelectResponse(FleetType.justForHub.getValue(), FleetType.justForHub.getFa()));
 
