@@ -28,6 +28,7 @@ import com.boxi.product.repo.ProductRepository;
 import com.boxi.utils.DateUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.SerializationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -105,17 +106,19 @@ public class ServiceServiceImpl implements ServiceService {
                     predicates.add(criteriaBuilder.equal(root.get("product"), services.getProduct()));
 
                     if (priceListDetail.getFromDim() != null & priceListDetail.getToDimension() != null) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("fromDim"), priceListDetail.getFromDim()));
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("toDimension"), priceListDetail.getToDimension()));
+
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getFromDim()), root.get("fromDim"), root.get("toDimension")));
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getToDimension()), root.get("fromDim"), root.get("toDimension")));
                     }
                     if (priceListDetail.getFromWeight() != null && priceListDetail.getToWeight() != null) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("fromWeight"), priceListDetail.getFromWeight()));
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("toWeight"), priceListDetail.getToWeight()));
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
                     }
 
                     if (priceListDetail.getFromValue() != null & priceListDetail.getToValue() != null) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("fromValue"), priceListDetail.getFromValue()));
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("toValue"), priceListDetail.getToValue()));
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getFromValue()), root.get("fromValue"), root.get("toValue")));
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetail.getToValue()), root.get("fromValue"), root.get("toValue")));
+
                     }
                     if (priceListDetail.getCustomCountryDevision() != null) {
                         List<CountryDevision> To = priceListDetail.getCustomCountryDevision().getCustomDevisionDetails().stream().map(CustomDevisionDetail::getToCountryDevision).collect(Collectors.toList());
@@ -124,6 +127,15 @@ public class ServiceServiceImpl implements ServiceService {
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
                     }
+
+                    if (priceListDetail.getPriceDetailDevisions() != null) {
+                        List<CountryDevision> To = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getFromCountryDevision).collect(Collectors.toList());
+                        List<CountryDevision> From = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getToCountryDevision).collect(Collectors.toList());
+                        Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
+                        predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
+                        predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
+                    }
+
                     query.distinct(true);
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 });
@@ -175,6 +187,7 @@ public class ServiceServiceImpl implements ServiceService {
                         } else if (priceListDetail.getPriceDetailDevisions() != null) {
                             for (PriceDetailDevision priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
                                 termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                Object clone = SerializationUtils.clone(termsOfServices);
                                 TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
                                 TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
                                 terms.setService(services);
