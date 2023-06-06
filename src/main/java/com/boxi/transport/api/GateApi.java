@@ -94,7 +94,7 @@ public class GateApi {
     }
 
     @GetMapping("/{id}")
-    public Response findByid(@PathVariable Long id) {
+    public Response findById(@PathVariable Long id) {
         return Response.ok().setPayload(_service.findByIddto(id));
     }
 }

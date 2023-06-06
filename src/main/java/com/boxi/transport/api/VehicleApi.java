@@ -60,8 +60,6 @@ public class VehicleApi {
     public VehicleDto createClient(@RequestBody VehicleDto request) {//TODO Transactional
         log.warn(request.toJson());
         request.setFleetTypeSelect(new SelectResponse(FleetType.justForHub.getValue(), FleetType.justForHub.getFa()));
-
-
         return _service.create(request);
     }
 

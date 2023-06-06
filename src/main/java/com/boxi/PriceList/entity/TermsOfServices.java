@@ -28,6 +28,10 @@ public class TermsOfServices
    private Long id;
 
    @Basic(optional=false)
+   @Column(name="ISACTIVE", nullable=false, insertable=true, updatable=true)
+   private Boolean isActive;
+
+   @Basic(optional=false)
    @Column(name="SERVICENAME", nullable=false, insertable=true, updatable=true, length=254)
    private String serviceName;
 

@@ -26,7 +26,7 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     Hub findByCode(String code);
 
-    @Query(value = "select h from Hub  h where h.code in(?1)")
+    @Query(value = "select h from Hub  h where h.code in(?1) and h.isDeleted = false and h.isActive = true")
     List<Hub> findallByCodeList(List<String> codes);
 
     Hub findByCodeAndParentHubIsNotNull(String code);

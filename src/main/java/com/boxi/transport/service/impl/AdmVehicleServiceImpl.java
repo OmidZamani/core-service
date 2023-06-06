@@ -68,6 +68,7 @@ public class AdmVehicleServiceImpl implements AdmVehicleService {
                 .findAll((Specification<Vehicle>) (root, query, criteriaBuilder) -> {
                     List<Predicate> predicates = new ArrayList<>();
                     predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+                    predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
                     predicates.add(criteriaBuilder.equal(root.get("isOwnerShip"), false));
                     if (filter != null && !filter.isEmpty()) {
                         predicates.add(criteriaBuilder.like(root.get("vehicleNumber0"), "%" + filter.trim() + "%"));
@@ -120,9 +121,9 @@ public class AdmVehicleServiceImpl implements AdmVehicleService {
                         Join<Object, Object> VehicleMakeSelect = root.join("vehicleMake");
                         predicates.add(criteriaBuilder.like(VehicleMakeSelect.get("name"), "%" + filter.getVehicleMakeSelect().trim() + "%"));
                     }
-                    if(filter.getSelectRoute()!=null){
+                    if (filter.getSelectRoute() != null) {
                         Join<Object, Object> SelectRoute = root.join("route");
-                        predicates.add(criteriaBuilder.equal(SelectRoute.get("id"),filter.getSelectRoute().getId()));
+                        predicates.add(criteriaBuilder.equal(SelectRoute.get("id"), filter.getSelectRoute().getId()));
                     }
 
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));

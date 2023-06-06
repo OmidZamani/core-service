@@ -7,6 +7,7 @@ import com.boxi.PriceList.entity.PriceDetailDevision;
 import com.boxi.PriceList.entity.PriceList;
 
 import com.boxi.PriceList.entity.PriceListDetail;
+import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.dto.*;
 import com.boxi.core.request.DateDto;
 import com.boxi.core.response.SelectResponse;
@@ -65,6 +66,8 @@ public interface PriceListConverter {
     @Mapping(target = "validDateFrom", ignore = true)
     @Mapping(target = "validDateTo", ignore = true)
     PriceListFilterDto LoadfromFilterMap(PriceList dto);
+
+    TermsOfServices fromPriceToTerm(PriceList priceList);
 
     @AfterMapping
     default void afterFilterMap(PriceList priceList, @MappingTarget PriceListFilterDto dto) {

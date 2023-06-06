@@ -50,6 +50,9 @@ public class GateServiceImpl implements GateService {
         if (hubFilter.getHublist() != null) {
             return gateRepository.findAll((Specification<Gate>) (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
+                predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+
+                predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
                 if (filter != null && !filter.isEmpty()) {
                     Predicate name = criteriaBuilder.and(criteriaBuilder.like(criteriaBuilder.upper(root.get("name")), "%" + filter.trim() + "%"));
                     Predicate code = criteriaBuilder.and(criteriaBuilder.like(criteriaBuilder.upper(root.get("code")), "%" + filter.trim() + "%"));
@@ -95,8 +98,9 @@ public class GateServiceImpl implements GateService {
             Page<Gate> res = gateRepository
                     .findAll((Specification<Gate>) (root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        Predicate isDeleted = criteriaBuilder.equal(root.get("isDeleted"), false);
-                        predicates.add(isDeleted);
+                        predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+
+                        predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
                         if (filter.getCode() != null && StringUtils.isNotBlank(filter.getCode())) {
                             predicates.add(criteriaBuilder.like(root.get("code"), "%" + filter.getCode().trim() + "%"));
                         }

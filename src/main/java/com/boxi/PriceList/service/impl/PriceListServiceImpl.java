@@ -4,9 +4,11 @@ import com.boxi.PriceList.Enum.ConsignmentType;
 import com.boxi.PriceList.entity.PriceDetailDevision;
 import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.PriceListDetail;
+import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.converter.PriceDetailDevisionConverter;
 import com.boxi.PriceList.payload.converter.PriceListConverter;
 import com.boxi.PriceList.payload.converter.PriceListDetailConverter;
+import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
 import com.boxi.PriceList.payload.dto.*;
 import com.boxi.PriceList.repo.PriceDetailDevisionRepository;
 import com.boxi.PriceList.repo.PriceListDetailRepository;
@@ -15,6 +17,7 @@ import com.boxi.PriceList.payload.request.FilterPriceList;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.service.PriceListService;
 import com.boxi.PriceList.service.ServiceService;
+import com.boxi.PriceList.service.TermsOfServicesService;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -70,6 +73,8 @@ public class PriceListServiceImpl implements PriceListService {
 
     private final ServiceService serviceService;
 
+
+
     public PriceListServiceImpl(PriceListRepository priceListRepository,
                                 PriceListConverter priceListConverter,
                                 PriceListDetailRepository priceListDetailRepository,
@@ -79,8 +84,9 @@ public class PriceListServiceImpl implements PriceListService {
                                 CustomCountryDevisionRepository customCountryDevisionRepository,
                                 CustomCountryDevisionConverter customCountryDevisionConverter,
                                 CountryDevisionRepository countryDevisionRepository,
-
-                                ProductRepository productRepository, ServiceRepository serviceRepository, ServiceService serviceService) {
+                                ProductRepository productRepository,
+                                ServiceRepository serviceRepository,
+                                ServiceService serviceService) {
         this.priceListRepository = priceListRepository;
         this.priceListConverter = priceListConverter;
         this.priceListDetailRepository = priceListDetailRepository;
@@ -90,11 +96,10 @@ public class PriceListServiceImpl implements PriceListService {
         this.customCountryDevisionRepository = customCountryDevisionRepository;
         this.customCountryDevisionConverter = customCountryDevisionConverter;
         this.countryDevisionRepository = countryDevisionRepository;
-
         this.productRepository = productRepository;
         this.serviceRepository = serviceRepository;
-
         this.serviceService = serviceService;
+
     }
 
 
@@ -131,13 +136,9 @@ public class PriceListServiceImpl implements PriceListService {
                         PriceDetailDevision save1 = priceDetailDevisionRepository.save(priceDetailDevision);
 
                         priceDetailDevisions.add(priceDetailDevisionConverter.fromModelToDto(save1));
-
-
                     }
                 }
                 priceListDetailDto.setPriceDetailDevisions(priceDetailDevisions);
-
-
                 priceListDetails.add(priceListDetailDto);
             }
         }
@@ -147,12 +148,11 @@ public class PriceListServiceImpl implements PriceListService {
         return priceListDto;
     }
 
+
+
     @Override
     public PriceListDto create(PriceListDto request) {
-
         return createPriceList(request);
-
-
     }
 
     @Override

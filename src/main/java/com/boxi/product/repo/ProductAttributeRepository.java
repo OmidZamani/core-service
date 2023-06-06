@@ -2,16 +2,16 @@ package com.boxi.product.repo;
 
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
-import com.boxi.product.entity.ProductAttributeDevision;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
-public interface ProductAttributeRepository extends JpaRepository<ProductAttribute,Long>, JpaSpecificationExecutor<ProductAttribute> {
+public interface ProductAttributeRepository extends JpaRepository<ProductAttribute, Long>, JpaSpecificationExecutor<ProductAttribute> {
     @Override
     boolean existsById(Long aLong);
 
@@ -19,9 +19,9 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
     List<ProductAttribute> FeatchProductAttributeDevision(Long ID);
 
 
-
     List<ProductAttribute> findAllByProduct(Product product);
 
+    ProductAttribute findTopByProductAndFromDimIsLessThanEqualAndToDimensionIsGreaterThanEqualAndFromWeightIsGreaterThanEqualAndToWeightIsLessThanEqualAndFromValueIsGreaterThanEqualAndToValueIsLessThanEqual(Product product, Double FromDim, Double ToDimension, Double FromWeight, Double ToWeight, BigDecimal FromValue, BigDecimal ToValue);
 
 
 }

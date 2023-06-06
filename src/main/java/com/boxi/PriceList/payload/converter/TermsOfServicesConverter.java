@@ -6,6 +6,7 @@ import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.core.response.SelectResponse;
+import com.boxi.product.entity.ProductAttribute;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
@@ -23,6 +24,14 @@ public interface TermsOfServicesConverter {
 
     TermsOfServices fromServiceToTerms(Services services);
 
+
+    TermsOfServices fromProductAttributesToTerms(ProductAttribute productAttribute);
+
+    @AfterMapping
+    default void  afterFromProductAttributesToTerms(ProductAttribute productAttribute ,@MappingTarget TermsOfServices termsOfServices){
+
+    }
+
     @AfterMapping
     default void afterFromDtoToModel(TermsOfServicesDto dto, @MappingTarget TermsOfServices termsOfServices) {
         if (dto.getServiceType() != null)
@@ -35,12 +44,11 @@ public interface TermsOfServicesConverter {
     @AfterMapping
     default void afterFromModelToDto(TermsOfServices termsOfServices, @MappingTarget TermsOfServicesDto dto) {
         if (termsOfServices.getServiceType() != null)
-            dto.setServiceType(new SelectResponse(ServiceType.findByValue(dto.getServiceType().getId()).getValue()
-                    , ServiceType.findByValue(dto.getServiceType().getId()).getType()));
+            dto.setServiceType(new SelectResponse(termsOfServices.getServiceType().getValue()
+                    , termsOfServices.getServiceType().getType()));
 
         if (termsOfServices.getConsignmentType() != null)
-            dto.setConsignmentType(new SelectResponse(ConsignmentType.findByValue(dto.getConsignmentType().getId()).getValue()
-                    , ConsignmentType.findByValue(dto.getConsignmentType().getId()).getType()));
+            dto.setConsignmentType(new SelectResponse(termsOfServices.getConsignmentType().getValue(), termsOfServices.getConsignmentType().getType()));
     }
 
 }
