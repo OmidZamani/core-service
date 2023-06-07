@@ -159,14 +159,14 @@ public class ServiceServiceImpl implements ServiceService {
                         termsOfServices.setTimeCommitmentTimeUnit(productAttributes.getTimeCommitment().getTimeUnit().getValue());
                         termsOfServices.setMinimumOrderQuantity(services.getMinimumOrderQuantity());
 
-                        termsOfServices.setFromWeight(priceListDetail.getFromWeight());
-                        termsOfServices.setToWeight(priceListDetail.getToWeight());
+                        termsOfServices.setFromWeight(productAttributes.getFromWeight());
+                        termsOfServices.setToWeight(productAttributes.getToWeight());
 
-                        termsOfServices.setFromDim(priceListDetail.getFromDim());
-                        termsOfServices.setToDimension(priceListDetail.getToDimension());
+                        termsOfServices.setFromDim(productAttributes.getFromDim());
+                        termsOfServices.setToDimension(productAttributes.getToDimension());
 
-                        termsOfServices.setFromValue(priceListDetail.getFromValue());
-                        termsOfServices.setToValue(priceListDetail.getToValue());
+                        termsOfServices.setFromValue(productAttributes.getFromValue());
+                        termsOfServices.setToValue(productAttributes.getToValue());
 
                         termsOfServices.setFromNumber(priceListDetail.getFromNumber());
                         termsOfServices.setToNumber(priceListDetail.getToNumber());
