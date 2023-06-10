@@ -158,8 +158,8 @@ public class VehicleApi {
     }
 
     @PostMapping("/findbycartagnumberSuggest")
-    public Response findbycartagnumberSuggest(@RequestBody CarTagDto dto) {
-        return Response.ok().setPayload(_service.findbycartagnumberSuggest(dto));
+    public Response findByCarTagNumberSuggest(@RequestBody CarTagDto dto) {
+        return Response.ok().setPayload(_service.findByCarTagNumberSuggest(dto));
     }
 
     @GetMapping("/findBytype")

@@ -11,8 +11,6 @@ import com.boxi.product.entity.ProductGroup;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.payload.converter.ProductAttributeConverter;
 import com.boxi.product.payload.converter.ProductConverter;
-import com.boxi.product.payload.converter.ProductGroupConverter;
-import com.boxi.product.payload.converter.UsingProductConverter;
 import com.boxi.product.payload.dto.ProductAttributeDto;
 import com.boxi.product.payload.dto.ProductAttributeExcelDto;
 import com.boxi.product.payload.dto.ProductDto;
@@ -40,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductConverter productConvert;
 
     private final ProductGroupRepository productGroupRepository;
-    private final ProductGroupConverter productGroupConverter;
+
 
     private final TimeCommitmentRepository timeCommitmentRepository;
     private final CountryDevisionRepository countryDevisionRepository;
@@ -49,36 +47,31 @@ public class ProductServiceImpl implements ProductService {
     private final ProductAttributeConverter productAttributeConverter;
 
 
-    private final UsingProductConverter usingProductConverter;
-    private final UsingProductRepository usingProductRepository;
-
     public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConvert,
                               ProductGroupRepository productGroupRepository,
-                              ProductGroupConverter productGroupConverter,
+
                               TimeCommitmentRepository timeCommitmentRepository,
                               CountryDevisionRepository countryDevisionRepository,
                               ProductAttributeRepository productAttributeRepository,
-                              ProductAttributeConverter productAttributeConverter,
+                              ProductAttributeConverter productAttributeConverter
 
-                              UsingProductConverter usingProductConverter,
-                              UsingProductRepository usingProductRepository) {
+    ) {
         this.productRepository = productRepository;
         this.productConvert = productConvert;
         this.productGroupRepository = productGroupRepository;
-        this.productGroupConverter = productGroupConverter;
+
         this.timeCommitmentRepository = timeCommitmentRepository;
         this.countryDevisionRepository = countryDevisionRepository;
         this.productAttributeRepository = productAttributeRepository;
         this.productAttributeConverter = productAttributeConverter;
 
-        this.usingProductConverter = usingProductConverter;
-        this.usingProductRepository = usingProductRepository;
+
     }
 
     @Override
 
     public Page<SelectResponse> selectProduct(String filter) {
-        Pageable pageable = PageRequest.of(0, 100);
+//        Pageable pageable = PageRequest.of(0, 100);
         return null;
     }
 
@@ -89,8 +82,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto edit(ProductDto request) {
-        if(! productRepository.existsById(request.getId()))
-            throw BusinessException.valueException(EntityType.Product,"product.not.found");
+        if (!productRepository.existsById(request.getId()))
+            throw BusinessException.valueException(EntityType.Product, "product.not.found");
 
         return saveData(request);
     }
@@ -169,34 +162,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<SelectResponse> featchUsingProducts(List<UsingProduct> usingProductDtos) {
-        List<SelectResponse> usingProductDtos1 = new ArrayList<>();
-        for (UsingProduct usingProductDto : usingProductDtos) {
+    public List<SelectResponse> fetchUsingProducts(List<UsingProduct> usingProductList) {
+        List<SelectResponse> usingProductLists = new ArrayList<>();
+        for (UsingProduct usingProductDto : usingProductList) {
             Product byId = findById(usingProductDto.getChild().getId());
-            usingProductDtos1.add(new SelectResponse(byId.getId(), byId.getName()));
+            usingProductLists.add(new SelectResponse(byId.getId(), byId.getName()));
         }
-        return usingProductDtos1;
+        return usingProductLists;
 
     }
 
     private ProductDto saveProductData(Product product) {
 
         Product saved = productRepository.save(product);
-        ProductDto productDto = productConvert.fromModelToDto(saved);
-        return productDto;
-    }
-
-    private Page<SelectResponse> getProducts(Long productId, String filter, Pageable pageable) {
-
-        return productRepository.findAll((Specification<Product>) (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("PRODUCTID"), productId)));
-            if (filter != null && !filter.isEmpty()) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.like(criteriaBuilder.upper(root.get("name")), "%" + filter.trim() + "%")));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        }, pageable).map(this::toSelect);
+        return productConvert.fromModelToDto(saved);
     }
 
 
@@ -209,7 +188,7 @@ public class ProductServiceImpl implements ProductService {
     private Product findById(Long id) {
         if (id == 0) return null;
         return productRepository.findById(id).orElseThrow(() -> {
-            throw BusinessException.entityNotFoundException(EntityType.Product,"product.not.found");
+            throw BusinessException.entityNotFoundException(EntityType.Product, "product.not.found");
         });
     }
 
@@ -220,10 +199,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean ExcelValidation(List<ProductExcelDto> productExcelDtos) {
+    public boolean ExcelValidation(List<ProductExcelDto> productExcelList) {
 
         int i = 1;
-        for (ProductExcelDto productExcelDto : productExcelDtos) {
+        for (ProductExcelDto productExcelDto : productExcelList) {
 
             if (!productGroupRepository.existsByCode(productExcelDto.getProductGroup()))
                 throw BusinessException.valueException(EntityType.Product, "product.code.not.found",
@@ -236,7 +215,7 @@ public class ProductServiceImpl implements ProductService {
                             "product.attribute.dimension.not.valid",
                             productExcelDto.getCode() + "  ردیف " + i);
 
-                if(productAttributeExcelDto.getUsingProduct()!=null) {
+                if (productAttributeExcelDto.getUsingProduct() != null) {
                     String[] split = productAttributeExcelDto.getUsingProduct().split(" - ");
                     for (String s : split) {
                         if (!productRepository.existsBycode(s))
@@ -255,14 +234,14 @@ public class ProductServiceImpl implements ProductService {
                 for (String s : productAttributeExcelDto.getAttributeDivitionto().split(" - ")) {
                     if (!countryDevisionRepository.existsByCode(s))
                         throw BusinessException.valueException(EntityType.Product,
-                                "countrydevision.code.not.found",
+                                "countryDivision.code.not.found",
                                 s + "  ردیف " + b + " sheet productAttribute ");
 
                 }
                 for (String s : productAttributeExcelDto.getAttributeDivitionfrom().split(" - ")) {
                     if (!countryDevisionRepository.existsByCode(s))
                         throw BusinessException.valueException(EntityType.Product,
-                                "countrydevision.code.not.found",
+                                "countryDivision.code.not.found",
                                 s + "  ردیف " + b + " sheet productAttribute ");
                 }
                 b++;
@@ -275,13 +254,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> ImportExcel(List<ProductExcelDto> productExcelDtos) {
-        List<ProductDto> productDtos = new ArrayList<>();
-        for (ProductExcelDto productExcelDto : productExcelDtos) {
+    public List<ProductDto> ImportExcel(List<ProductExcelDto> productExcelList) {
+        List<ProductDto> productList = new ArrayList<>();
+        for (ProductExcelDto productExcelDto : productExcelList) {
             ProductDto productDto = productConvert.fromExcelToDto(productExcelDto);
             ProductGroup byCode = productGroupRepository.findByCode(productExcelDto.getProductGroup());
             productDto.setProductGroup(new SelectResponse(byCode.getId(), byCode.getName()));
-            ProductDto product = new ProductDto();
+            ProductDto product;
             if (productRepository.existsByCode(productExcelDto.getCode())) {
                 Product byCode1 = productRepository.findByCode(productExcelDto.getCode());
                 product = productConvert.fromModelToDto(byCode1);
@@ -307,7 +286,7 @@ public class ProductServiceImpl implements ProductService {
 
                 productAttribute.setTimeCommitment(timeCommitmentRepository.findByName(productAttributeExcelDto.getTimeCommitment()));
                 List<UsingProduct> usingProducts = new ArrayList<>();
-                if(productAttributeExcelDto.getUsingProduct()!=null) {
+                if (productAttributeExcelDto.getUsingProduct() != null) {
                     for (String s : productAttributeExcelDto.getUsingProduct().split(" - ")) {
                         UsingProduct usingProduct = new UsingProduct();
                         usingProduct.setParent(productConvert.fromDtoToModel(product));
@@ -322,11 +301,11 @@ public class ProductServiceImpl implements ProductService {
             }
 
 
-            productDtos.add(productDto);
+            productList.add(productDto);
         }
 
 
-        return productDtos;
+        return productList;
     }
 
 

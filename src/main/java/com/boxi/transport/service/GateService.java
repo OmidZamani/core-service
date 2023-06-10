@@ -26,14 +26,14 @@ public interface GateService {
 
     Gate findById(Long id);
 
-    GateDto findByIddto(Long id);
+    GateDto findByIdDto(Long id);
 
     Gate fromSelect(SelectResponse select);
 
 
     SelectResponse toSelect(Gate entity);
 
-    boolean ExcelValidation(List<GateExcelDto> gateExcelDtos);
+    boolean ExcelValidation(List<GateExcelDto> gateExcelList);
 
-    List<GateDto> ImportExcel(List<GateExcelDto> gateExcelDtos);
+    List<GateDto> ImportExcel(List<GateExcelDto> gateExcelList);
 }

@@ -29,9 +29,9 @@ public interface DockService {
 
     void delete(Long id);
 
-    boolean ExcelValidation(List<DockExcelDto> dockExcelDtos);
+    boolean ExcelValidation(List<DockExcelDto> dockExcelList);
 
-    List<DockDto> ImportExcel(List<DockExcelDto> dockExcelDtos);
+    List<DockDto> ImportExcel(List<DockExcelDto> dockExcelList);
 
     DockDto updateStatus(DockDto dto);
 }

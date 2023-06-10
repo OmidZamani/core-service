@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface BagService {
-    Page<SelectResponse> select(String filter, HubFilter hublist);
+    Page<SelectResponse> select(String filter, HubFilter hubList);
 
     Page<BagDto> filter(BagFilter filter, Pageable pageable);
 
@@ -28,15 +28,15 @@ public interface BagService {
 
     void delete(Long id);
 
-    boolean ExcelValidation(List<BagExcelDto> bagExcelDtos);
+    boolean ExcelValidation(List<BagExcelDto> bagExcelList);
 
-    List<BagDto> ImportExcel(List<BagExcelDto> bagExcelDtos);
+    List<BagDto> ImportExcel(List<BagExcelDto> bagExcelList);
 
-    BagDto findBybagnumber(String number);
+    BagDto findByBagNumber(String number);
 
     BagExceptionsDto createException(BagExceptionsDto dto);
 
     BagDto editStatus(BagDto dto);
 
-    List<SelectResponse> reportTotal(Long hubid );
+    List<SelectResponse> reportTotal(Long hubId);
 }

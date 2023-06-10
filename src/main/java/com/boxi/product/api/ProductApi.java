@@ -14,16 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping( "/core-api/product")
@@ -35,17 +32,11 @@ public class ProductApi {
     private final ProductService productService;
     private final ConvertExcelServiceImpl convertExcelService;
 
-    @GetMapping("/genPinCode")
-    public Response genPinCode(@AuthenticationPrincipal Jwt jwt) {
-      /*  jwt.getClaims().get("user_name");
-         jwt.getSubject());*/
-        System.out.println("genPinCode");
-        return  Response.ok().setPayload(UUID.randomUUID().toString());
-    }
+
 
     // @PreAuthorize("hasPermission('hasAccess','100401')")
     @PostMapping
-    public Response createproduct(@RequestBody ProductDto request) {
+    public Response createProduct(@RequestBody ProductDto request) {
         log.warn(request.toJson());
         request.setIsDeleted(false);
         ProductDto response=productService.createProduct(request);
@@ -75,30 +66,28 @@ public class ProductApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         Page<SelectResponse> response = productService.select(filter);
         return  Response.ok().setPayload(response);
     }
 
     // @PreAuthorize("hasPermission('hasAccess','100402')")
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
         log.warn(Entity);
-        String Dto = Entity;
-        List<ProductExcelDto> productExcelDtos =
+        List<ProductExcelDto> productExcelList =
                 (List<ProductExcelDto>) convertExcelService.ConvertExcelToObjects(ProductExcelDto.class, excel);
 
-        if (productService.ExcelValidation(productExcelDtos)) {
+        if (productService.ExcelValidation(productExcelList)) {
 
-            List<ProductDto> productDtos = productService.ImportExcel(productExcelDtos);
+            List<ProductDto> productList = productService.ImportExcel(productExcelList);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Product",productDtos.size());
-            int Allatribute= 0 ;
-            for (int i = 0; i < productDtos.size(); i++) {
-                Allatribute+=productDtos.get(i).getAttribute().size();
+            jsonObject.put("Product", productList.size());
+            int allAttribute = 0 ;
+            for (ProductDto dto : productList) {
+                allAttribute += dto.getAttribute().size();
             }
-            jsonObject.put("productAttribute",Allatribute);
+            jsonObject.put("productAttribute", allAttribute);
 
             return Response.ok().setPayload(jsonObject);
         }

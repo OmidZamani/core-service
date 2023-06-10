@@ -2,7 +2,6 @@ package com.boxi.trm.service;
 
 import com.boxi.core.request.DateDto;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.trm.entity.DispatchShift;
 import com.boxi.trm.payload.dto.*;
 import com.boxi.trm.payload.request.FilterCalendar;
 import org.springframework.data.domain.Page;
@@ -12,9 +11,9 @@ import java.util.List;
 
 public interface CalendarService {
 
-    CalendarHubDto createcalendarhub(CalendarHubDto dto) ;
+    CalendarHubDto createCalendarHub(CalendarHubDto dto) ;
 
-    CalendarHubDto editcalendarhub(CalendarHubDto dto) ;
+    CalendarHubDto editCalendarHub(CalendarHubDto dto) ;
 
     List<DispatchShiftDto> create(List<DispatchShiftDto> dto);
 
@@ -24,34 +23,34 @@ public interface CalendarService {
 
     List<CalendarDto> filter(FilterCalendar filter, Pageable pageable);
 
-    Page<CalendarHubDto> filtercalendarhub(FilterCalendar filter, Pageable pageable);
+    Page<CalendarHubDto> filterCalendarHub(FilterCalendar filter, Pageable pageable);
 
-   List<DispatchShiftDto> findbyDispatchershift(SelectResponse calendar);
+   List<DispatchShiftDto> findByDispatcherShift(SelectResponse calendar);
 
-    CopyDispatchShiftDto copyDispatchShift(CopyDispatchShiftDto shiftDtos);
+    CopyDispatchShiftDto copyDispatchShift(CopyDispatchShiftDto shiftList);
 
-    void deleteselectshift(List<DispatchShiftDto> shiftDtos);
+    void deleteSelectShift(List<DispatchShiftDto> shiftList);
 
-    String  createnormalshift(NormalShiftDto dto);// تعریف شیفت ساده  تکرار شونده
+    String createNormalShift(NormalShiftDto dto);// تعریف شیفت ساده تکرار شونده
 
-    void copyyearhubbyweekday(CopyYearHubDto dto);
+    void copyYearHubByWeekday(CopyYearHubDto dto);
 
-    void copyyearhubbyday(CopyYearHubDto dto);
+    void copyYearHubByDay(CopyYearHubDto dto);
 
-    List<SelectResponse> getyears();
+    List<SelectResponse> getYears();
 
-    Page<CalendarHubDto> filtertrm(FilterCalendar filter, Pageable pageable);
+    Page<CalendarHubDto> filterTrm(FilterCalendar filter, Pageable pageable);
 
      DispatchShiftDto createDispatcher(DispatchShiftDto dto);
-     void deletecalenderhub(Long id );
+     void deleteCalenderHub(Long id );
 
-    DispatchShiftDto findshiftbyid(Long id);
+    DispatchShiftDto findShiftById(Long id);
 
-    DispatchShiftDto findnextshiftbyid(Long id);
+    DispatchShiftDto findNextShiftById(Long id);
 
-    List<DispatchShiftDto> findbyDispatchershiftByDate(DateDto calendar,Long hubid);
+    List<DispatchShiftDto> findByDispatcherShiftByDate(DateDto calendar, Long hubId);
 
-    List<SelectResponse> findShiftBytype(Long type, DateDto dateDto,Long hubid);
+    List<SelectResponse> findShiftByType(Long type, DateDto dateDto, Long hubId);
 
-    List<DispatchShiftDto> getfindbycalendardisByDateByhub(FindByDispatcherByHubDto dto);
+    List<DispatchShiftDto> getFindByCalendarDisByDateByHub(FindByDispatcherByHubDto dto);
 }

@@ -9,7 +9,6 @@ import com.boxi.hub.entity.Hub;
 import com.boxi.hub.entity.HubCategory;
 import com.boxi.hub.enums.CountryType;
 import com.boxi.hub.enums.HubType;
-import com.boxi.hub.payload.converter.CountryDevisionConverter;
 import com.boxi.hub.payload.converter.HubCategoryConverter;
 import com.boxi.hub.payload.converter.HubConverter;
 import com.boxi.hub.payload.converter.HubExcelConverter;
@@ -53,7 +52,6 @@ public class HubServiceImpl implements HubService {
     private final HubConverter hubConverter;
     private final HubExcelConverter hubExcelConverter;
     private final CountryDevisionRepository countryDevisionRepository;
-    private final CountryDevisionConverter countryDevisionConverter;
 
 
     @Autowired
@@ -62,8 +60,8 @@ public class HubServiceImpl implements HubService {
                           HubConverter hubConverter,
                           HubExcelConverter hubExcelConverter,
                           HubCategoryConverter hubCategoryConverter,
-                          CountryDevisionRepository countryDevisionRepository,
-                          CountryDevisionConverter countryDevisionConverter) {
+                          CountryDevisionRepository countryDevisionRepository
+    ) {
         this.hubCategoryRepository = hubCategoryRepository;
         this.hubRepository = hubRepository;
         this.hubConverter = hubConverter;
@@ -72,7 +70,7 @@ public class HubServiceImpl implements HubService {
 
 
         this.countryDevisionRepository = countryDevisionRepository;
-        this.countryDevisionConverter = countryDevisionConverter;
+
     }
 
     @Override
@@ -86,7 +84,7 @@ public class HubServiceImpl implements HubService {
         category.setIsDeleted(false);
         HubCategory saved = hubCategoryRepository.save(category);
         return hubCategoryConverter.fromModelToDto(saved);
-    } //done inja
+    }
 
     @Override
     public CreateHubCategoryResponse updateHubCategory(CreateHubCategoryRequest request) {
@@ -116,20 +114,19 @@ public class HubServiceImpl implements HubService {
     }
 
 
-    private List<HubPermissionDto> findByparents(String hubCode) {
+    private List<HubPermissionDto> findByParents(String hubCode) {
         List<Hub> topByParentHubCode = hubRepository.findAllByParentHubCode(hubCode);
         List<HubPermissionDto> list = new ArrayList<>();
-        for (Hub parentcode : topByParentHubCode) {
-            Hub hub = parentcode;
+        for (Hub parentCode : topByParentHubCode) {
             HubPermissionDto hubPermissionDto = new HubPermissionDto();
-            hubPermissionDto.setId(hub.getId());
-            hubPermissionDto.setValue(hub.getCode());
-            hubPermissionDto.setLabel(hub.getName());
-            log.warn(hub.getCode());
-            if (hub.getParentHub() != null)
-                hubPermissionDto.setParent(hub.getParentHub().getId());
-            if (hub.getHubs() != null) {
-                hubPermissionDto.setChildren(findByparents(hub.getCode()));
+            hubPermissionDto.setId(parentCode.getId());
+            hubPermissionDto.setValue(parentCode.getCode());
+            hubPermissionDto.setLabel(parentCode.getName());
+            log.warn(parentCode.getCode());
+            if (parentCode.getParentHub() != null)
+                hubPermissionDto.setParent(parentCode.getParentHub().getId());
+            if (parentCode.getHubs() != null) {
+                hubPermissionDto.setChildren(findByParents(parentCode.getCode()));
             }
             List<HubPermissionDto> collect = list.stream().filter(dto -> hubCode.equals(hubPermissionDto.getValue())).collect(Collectors.toList());
             if (collect.size() == 0)
@@ -143,11 +140,9 @@ public class HubServiceImpl implements HubService {
     @Override
     public List<HubPermissionDto> listOfHubPermission(String[] strings) {
         List<HubPermissionDto> list = new ArrayList<>();
-        List<String> hubcode = new ArrayList<>();
-        for (String string : strings) {
-            hubcode.add(string);
-        }
-        List<Hub> hubs = hubRepository.findallByCodeList(hubcode);
+        List<String> hubCode = new ArrayList<>();
+        Collections.addAll(hubCode, strings);
+        List<Hub> hubs = hubRepository.findallByCodeList(hubCode);
         for (Hub hub : hubs) {
             HubPermissionDto hubPermissionDto = new HubPermissionDto();
             hubPermissionDto.setId(hub.getId());
@@ -156,7 +151,7 @@ public class HubServiceImpl implements HubService {
             if (hub.getParentHub() != null)
                 hubPermissionDto.setParent(hub.getParentHub().getId());
 
-            hubPermissionDto.setChildren(findByparents(hub.getCode()));
+            hubPermissionDto.setChildren(findByParents(hub.getCode()));
             list.add(hubPermissionDto);
 
         }
@@ -177,8 +172,8 @@ public class HubServiceImpl implements HubService {
     }
 
 
-    public List<LocationDto> convertclobtoList(Clob clob) {
-        List<LocationDto> locationDtos = new ArrayList<>();
+    public List<LocationDto> convertClobToList(Clob clob) {
+        List<LocationDto> locationList = new ArrayList<>();
         try {
             String subString = clob.getSubString(1, (int) clob.length());
             String trim = subString.replace("POLYGON", "").replace("((", "").replace("))", "").replace(", ", ",").trim();
@@ -189,25 +184,25 @@ public class HubServiceImpl implements HubService {
                 LocationDto locationDto = new LocationDto();
                 locationDto.setLocLong(Double.valueOf(s1[0]));
                 locationDto.setLocLate(Double.valueOf(s1[1]));
-                locationDtos.add(locationDto);
+                locationList.add(locationDto);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return locationDtos;
+        return locationList;
     }
 
 
     @Override
-    public List<ZoneHubDto> listofAllzone() {
+    public List<ZoneHubDto> listOfAllZone() {
 
 
-        List<ZonehubInterfaceDto> zonehubInterfaceDtos = hubRepository.listofZone();
-        List<ZoneHubDto> zoneHubDtos = new ArrayList<>();
-        for (ZonehubInterfaceDto zonehubInterfaceDto : zonehubInterfaceDtos) {
+        List<ZonehubInterfaceDto> zoneHubInterfaceList = hubRepository.listofZone();
+        List<ZoneHubDto> zoneHubList = new ArrayList<>();
+        for (ZonehubInterfaceDto zonehubInterfaceDto : zoneHubInterfaceList) {
             ZoneHubDto zoneHubDto = new ZoneHubDto();
-            zoneHubDto.setPolygon(convertclobtoList(zonehubInterfaceDto.getpolygon()));
+            zoneHubDto.setPolygon(convertClobToList(zonehubInterfaceDto.getpolygon()));
             Hub hub = hubRepository.findById(zonehubInterfaceDto.gethub()).orElseThrow();
 
 
@@ -219,26 +214,26 @@ public class HubServiceImpl implements HubService {
             zoneHubDto.setHubAdmin("-");
 
 
-            zoneHubDtos.add(zoneHubDto);
+            zoneHubList.add(zoneHubDto);
         }
-        return zoneHubDtos;
+        return zoneHubList;
     }
 
     @Override
-    public ZoneDto createzone(ZoneDto dto) {
+    public ZoneDto createZone(ZoneDto dto) {
         log.warn(dto.toJson());
-        CountryDevision countryDevision1 = new CountryDevision();
+        CountryDevision countryDev = new CountryDevision();
         CountryDevision byHubIdAndCountryType = countryDevisionRepository.findByHubIdAndCountryType(dto.getSelectHub().getId(), CountryType.hubRegion);
         if (byHubIdAndCountryType == null) {
-            countryDevision1.setHubId(dto.getSelectHub().getId());
-            countryDevision1.setCountryType(CountryType.hubRegion);
-            countryDevision1.setName(dto.getSelectHub().getText());
-            countryDevision1.setCode("hubRegion_" + dto.getCountrydevision().getId());
-            countryDevision1.setParent(new CountryDevision().setId(dto.getCountrydevision().getId()));
-            countryDevision1 = countryDevisionRepository.save(countryDevision1);
+            countryDev.setHubId(dto.getSelectHub().getId());
+            countryDev.setCountryType(CountryType.hubRegion);
+            countryDev.setName(dto.getSelectHub().getText());
+            countryDev.setCode("hubRegion_" + dto.getCountrydevision().getId());
+            countryDev.setParent(new CountryDevision().setId(dto.getCountrydevision().getId()));
+            countryDev = countryDevisionRepository.save(countryDev);
 
         } else
-            countryDevision1 = byHubIdAndCountryType;
+            countryDev = byHubIdAndCountryType;
 
 
         CountryDevision countryDevision = countryDevisionRepository.findById(dto.getCountrydevision().getId()).orElseThrow(() -> {
@@ -249,13 +244,13 @@ public class HubServiceImpl implements HubService {
 
             countryDevisionRepository.save(countryDevision);
         }
-        hubRepository.save_hub_polygon(dto.getSelectHub().getId(), countryDevision1.getId(), dto.getSelectuser().getId(), dto.getPolygon());
+        hubRepository.save_hub_polygon(dto.getSelectHub().getId(), countryDev.getId(), dto.getSelectuser().getId(), dto.getPolygon());
         return dto;
 
     }
 
     @Override
-    public ZoneDto createSubzone(ZoneDto dto) {
+    public ZoneDto createSubZone(ZoneDto dto) {
         CountryDevision countryDevision = countryDevisionRepository.findById(dto.getCountrydevision().getId()).orElseThrow(() -> {
             throw BusinessException.valueException(EntityType.Hub, "countrydevision.not.found");
         });
@@ -269,12 +264,12 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public List<ZoneHubDto> findzonebyid(Long id) {
-        List<ZonehubInterfaceDto> zonehubInterfaceDtos = hubRepository.listofZonehub(id);
-        List<ZoneHubDto> zoneHubDtos = new ArrayList<>();
-        for (ZonehubInterfaceDto zonehubInterfaceDto : zonehubInterfaceDtos) {
+    public List<ZoneHubDto> findZoneById(Long id) {
+        List<ZonehubInterfaceDto> zoneHubInterfaceList = hubRepository.listofZonehub(id);
+        List<ZoneHubDto> zoneHubList = new ArrayList<>();
+        for (ZonehubInterfaceDto zonehubInterfaceDto : zoneHubInterfaceList) {
             ZoneHubDto zoneHubDto = new ZoneHubDto();
-            zoneHubDto.setPolygon(convertclobtoList(zonehubInterfaceDto.getpolygon()));
+            zoneHubDto.setPolygon(convertClobToList(zonehubInterfaceDto.getpolygon()));
             Hub hub = hubRepository.findById(zonehubInterfaceDto.gethub()).orElseThrow();
             zoneHubDto.setHubId(hub.getId());
             zoneHubDto.setHubCode(hub.getCode());
@@ -293,43 +288,43 @@ public class HubServiceImpl implements HubService {
             zoneHubDto.setHubAdmin("-");
 
 
-            zoneHubDtos.add(zoneHubDto);
+            zoneHubList.add(zoneHubDto);
         }
-        return zoneHubDtos;
+        return zoneHubList;
 
     }
 
     @Override
     public List<ZoneHubDto> findByPosition(Double locLate, Double locLate1) {
-        List<ZonehubInterfaceDto> zonehubInterfaceDtos = hubRepository.findbyPosition(locLate, locLate1);
-        List<ZoneHubDto> zoneHubDtos = new ArrayList<>();
-        for (ZonehubInterfaceDto zonehubInterfaceDto : zonehubInterfaceDtos) {
+        List<ZonehubInterfaceDto> zoneHubInterfaceLists = hubRepository.findbyPosition(locLate, locLate1);
+        List<ZoneHubDto> zoneHubList = new ArrayList<>();
+        for (ZonehubInterfaceDto zoneHubInterfaceList : zoneHubInterfaceLists) {
             ZoneHubDto zoneHubDto = new ZoneHubDto();
-            Hub hub = hubRepository.findById(zonehubInterfaceDto.gethub()).orElseThrow();
+            Hub hub = hubRepository.findById(zoneHubInterfaceList.gethub()).orElseThrow();
             zoneHubDto.setHubId(hub.getId());
             zoneHubDto.setHubCode(hub.getCode());
             zoneHubDto.setName(hub.getName());
             zoneHubDto.setLocLong(hub.getLocLong());
             zoneHubDto.setLocLate(hub.getLocLate());
             zoneHubDto.setHubAdmin("-");
-            zoneHubDtos.add(zoneHubDto);
+            zoneHubList.add(zoneHubDto);
         }
-        return zoneHubDtos;
+        return zoneHubList;
 
     }
 
     @Override
-    public List<ZoneHubDto> findbycity(Long cityid, String hubname, Long type) {
+    public List<ZoneHubDto> findByCity(Long cityId, String hubName, Long type) {
 
-        List<CountryDevision> allByParent = countryDevisionRepository.findAllByParent(new CountryDevision().setId(cityid));
+        List<CountryDevision> allByParent = countryDevisionRepository.findAllByParent(new CountryDevision().setId(cityId));
         List<Hub> byCity = hubRepository.findByCityInAndType(allByParent, HubType.findByValue(type));
-        List<ZoneHubDto> zoneHubDtos = new ArrayList<>();
+        List<ZoneHubDto> zoneHubList = new ArrayList<>();
         for (Hub hub : byCity) {
             ZoneHubDto zoneHubDto = hubConverter.fromHubToZone(hub);
-            ZonehubInterfaceDto bysubZoneid = hubRepository.findByZoneidAndHubID(hub.getId());
-            if (bysubZoneid != null)
-                if (bysubZoneid.getpolygon() != null)
-                    zoneHubDto.setPolygon(convertclobtoList(bysubZoneid.getpolygon()));
+            ZonehubInterfaceDto bySubZoneId = hubRepository.findByZoneidAndHubID(hub.getId());
+            if (bySubZoneId != null)
+                if (bySubZoneId.getpolygon() != null)
+                    zoneHubDto.setPolygon(convertClobToList(bySubZoneId.getpolygon()));
             zoneHubDto.setHubAdmin("-");
             if (hub.getManagerId() != null)
                 zoneHubDto.setHubAdmin(hub.getManagerId() + "");
@@ -343,13 +338,13 @@ public class HubServiceImpl implements HubService {
                 countryDevisionSimpleDto.setCode(countryDevision.getCode());
                 zoneHubDto.setProvince(countryDevisionSimpleDto);
             }
-            zoneHubDtos.add(zoneHubDto);
+            zoneHubList.add(zoneHubDto);
         }
-        return zoneHubDtos;
+        return zoneHubList;
     }
 
     @Override
-    public Page<HubDto> filtergroupby(FilterHub request, Pageable pageable) {
+    public Page<HubDto> filterGroupBy(FilterHub request, Pageable pageable) {
 
         Page<Hub> city = hubRepository.findAll((Specification<Hub>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -363,7 +358,7 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public HubDto updateHubzone(HubDto hubDto) {
+    public HubDto updateHubZone(HubDto hubDto) {
 
         Hub hub = hubRepository.findById(hubDto.getId()).orElseThrow(() -> {
             throw BusinessException.entityNotFoundException(EntityType.Hub, "hub.not.found");
@@ -374,14 +369,14 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public ZoneHubDto findbysubzoneid(Long id) {
-        ZonehubInterfaceDto zonehubInterfaceDtos = hubRepository.findBysubZoneid(id);
+    public ZoneHubDto findBySubZoneId(Long id) {
+        ZonehubInterfaceDto zoneHubInterfaceList = hubRepository.findBysubZoneid(id);
 
-        if (zonehubInterfaceDtos == null) throw BusinessException.valueException(EntityType.Hub, "zone.not.found");
+        if (zoneHubInterfaceList == null) throw BusinessException.valueException(EntityType.Hub, "zone.not.found");
 
         ZoneHubDto zoneHubDto = new ZoneHubDto();
-        zoneHubDto.setPolygon(convertclobtoList(zonehubInterfaceDtos.getpolygon()));
-        Hub hub = hubRepository.findById(zonehubInterfaceDtos.gethub()).orElseThrow();
+        zoneHubDto.setPolygon(convertClobToList(zoneHubInterfaceList.getpolygon()));
+        Hub hub = hubRepository.findById(zoneHubInterfaceList.gethub()).orElseThrow();
 
         zoneHubDto.setHubId(hub.getId());
         zoneHubDto.setHubCode(hub.getCode());
@@ -403,13 +398,13 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public void deletezobehub(ZoneHubDto dto) {
+    public void deleteZoneHub(ZoneHubDto dto) {
         countryDevisionRepository.deleteById(dto.getProvince().getId());
         hubRepository.deletezonehub(dto.getHubId(), dto.getProvince().getId());
     }
 
     @Override
-    public void deactivezonehub(ZoneHubDto dto) {
+    public void deActiveZoneHub(ZoneHubDto dto) {
         List<CountryType> countryTypes = new ArrayList<>();
 //        countryTypes.add(CountryType.pickupRegion);
         countryTypes.add(CountryType.deliveryRegion);
@@ -425,15 +420,17 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public List<HubWithLocationDto> hubLocation(String hubname, String cityId) {
+    public List<HubWithLocationDto> hubLocation(String hubName, String cityId) {
         List<Hub> all = hubRepository.findAll((Specification<Hub>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
             predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
-            if (StringUtils.isNotBlank(hubname)) {
-                Predicate name = criteriaBuilder.like(root.get("name"), "%" + hubname + "%");
-                Predicate code = criteriaBuilder.like(root.get("code"), "%" + hubname + "%");
+            predicates.add(criteriaBuilder.equal(root.get("isPossibleOrderRegistration"), true));
+            predicates.add(criteriaBuilder.equal(root.get("isPickupPossible"), true));
+            if (StringUtils.isNotBlank(hubName)) {
+                Predicate name = criteriaBuilder.like(root.get("name"), "%" + hubName + "%");
+                Predicate code = criteriaBuilder.like(root.get("code"), "%" + hubName + "%");
                 predicates.add(criteriaBuilder.or(name, code));
             }
             if (StringUtils.isNotBlank(cityId))
@@ -448,7 +445,7 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public Page<SelectResponse> selectbranchhub(String filter, HubFilter hubFilter) {
+    public Page<SelectResponse> selectBranchHub(String filter, HubFilter hubFilter) {
         Pageable pageable = PageRequest.of(0, 100);
 //        if (hubFilter != null) {
         return hubRepository.findAll((Specification<Hub>) (root, query, criteriaBuilder) -> {
@@ -462,30 +459,21 @@ public class HubServiceImpl implements HubService {
             }
 
             predicates.add(criteriaBuilder.equal(root.get("type"), HubType.BRANCH));
-
-//                if (hubFilter != null) {
-//                    List<Long> ids = findAllhubid(hubFilter.getHublist());
-//                    predicates.add(criteriaBuilder.and(root.get("id").in(ids)));
-//                }
-
             predicates.add(criteriaBuilder.and(isDeleted));
             predicates.add(criteriaBuilder.and(isActive));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         }, pageable).map(this::toSelect);
-//        } else
-//            throw BusinessException.entityNotFoundException(EntityType.Hub, "hub.list.not.found");
-
 
     }
 
     @Override
     public ZoneDto findRegionInZone(FindRegionInZoneDto dto) {
-        ZonehubInterfaceDto byHubAndCityinZone = hubRepository.findByHubAndCityinZone(dto.getLat(), dto.getLon(), dto.getType());
+        ZonehubInterfaceDto byHubAndCityInZone = hubRepository.findByHubAndCityinZone(dto.getLat(), dto.getLon(), dto.getType());
 
         ZoneDto z = new ZoneDto();
-        z.setCountrydevision(new SelectResponse(byHubAndCityinZone.getcountrydevision(), ""));
-        Hub byId = findById(byHubAndCityinZone.gethub());
-        z.setSelectHub(new SelectResponse(byHubAndCityinZone.gethub(), byId.getName()));
+        z.setCountrydevision(new SelectResponse(byHubAndCityInZone.getcountrydevision(), ""));
+        Hub byId = findById(byHubAndCityInZone.gethub());
+        z.setSelectHub(new SelectResponse(byHubAndCityInZone.gethub(), byId.getName()));
 
         CountryDevision countryDevision = countryDevisionRepository.findById(z.getCountrydevision().getId()).orElseThrow();
         z.setCountrydevision(new SelectResponse(countryDevision.getId(), countryDevision.getName()));
@@ -496,15 +484,16 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public ZoneHubDto findByZoneRegionPolygone(Long hubId) {
+    public ZoneHubDto findByZoneRegionPolyGone(Long hubId) {
         ZoneHubDto zoneHubDto = new ZoneHubDto();
 
-        ZonehubInterfaceDto bysubZoneid = hubRepository.findByZoneidAndHubID(hubId);
-        if (bysubZoneid != null)
-            if (bysubZoneid.getpolygon() != null)
-                zoneHubDto.setPolygon(convertclobtoList(bysubZoneid.getpolygon()));
+        ZonehubInterfaceDto bySubZoneId = hubRepository.findByZoneidAndHubID(hubId);
+        if (bySubZoneId != null)
+            if (bySubZoneId.getpolygon() != null)
+                zoneHubDto.setPolygon(convertClobToList(bySubZoneId.getpolygon()));
         zoneHubDto.setHubAdmin("-");
-        Hub hub = hubRepository.findById(bysubZoneid.gethub()).orElseThrow();
+        assert bySubZoneId != null;
+        Hub hub = hubRepository.findById(bySubZoneId.gethub()).orElseThrow();
         zoneHubDto.setLocLate(hub.getLocLate());
         zoneHubDto.setLocLong(hub.getLocLong());
         zoneHubDto.setHubId(hubId);
@@ -515,13 +504,13 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public SelectResponse findByRegionCountryDevision(Long id) {
+    public SelectResponse findByRegionCountryDivision(Long id) {
         CountryDevision byHubIdAndCountryType = countryDevisionRepository.findByHubIdAndCountryType(id, CountryType.hubRegion);
         return new SelectResponse(byHubIdAndCountryType.getId(), byHubIdAndCountryType.getName());
     }
 
     @Override
-    public SelectResponse updateCountryDevision(SelectResponse dto) {
+    public SelectResponse updateCountryDivision(SelectResponse dto) {
         CountryDevision countryDevision = countryDevisionRepository.findById(dto.getId()).orElseThrow();
         countryDevision.setName(dto.getText());
         CountryDevision save = countryDevisionRepository.save(countryDevision);
@@ -535,7 +524,7 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public List<SelectResponse> findByCityinHub(Long id) {
+    public List<SelectResponse> findByCityInHub(Long id) {
 
         Hub hub = hubRepository.findById(id).orElseThrow();
         List<Hub> allByCityAndIsActiveIsTrueAndIsDeletedIsFalse = hubRepository.findAllByCityAndIsActiveIsTrueAndIsDeletedIsFalse(hub.getCity());
@@ -622,11 +611,6 @@ public class HubServiceImpl implements HubService {
     @Override
     public HubDto updateHub(HubDto request) {
         Hub hub = findById(request.getId());
-
-        if (request.getSelectParentHub() != null && request.getSelectParentHub().getId() != null) {
-            //valid parentHub
-            Optional<Hub> parent = hubRepository.findById(request.getSelectParentHub().getId());
-        }
         hubConverter.updateFromDto(request, hub);
         if (hub.getParentHub() == null) hub.setParentHub(null);
         if (request.getSelectManager() != null)
@@ -640,9 +624,6 @@ public class HubServiceImpl implements HubService {
         return findById(select.getId());
     }
 
-    private Boolean isExist(String code) {
-        return hubRepository.existsByCodeAndIsDeletedFalse(code);
-    }
 
     @Override
     public synchronized HubDto createHub(HubDto request) {
@@ -705,34 +686,18 @@ public class HubServiceImpl implements HubService {
         return parentCode;
     }
 
-
-    int findLevel(Hub hub) {
-        int level = 1;
-        if (hub.getParentHub() != null) {
-            return level + findLevel(hub.getParentHub());
-        } else {
-            return level;
-        }
-
-    }
-
-//    private boolean isHubExist(Long id) {
-//        return hubRepository.existsById(id);
-//    }
-
-
     private HubDto saveHubData(Hub hub) {
         Hub saved = hubRepository.save(hub);
         return hubConverter.fromModelToDto(saved);
     }
 
-    private List<Long> findchild(List<HubPermissionDto> hublist, Long parendId) {
+    private List<Long> findChild(List<HubPermissionDto> hubList, Long parentId) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
-            if (hubPermissionDto.getParent() == parendId) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
+            if (hubPermissionDto.getParent() == parentId) {
                 list.add(hubPermissionDto.getId());
                 if (hubPermissionDto.getChildren() != null)
-                    list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+                    list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
 
             } else
                 list.add(hubPermissionDto.getId());
@@ -740,12 +705,12 @@ public class HubServiceImpl implements HubService {
         return list;
     }
 
-    private List<Long> findAllhubid(List<HubPermissionDto> hublist) {
+    private List<Long> findAllHubId(List<HubPermissionDto> hubList) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
             list.add(hubPermissionDto.getId());
             if (hubPermissionDto.getChildren() != null)
-                list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+                list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
 
         }
         return list;
@@ -817,7 +782,7 @@ public class HubServiceImpl implements HubService {
                             predicates.add(criteriaBuilder.equal(root.get("pinCode"), filter.getPinCode()));
                         }
                         if (filter.getHublist() != null) {
-                            List<Long> ids = findAllhubid(filter.getHublist());
+                            List<Long> ids = findAllHubId(filter.getHublist());
                             predicates.add(criteriaBuilder.and(root.get("id").in(ids)));
                         }
 
@@ -834,8 +799,8 @@ public class HubServiceImpl implements HubService {
     public synchronized void createHubsByExcel(MultipartFile excel) throws IOException {
 
         List<CreateHubExcelRequest> hubs = ExcelToPojoUtils.toPojo(CreateHubExcelRequest.class, excel.getInputStream());
-        List<HubDto> dtos = hubs.stream().map(hubExcelConverter::excelToDto).collect(Collectors.toList());
-        for (HubDto itr : dtos) {
+        List<HubDto> lists = hubs.stream().map(hubExcelConverter::excelToDto).collect(Collectors.toList());
+        for (HubDto itr : lists) {
             createHub(itr);
         }
 
@@ -858,7 +823,7 @@ public class HubServiceImpl implements HubService {
 
             if (hubFilter != null)
                 if (hubFilter.getHublist() != null) {
-                    List<Long> ids = findAllhubid(hubFilter.getHublist());
+                    List<Long> ids = findAllHubId(hubFilter.getHublist());
                     predicates.add(criteriaBuilder.and(root.get("id").in(ids)));
                 }
             predicates.add(criteriaBuilder.and(isDeleted));
@@ -870,7 +835,7 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public Page<SelectResponse> selectMainhub(String filter, HubFilter hubFilter) {
+    public Page<SelectResponse> selectMainHub(String filter, HubFilter hubFilter) {
         Pageable pageable = PageRequest.of(0, 100);
 //        if (hubFilter != null) {
         return hubRepository.findAll((Specification<Hub>) (root, query, criteriaBuilder) -> {
@@ -882,21 +847,11 @@ public class HubServiceImpl implements HubService {
                 Predicate code = criteriaBuilder.and(criteriaBuilder.like(criteriaBuilder.upper(root.get("code")), "%" + filter.trim() + "%"));
                 predicates.add(criteriaBuilder.or(name, code));
             }
-
             predicates.add(criteriaBuilder.equal(root.get("type"), HubType.MAIN_HUB));
-
-//                if (hubFilter != null) {
-//                    List<Long> ids = findAllhubid(hubFilter.getHublist());
-//                    predicates.add(criteriaBuilder.and(root.get("id").in(ids)));
-//                }
-
             predicates.add(criteriaBuilder.and(isDeleted));
             predicates.add(criteriaBuilder.and(isActive));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         }, pageable).map(this::toSelect);
-//        } else
-//            throw BusinessException.entityNotFoundException(EntityType.Hub, "hub.list.not.found");
-
     }
 
 

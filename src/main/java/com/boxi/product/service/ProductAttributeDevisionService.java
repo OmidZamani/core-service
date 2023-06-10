@@ -18,7 +18,7 @@ public interface ProductAttributeDevisionService {
 
     ProductAttributeDevisionDto create(ProductAttributeDevisionDto request);
 
-    List<ProductAttributeDevision> saveAll(List<ProductAttributeDevision> productAttributeDevisions);
+    List<ProductAttributeDevision> saveAll(List<ProductAttributeDevision> productAttributeDivisions);
 
     ProductAttributeDevisionDto edit(ProductAttributeDevisionDto request);
 

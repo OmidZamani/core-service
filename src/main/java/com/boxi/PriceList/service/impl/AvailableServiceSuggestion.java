@@ -10,7 +10,6 @@ import com.boxi.PriceList.repo.PriceListDetailRepository;
 import com.boxi.PriceList.repo.PriceListRepository;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.service.PriceListService;
-import com.boxi.hub.entity.CustomDevisionDetail;
 import com.boxi.hub.repo.CustomDevisionDetailRepository;
 import com.boxi.hub.service.CountryDevisionService;
 import com.boxi.product.entity.Product;
@@ -29,9 +28,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static javax.swing.JOptionPane.showMessageDialog;
 
 @Service
 @Slf4j
@@ -68,14 +66,12 @@ public class AvailableServiceSuggestion {
 
 
     /*
-
-       //1
-   //query by isactive  , and date betwenn from and to, join ba product and join ba product attriburte
-   //check fromWeight check by consimnet weight and other data and then join ba prdcut attribute devision
-   //fromCountryDevision and toCountry just city -> it shows service can declare without price
-   //2
-   //and to get price out put of above must join ba price list and price list ba PRICELIST DETAIL  IT SHOWS PRICE OF PRODUCT
-   //
+--   1
+   query by is active  , and date between from and to, join ba product and join ba product attribute
+   check fromWeight check by consignment weight and other data and then join ba product attribute division
+   fromCountryDivision and toCountry just city -> it shows service can declare without price
+--  2
+   and to get price out put of above must join ba price list and price list ba PRICE LIST DETAIL  IT SHOWS PRICE OF PRODUCT
     */
 
 
@@ -95,12 +91,10 @@ public class AvailableServiceSuggestion {
             List<Long> fromList = new ArrayList<>();
             if (consignmentInfoDto.getFromCityId() != null) {
                 fromList.add(consignmentInfoDto.getFromCityId());
-//                fromCityid = cb.equal(PDivision.get("fromCountryDevision").get("id"), consignmentInfoDto.getFromCityId());
             }
 
             if (consignmentInfoDto.getFromRegionId() != null) {
                 fromList.add(consignmentInfoDto.getFromRegionId());
-//                fromRegion = cb.equal(PDivision.get("fromCountryDevision").get("id"), consignmentInfoDto.getFromRegionId());
             }
             if (consignmentInfoDto.getFromCityId() != null || consignmentInfoDto.getFromRegionId() != null) {
                 Predicate ids = cb.and(PDivision.get("fromCountryDevision").get("id").in(fromList));
@@ -113,19 +107,15 @@ public class AvailableServiceSuggestion {
 
             if (consignmentInfoDto.getToCityId() != null) {
                 toList.add(consignmentInfoDto.getToCityId());
-//                toCityid = cb.equal(PDivision.get("toCountryDevision").get("id"), consignmentInfoDto.getToCityId());
             }
-
 
 
             if (consignmentInfoDto.getToRegionId() != null) {
                 toList.add(consignmentInfoDto.getToRegionId());
-//                toRegion = cb.equal(PDivision.get("toCountryDevision").get("id"), consignmentInfoDto.getToRegionId());
             }
             if (consignmentInfoDto.getToRegionId() != null || consignmentInfoDto.getToCityId() != null) {
                 Predicate ids = cb.and(PDivision.get("toCountryDevision").get("id").in(toList));
                 Predicate parent = cb.and(PDivision.get("toCountryDevision").get("parent").in(toList));
-
 
 
                 predicates.add(cb.or(ids, parent));
@@ -153,13 +143,6 @@ public class AvailableServiceSuggestion {
         });
         List<SuggestionServiceDto> services = new ArrayList<>();
         for (PriceListDetail listDetail : all) {
-            if(listDetail.getCustomCountryDevision()!=null){
-                for (CustomDevisionDetail customDevisionDetail : customDevisionDetailRepository.findByCustomCountryDevision(listDetail.getCustomCountryDevision())) {
-
-                }
-
-
-            }
             SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
             suggestionServiceDto.setPrice(listDetail.getPrice());
             Services byPriceList = ServiceRepository.findTopByPriceListAndProductAndType(listDetail.getPriceList(), listDetail.getProduct(), 0L);
@@ -181,7 +164,7 @@ public class AvailableServiceSuggestion {
     public Boolean checkArrayList(List<SuggestionServiceDto> list, SuggestionServiceDto dto) {
 
         for (SuggestionServiceDto suggestionServiceDto : list) {
-            if (suggestionServiceDto.getId() == dto.getId()) {
+            if (Objects.equals(suggestionServiceDto.getId(), dto.getId())) {
                 return false;
             }
         }
@@ -190,28 +173,21 @@ public class AvailableServiceSuggestion {
         return true;
     }
 
-    public List<SuggestionServiceDto> serviceDetails(Long serviceid) {
-        Services services1 = ServiceRepository.findById(serviceid).orElseThrow();
+    public List<SuggestionServiceDto> serviceDetails(Long serviceId) {
+        Services getServiceProduct = ServiceRepository.findById(serviceId).orElseThrow();
         List<SuggestionServiceDto> services = new ArrayList<>();
         List<UsingProduct> all1 = usingProductRepository.findAll((Specification<UsingProduct>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             Join<Object, Object> product = root.join("child");
-            predicates.add(cb.equal(product.get("id"), services1.getProduct().getId()));
-
-//            Join<Object, Object> productAttributes = product.join("productAttributes");
-//
-//
-//            Join<PriceListDetail, PriceDetailDevision> PDivision = productAttributes.join("productAttributeDevisions", JoinType.LEFT);
-//            predicates.add(cb.equal(PDivision.get("id"), services1.getPriceList().getId()));
-
+            predicates.add(cb.equal(product.get("id"), getServiceProduct.getProduct().getId()));
             query.distinct(true);
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         });
 
         for (UsingProduct usingProduct : all1) {
-            List<SuggestDetailServiceInfDto> serviceInfDtos = ServiceRepository.getsuggestDetails(usingProduct.getChild().getId(), new Date());
-            for (SuggestDetailServiceInfDto serviceInfDto : serviceInfDtos) {
+            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getsuggestDetails(usingProduct.getChild().getId(), new Date());
+            for (SuggestDetailServiceInfDto serviceInfDto : serviceInfList) {
                 SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
                 suggestionServiceDto.setId(serviceInfDto.getId());
 
@@ -228,7 +204,7 @@ public class AvailableServiceSuggestion {
                         services.add(suggestionServiceDto);
                     else {
                         for (SuggestionServiceDto service : services) {
-                            if (service.getPrice() != serviceInfDto.getPrice())
+                            if (!Objects.equals(service.getPrice(), serviceInfDto.getPrice()))
                                 suggestionServiceDto.setPrice(serviceInfDto.getPrice());
                         }
 
@@ -242,7 +218,7 @@ public class AvailableServiceSuggestion {
     }
 
 
-    public List<SuggestionServiceDto> serviceSuggestion(ConsignmentInfoDto consignmentInfoDto) {
+    public List<SuggestionServiceDto> serviceSuggestion(ConsignmentInfoDto consignmentInfoDto) { //Deprecated
         List<Services> res = ServiceRepository
                 .findAll((Specification<Services>) (root, query, cb) -> {
 
@@ -321,9 +297,9 @@ public class AvailableServiceSuggestion {
                     predicates.add(cb.equal(priceListJoin.get("isActive"), true));
                     predicates.add(cb.equal(priceListJoin.get("isDeleted"), false));
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    Join<PriceList, PriceListDetail> pricelistDetailsJoin = priceListJoin.join("priceListDetails", JoinType.LEFT);
+                    Join<PriceList, PriceListDetail> priceListDetailsJoin = priceListJoin.join("priceListDetails", JoinType.LEFT);
                     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    Join<PriceListDetail, PriceDetailDevision> PDivision = pricelistDetailsJoin.join("priceDetailDevisions", JoinType.LEFT);
+                    Join<PriceListDetail, PriceDetailDevision> PDivision = priceListDetailsJoin.join("priceDetailDevisions", JoinType.LEFT);
 
                     if (consignmentInfoDto.getFromStateId() != null) {
                         predicates.add(cb.equal(PDivision.get("fromCountryDevision").get("id"), consignmentInfoDto.getFromStateId()));
@@ -346,15 +322,15 @@ public class AvailableServiceSuggestion {
                         predicates.add(cb.equal(PDivision.get("toCountryDevision").get("id"), consignmentInfoDto.getToRegionId()));
                     }
 
-                    predicates.add(cb.lessThanOrEqualTo(pricelistDetailsJoin.get("fromWeight"), 0));
-                    predicates.add(cb.greaterThanOrEqualTo(pricelistDetailsJoin.get("toWeight"), weight));
+                    predicates.add(cb.lessThanOrEqualTo(priceListDetailsJoin.get("fromWeight"), 0));
+                    predicates.add(cb.greaterThanOrEqualTo(priceListDetailsJoin.get("toWeight"), weight));
 
 
                     // بازه ارزشی-CHECK BY DECLARATION VALUE چک با ارزش اظهاری
                     if (consignmentInfoDto.getDeclarativeValue() != null) {
                         d_value = consignmentInfoDto.getDeclarativeValue();
-                        predicates.add(cb.lessThanOrEqualTo(pricelistDetailsJoin.<BigDecimal>get("fromValue"), BigDecimal.valueOf(0)));
-                        predicates.add(cb.greaterThanOrEqualTo(pricelistDetailsJoin.<BigDecimal>get("toValue"), d_value));
+                        predicates.add(cb.lessThanOrEqualTo(priceListDetailsJoin.<BigDecimal>get("fromValue"), BigDecimal.valueOf(0)));
+                        predicates.add(cb.greaterThanOrEqualTo(priceListDetailsJoin.<BigDecimal>get("toValue"), d_value));
                     }
 
 
@@ -370,13 +346,13 @@ public class AvailableServiceSuggestion {
             suggestionServiceDto.setCode(itr.getCode());
             suggestionServiceDto.setName(itr.getName());
             suggestionServiceDto.setServiceType(itr.getType());
-            Double AllPriceList = Double.valueOf(0);
+            Double AllPriceList = (double) 0;
 
             PriceListDto byId = priceListService.findByIdAndIsActiveTrue(itr.getPriceList().getId());
 
             for (PriceListDetailDto priceListDetail : byId.getPriceListDetails()) {
 
-                if (checkPricelistDetail(consignmentInfoDto, priceListDetail)) {
+                if (checkPriceListDetail(consignmentInfoDto, priceListDetail)) {
                     AllPriceList += priceListDetail.getPrice().doubleValue();
                 }
             }
@@ -390,14 +366,14 @@ public class AvailableServiceSuggestion {
         for (Services itr : res) {
             List<UsingProduct> byParent = usingProductRepository.findByChild(itr.getProduct());
             for (UsingProduct usingProduct : byParent) {
-                services.addAll(checkProductinUsing(usingProduct));
+                services.addAll(checkProductInUsing(usingProduct));
             }
 
         }
         return services.stream().distinct().collect(Collectors.toList());
     }
 
-    private List<SuggestionServiceDto> checkProductinUsing(UsingProduct product) {
+    private List<SuggestionServiceDto> checkProductInUsing(UsingProduct product) {
         List<Services> res = ServiceRepository
                 .findAll((Specification<Services>) (root, query, cb) -> {
                     List<Predicate> predicates = new ArrayList<>();
@@ -431,7 +407,7 @@ public class AvailableServiceSuggestion {
         return services;
     }
 
-    private boolean checkPricelistDetail(ConsignmentInfoDto consignmentInfoDto, PriceListDetailDto priceListDetail) {
+    private boolean checkPriceListDetail(ConsignmentInfoDto consignmentInfoDto, PriceListDetailDto priceListDetail) {
         Boolean bResult = false;
         if (consignmentInfoDto.getDeclarativeValue() != null)
             if ((priceListDetail.getFromValue().doubleValue() >= consignmentInfoDto.getDeclarativeValue().doubleValue()) &&
@@ -457,9 +433,9 @@ public class AvailableServiceSuggestion {
                     bResult = false;
         }
 
-        for (PriceDetailDevisionDto priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
-            if ((priceDetailDevision.getFromCountryDevision().getId() == consignmentInfoDto.getFromCityId()) &&
-                    (priceDetailDevision.getToCountryDevision().getId() == consignmentInfoDto.getFromCityId())) {
+        for (PriceDetailDevisionDto priceDetailDivision : priceListDetail.getPriceDetailDevisions()) {
+            if ((priceDetailDivision.getFromCountryDevision().getId() == consignmentInfoDto.getFromCityId()) &&
+                    (priceDetailDivision.getToCountryDevision().getId() == consignmentInfoDto.getFromCityId())) {
                 bResult = true;
                 break;
             } else

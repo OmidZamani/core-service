@@ -161,7 +161,7 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public GateDto findByIddto(Long id) {
+    public GateDto findByIdDto(Long id) {
 
         if (id == 0) return null;
         return gateConverter.fromModelToDto(gateRepository.findById(id).orElseThrow(() -> {
@@ -183,9 +183,9 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public boolean ExcelValidation(List<GateExcelDto> gateExcelDtos) {
+    public boolean ExcelValidation(List<GateExcelDto> gateExcelList) {
         int i = 1;
-        for (GateExcelDto gateExcelDto : gateExcelDtos) {
+        for (GateExcelDto gateExcelDto : gateExcelList) {
             if (gateRepository.existsByCodeAndIsDeletedFalse(gateExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.Gate,
                         "gate.is.duplicate",
@@ -205,10 +205,10 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public List<GateDto> ImportExcel(List<GateExcelDto> gateExcelDtos) {
+    public List<GateDto> ImportExcel(List<GateExcelDto> gateExcelList) {
         List<GateDto> list = new ArrayList<>();
 
-        for (GateExcelDto gateExcelDto : gateExcelDtos) {
+        for (GateExcelDto gateExcelDto : gateExcelList) {
             GateDto gateDto = gateConverter.fromExcelToDto(gateExcelDto);
             Hub byCode = hubRepository.findByCode(gateExcelDto.getSelectHub());
             gateDto.setSelectHub(new SelectResponse(byCode.getId(), byCode.getName()));

@@ -3,7 +3,6 @@ package com.boxi.product.service.impl;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.product.Enum.TimeUnit;
 import com.boxi.product.entity.TimeCommitment;
 import com.boxi.product.payload.converter.TimeCommitmentConverter;
 import com.boxi.product.payload.dto.TimeCommitmentDto;
@@ -70,10 +69,10 @@ public class TimeCommitmentServiceImpl implements TimeCommitmentService {
         request.setId(null);
         request.setIsDeleted(false);
         TimeCommitment timeCommitment = timeCommitmentConverter.fromDtoToModel(request);
-        return savecreate(timeCommitment);
+        return saveCreate(timeCommitment);
     }
 
-    private TimeCommitmentDto savecreate(TimeCommitment timeCommitment) {
+    private TimeCommitmentDto saveCreate(TimeCommitment timeCommitment) {
         timeCommitment.setIsDeleted(false);
         TimeCommitment saved = timeCommitmentRepository.save(timeCommitment);
         return timeCommitmentConverter.fromModelToDto(saved);

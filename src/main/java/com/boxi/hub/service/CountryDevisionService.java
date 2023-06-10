@@ -25,19 +25,19 @@ public interface CountryDevisionService {
 
     List<ContryDevistionSelect> SelectTreeToParent(Long Id);
 
-    boolean existsCountry(String CountryDevision);
+    boolean existsCountry(String CountryDivision);
 
-    SelectResponse findByidInCode(SelectResponse toCountryDevision);
+    SelectResponse findByIdInCode(SelectResponse toCountryDivision);
 
-    CountryDevisionDto findRegioninCtiy(Long city);
+    CountryDevisionDto findRegionInCity(Long city);//TODO
 
-    ContryDevistionSelect findByidInCodefeign(SelectResponse toCountryDevision);
+    ContryDevistionSelect findByIdInCodeFeign(SelectResponse toCountryDivision);
 
-    List<SelectResponse> selectCityofprovinceBylist(List<SelectResponse> provincelist);
+    List<SelectResponse> selectCityOfProvinceByList(List<SelectResponse> provinceList);
 
     SelectResponse selectById(Long id);
 
-    List<ContryDevistionCodeDto> provincewithCode(String filter);
+    List<ContryDevistionCodeDto> provinceWithCode(String filter);
 
 
     CountryDevisionDto create(CountryDevisionDto dto);
@@ -46,9 +46,9 @@ public interface CountryDevisionService {
 
     List<SelectResponse> getCountryType();
 
-    List<CountryDevisionDto> findByhubId(Long id);
+    List<CountryDevisionDto> findByHubId(Long id); //TODO
 
-    List<CountryDevisionPolygonDto> findByhubCode(String code, String hubid);
+    List<CountryDevisionPolygonDto> findByHubCode(String code, String hubId);
 
     List<SelectResponse> findByTypes(Long typeId);
 
@@ -56,9 +56,9 @@ public interface CountryDevisionService {
 
     List<SelectResponse> findByCity(String filter);
 
-    CountryDevisionPolygonDto findbyBaseHub(String hubid);
+    CountryDevisionPolygonDto findByBaseHub(String hubId);
 
-    CountryDevisionDto selectByIdfindById(Long id);
+    CountryDevisionDto selectFindById(Long id);
 
     List<SelectResponse> findByCityPickup(Long cityId);
 

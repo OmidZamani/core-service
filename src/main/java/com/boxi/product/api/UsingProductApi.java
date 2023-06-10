@@ -33,7 +33,7 @@ public class UsingProductApi {
     }
 
     @PostMapping
-    public Response createproduct(@RequestBody UsingProductDto request) {
+    public Response createProduct(@RequestBody UsingProductDto request) {
 
         log.warn(request.toJson());
         UsingProductDto response=usingProductService.create(request);
@@ -61,7 +61,7 @@ public class UsingProductApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         Page<SelectResponse> response = usingProductService.select(filter);
         return  Response.ok().setPayload(response);
     }

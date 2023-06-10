@@ -4,11 +4,9 @@ import com.boxi.PriceList.Enum.ConsignmentType;
 import com.boxi.PriceList.entity.PriceDetailDevision;
 import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.PriceListDetail;
-import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.converter.PriceDetailDevisionConverter;
 import com.boxi.PriceList.payload.converter.PriceListConverter;
 import com.boxi.PriceList.payload.converter.PriceListDetailConverter;
-import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
 import com.boxi.PriceList.payload.dto.*;
 import com.boxi.PriceList.repo.PriceDetailDevisionRepository;
 import com.boxi.PriceList.repo.PriceListDetailRepository;
@@ -17,7 +15,6 @@ import com.boxi.PriceList.payload.request.FilterPriceList;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.service.PriceListService;
 import com.boxi.PriceList.service.ServiceService;
-import com.boxi.PriceList.service.TermsOfServicesService;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -74,7 +71,6 @@ public class PriceListServiceImpl implements PriceListService {
     private final ServiceService serviceService;
 
 
-
     public PriceListServiceImpl(PriceListRepository priceListRepository,
                                 PriceListConverter priceListConverter,
                                 PriceListDetailRepository priceListDetailRepository,
@@ -123,7 +119,7 @@ public class PriceListServiceImpl implements PriceListService {
                 PriceListDetailDto priceListDetailDto = priceListDetailConverter.fromModelToDto(detail);
 
                 priceListDetail.setCustomCountryDevision(priceListDetail.getCustomCountryDevision());
-                List<PriceDetailDevisionDto> priceDetailDevisions = new ArrayList<>();
+                List<PriceDetailDevisionDto> priceDetailDivisions = new ArrayList<>();
                 if (priceListDetail.getPriceDetailDevisions() != null) {
                     for (PriceDetailDevision priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
 
@@ -135,10 +131,10 @@ public class PriceListServiceImpl implements PriceListService {
 
                         PriceDetailDevision save1 = priceDetailDevisionRepository.save(priceDetailDevision);
 
-                        priceDetailDevisions.add(priceDetailDevisionConverter.fromModelToDto(save1));
+                        priceDetailDivisions.add(priceDetailDevisionConverter.fromModelToDto(save1));
                     }
                 }
-                priceListDetailDto.setPriceDetailDevisions(priceDetailDevisions);
+                priceListDetailDto.setPriceDetailDevisions(priceDetailDivisions);
                 priceListDetails.add(priceListDetailDto);
             }
         }
@@ -147,7 +143,6 @@ public class PriceListServiceImpl implements PriceListService {
 
         return priceListDto;
     }
-
 
 
     @Override
@@ -175,17 +170,17 @@ public class PriceListServiceImpl implements PriceListService {
 
             if (priceListDetail.getPriceDetailDevisions() != null && priceListDetail.getPriceDetailDevisions().size() != 0) {
                 priceDetailDevisionRepository.deleteByPriceListDetail(save1);
-                for (PriceDetailDevisionDto priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
-                    PriceDetailDevision priceDetailDevision1 = priceDetailDevisionConverter.fromDtoToModel(priceDetailDevision);
-                    priceDetailDevision1.setIsActive(true);
-                    priceDetailDevision1.setIsDeleted(false);
-                    if (priceDetailDevision.getFromCountryDevision() != null && priceDetailDevision.getToCountryDevision() != null) {
-                        priceDetailDevision1.setFromCountryDevision(new CountryDevision().setId(priceDetailDevision.getFromCountryDevision().getId()));
-                        priceDetailDevision1.setToCountryDevision(new CountryDevision().setId(priceDetailDevision.getToCountryDevision().getId()));
-                        priceDetailDevision1.setPriceListDetail(save1);
-                        log.warn(priceDetailDevision1.getPriceListDetail().getId().toString());
-                        if (priceDetailDevision1.getFromCountryDevision() != null)
-                            priceDetailDevisionRepository.save(priceDetailDevision1);
+                for (PriceDetailDevisionDto priceDetailDivision : priceListDetail.getPriceDetailDevisions()) {
+                    PriceDetailDevision priceDetailDivision1 = priceDetailDevisionConverter.fromDtoToModel(priceDetailDivision);
+                    priceDetailDivision1.setIsActive(true);
+                    priceDetailDivision1.setIsDeleted(false);
+                    if (priceDetailDivision.getFromCountryDevision() != null && priceDetailDivision.getToCountryDevision() != null) {
+                        priceDetailDivision1.setFromCountryDevision(new CountryDevision().setId(priceDetailDivision.getFromCountryDevision().getId()));
+                        priceDetailDivision1.setToCountryDevision(new CountryDevision().setId(priceDetailDivision.getToCountryDevision().getId()));
+                        priceDetailDivision1.setPriceListDetail(save1);
+                        log.warn(priceDetailDivision1.getPriceListDetail().getId().toString());
+                        if (priceDetailDivision1.getFromCountryDevision() != null)
+                            priceDetailDevisionRepository.save(priceDetailDivision1);
                     }
                 }
             }
@@ -238,9 +233,9 @@ public class PriceListServiceImpl implements PriceListService {
                             predicates.add(criteriaBuilder.equal(joinSales.get("consignmentType"), filter.getPriceListDetails().getConsignmentType().getId()));
                         }
                         if (filter.getPriceListDetails().getPriceDetailDevisions() != null) {
-                            Join<PriceListDetail, PriceList> devision = joinSales.join("priceDetailDevisions", JoinType.LEFT);
-                            predicates.add(criteriaBuilder.equal(devision.get("fromCountryDevision"), filter.getPriceListDetails().getPriceDetailDevisions().get(0).getFromCountryDevision().getId()));
-                            predicates.add(criteriaBuilder.equal(devision.get("toCountryDevision"), filter.getPriceListDetails().getPriceDetailDevisions().get(0).getToCountryDevision().getId()));
+                            Join<PriceListDetail, PriceList> division = joinSales.join("priceDetailDevisions", JoinType.LEFT);
+                            predicates.add(criteriaBuilder.equal(division.get("fromCountryDevision"), filter.getPriceListDetails().getPriceDetailDevisions().get(0).getFromCountryDevision().getId()));
+                            predicates.add(criteriaBuilder.equal(division.get("toCountryDevision"), filter.getPriceListDetails().getPriceDetailDevisions().get(0).getToCountryDevision().getId()));
 
                         }
                     }
@@ -281,17 +276,7 @@ public class PriceListServiceImpl implements PriceListService {
     public List<PriceListFilterDto> SE(String filter) {
         List<PriceList> all = priceListRepository.findAll();
         Stream<PriceListDto> priceListDtoStream = all.stream().map(priceListConverter::fromModelToDto);
-
-        Stream<PriceListFilterDto> priceListFilterDtoStream = priceListDtoStream.map(priceListConverter::fromDtoSelectToModel);
-        for (PriceList priceList : all) {
-            for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
-//                priceListDetailConverter.fromDtoToModel()
-            }
-
-        }
-
-
-        return priceListFilterDtoStream.collect(Collectors.toList());
+        return priceListDtoStream.map(priceListConverter::fromDtoSelectToModel).collect(Collectors.toList());
     }
 
     @Override
@@ -341,10 +326,10 @@ public class PriceListServiceImpl implements PriceListService {
     }
 
     @Override
-    public boolean ExcelValidation(List<PriceListExcelDto> priceListExcelDtos) {
+    public boolean ExcelValidation(List<PriceListExcelDto> priceListExcelList) {
 
         int i = 1;
-        for (PriceListExcelDto priceListExcelDto : priceListExcelDtos) {
+        for (PriceListExcelDto priceListExcelDto : priceListExcelList) {
             if (priceListRepository.existsByPriceListCode(priceListExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.PriceList,
                         "code.exist",
@@ -361,13 +346,13 @@ public class PriceListServiceImpl implements PriceListService {
 
                 if (!countryDevisionRepository.existsByCode(priceListDetail.getPriceDetailDevisionsto()))
                     throw BusinessException.valueException(EntityType.PriceList,
-                            "contry.not.exist",
+                            "country.not.exist",
                             priceListDetail.getProduct() + " priceListDetails " + "  ردیف " + B);
 
 
                 if (!countryDevisionRepository.existsByCode(priceListDetail.getPriceDetailDevisionsfrom()))
                     throw BusinessException.valueException(EntityType.PriceList,
-                            "contry.not.exist",
+                            "country.not.exist",
                             priceListDetail.getProduct() + " priceListDetails " + "  ردیف " + B);
 
 
@@ -384,9 +369,9 @@ public class PriceListServiceImpl implements PriceListService {
     }
 
     @Override
-    public List<PriceListDto> ImportExcel(List<PriceListExcelDto> priceListExcelDtos) {
-        List<PriceListDto> priceListDtos = new ArrayList<>();
-        for (PriceListExcelDto priceListExcelDto : priceListExcelDtos) {
+    public List<PriceListDto> ImportExcel(List<PriceListExcelDto> priceListExcelList) {
+        List<PriceListDto> priceListList = new ArrayList<>();
+        for (PriceListExcelDto priceListExcelDto : priceListExcelList) {
             PriceListDto priceListDto = priceListConverter.fromExcelToDto(priceListExcelDto);
             List<PriceListDetailDto> list = new ArrayList<>();
 
@@ -437,12 +422,12 @@ public class PriceListServiceImpl implements PriceListService {
             priceListDto.setPriceListDetails(list);
             priceListDto.setPriceListDetails(list);
             priceListDto.setIsDeleted(false);
-            priceListDtos.add(create(priceListDto));
+            priceListList.add(create(priceListDto));
 
 
         }
 
-        return priceListDtos;
+        return priceListList;
     }
 
     @Override
@@ -492,10 +477,9 @@ public class PriceListServiceImpl implements PriceListService {
                                     priceListDetails.<BigDecimal>get("toValue")));
                         }
                         if (filter.getPriceListDetails().getPriceDetailDevisions() != null) {
-                            Join<Object, Object> divition = root.join("priceDetailDevisions");
-                            predicates.add(criteriaBuilder.equal(divition.get(""),
+                            Join<Object, Object> division = root.join("priceDetailDevisions");
+                            predicates.add(criteriaBuilder.equal(division.get(""),
                                     filter.getPriceListDetails().getPriceDetailDevisions().get(0).getFromCountryDevision().getId()));
-//                            filter.getPriceListDetails().getPriceDetailDevisions().get(0).getFromCountryDevision()
                         }
 
 
@@ -507,7 +491,7 @@ public class PriceListServiceImpl implements PriceListService {
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
                 }, pageable);
-        List<PriceListSuggestDto> priceListFilterDtos = new ArrayList<>();
+        List<PriceListSuggestDto> priceListFilterList = new ArrayList<>();
         for (PriceList re : res) {
             ServiceDto serviceDto = serviceService.findByPriceList(priceListConverter.fromModelToDto(re));
             if (serviceDto != null) {
@@ -517,11 +501,11 @@ public class PriceListServiceImpl implements PriceListService {
                 priceListSuggestDto.setServicename(serviceDto.getName());
                 priceListSuggestDto.setPricelistid(serviceDto.getPriceList().getId());
                 priceListSuggestDto.setServiceDescription(serviceDto.getDescription());
-                priceListFilterDtos.add(priceListSuggestDto);
+                priceListFilterList.add(priceListSuggestDto);
             }
         }
 
-        return priceListFilterDtos;
+        return priceListFilterList;
     }
 
     @Override

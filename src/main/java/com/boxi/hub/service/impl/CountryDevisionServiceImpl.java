@@ -139,13 +139,13 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public boolean existsCountry(String CountryDevision) {
-        return countryDevisionRepository.existsByCode(CountryDevision);
+    public boolean existsCountry(String CountryDivision) {
+        return countryDevisionRepository.existsByCode(CountryDivision);
     }
 
     @Override
-    public SelectResponse findByidInCode(SelectResponse toCountryDevision) {
-        CountryDevision byCode = countryDevisionRepository.findByCode(toCountryDevision.getText());
+    public SelectResponse findByIdInCode(SelectResponse toCountryDivision) {
+        CountryDevision byCode = countryDevisionRepository.findByCode(toCountryDivision.getText());
         if (byCode == null)
             throw BusinessException.entityNotFoundException(EntityType.CountryDevision, "countrydevision.text.not.found");
         return new SelectResponse(byCode.getId(), byCode.getName());
@@ -153,13 +153,13 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public CountryDevisionDto findRegioninCtiy(Long city) {
+    public CountryDevisionDto findRegionInCity(Long city) {
         return countryDevisionConverter.fromModeltoDto(countryDevisionRepository.findById(city).orElseThrow());
     }
 
     @Override
-    public ContryDevistionSelect findByidInCodefeign(SelectResponse toCountryDevision) {
-        CountryDevision byCode = countryDevisionRepository.findByCode(toCountryDevision.getText());
+    public ContryDevistionSelect findByIdInCodeFeign(SelectResponse toCountryDivision) {
+        CountryDevision byCode = countryDevisionRepository.findByCode(toCountryDivision.getText());
         if (byCode == null)
             throw BusinessException.entityNotFoundException(EntityType.CountryDevision, "countrydevision.not.found");
 
@@ -172,10 +172,10 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public List<SelectResponse> selectCityofprovinceBylist(List<SelectResponse> provincelist) {
+    public List<SelectResponse> selectCityOfProvinceByList(List<SelectResponse> provinceList) {
         List<CountryDevision> All = countryDevisionRepository.findAll((Specification<CountryDevision>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            List<Long> ids = provincelist.stream().map(SelectResponse::getId).collect(Collectors.toList());
+            List<Long> ids = provinceList.stream().map(SelectResponse::getId).collect(Collectors.toList());
             predicates.add(criteriaBuilder.and(root.get("parent").in(ids)));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
@@ -193,7 +193,7 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public List<ContryDevistionCodeDto> provincewithCode(String filter) {
+    public List<ContryDevistionCodeDto> provinceWithCode(String filter) {
 
         Pageable pageable = PageRequest.of(0, 100);
 
@@ -234,14 +234,14 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public List<CountryDevisionDto> findByhubId(Long id) {
+    public List<CountryDevisionDto> findByHubId(Long id) {
         List<CountryDevision> byHubId = countryDevisionRepository.findByHubId(id);
         return byHubId.stream().map(countryDevisionConverter::fromModeltoDto).collect(Collectors.toList());
 
     }
 
     @Override
-    public List<CountryDevisionPolygonDto> findByhubCode(String code, String hubid) {
+    public List<CountryDevisionPolygonDto> findByHubCode(String code, String hubId) {
         Hub byCode = hubRepository.findByCodeAndParentHubIsNotNull(code);
         if (byCode != null) {
             List<CountryType> list = new ArrayList<>();
@@ -253,10 +253,10 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
             List<CountryDevisionPolygonDto> countryDevisionDtos = new ArrayList<>();
             for (CountryDevisionDto countryDevisionDto : collect) {
                 CountryDevisionPolygonDto countryDevisionPolygonDto = countryDevisionConverter.fromModeltoPolygoneDto(countryDevisionDto);
-                ZonehubInterfaceDto bysubZoneid = hubRepository.findBysubZoneidAndHubID(countryDevisionDto.getId(), Long.valueOf(hubid));
+                ZonehubInterfaceDto bysubZoneid = hubRepository.findBysubZoneidAndHubID(countryDevisionDto.getId(), Long.valueOf(hubId));
 
                 if (bysubZoneid != null) {
-                    List<LocationDto> locationDtos = hubService.convertclobtoList(bysubZoneid.getpolygon());
+                    List<LocationDto> locationDtos = hubService.convertClobToList(bysubZoneid.getpolygon());
                     countryDevisionPolygonDto.setPolygone(locationDtos);
                 }
                 countryDevisionDtos.add(countryDevisionPolygonDto);
@@ -320,14 +320,14 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public CountryDevisionPolygonDto findbyBaseHub(String hubid) {
-        Hub byCode = hubRepository.findById(Long.valueOf(hubid)).orElseThrow();
+    public CountryDevisionPolygonDto findByBaseHub(String hubId) {
+        Hub byCode = hubRepository.findById(Long.valueOf(hubId)).orElseThrow();
         CountryDevisionPolygonDto countryDevisionPolygonDto = new CountryDevisionPolygonDto();
         if (byCode != null) {
             CountryDevision byHubId = countryDevisionRepository.findByHubIdAndCountryType(byCode.getId(), CountryType.hubRegion);
-            ZonehubInterfaceDto bysubZoneid = hubRepository.findBysubZoneidAndHubID(byHubId.getId(), Long.valueOf(hubid));
+            ZonehubInterfaceDto bysubZoneid = hubRepository.findBysubZoneidAndHubID(byHubId.getId(), Long.valueOf(hubId));
             if (bysubZoneid != null) {
-                List<LocationDto> locationDtos = hubService.convertclobtoList(bysubZoneid.getpolygon());
+                List<LocationDto> locationDtos = hubService.convertClobToList(bysubZoneid.getpolygon());
                 countryDevisionPolygonDto.setPolygone(locationDtos);
             }
             return countryDevisionPolygonDto;
@@ -339,7 +339,7 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     }
 
     @Override
-    public CountryDevisionDto selectByIdfindById(Long id) {
+    public CountryDevisionDto selectFindById(Long id) {
 
         CountryDevision loc = findById(id);
         CountryDevisionDto countryDevisionDto = countryDevisionConverter.fromModeltoDto(loc);

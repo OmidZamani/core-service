@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -60,8 +59,7 @@ public class PriceListApi {
     public List<PriceListSuggestDto> suggest(@RequestBody FilterPriceList request) {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(0, 10);
-        List<PriceListSuggestDto> response = priceListService.check(request, pageable);
-        return response;
+        return priceListService.check(request, pageable);
     }
 
     @GetMapping("/consignmenttype")
@@ -70,12 +68,12 @@ public class PriceListApi {
     }
 
     @GetMapping("/selectbyedit")
-    public Response selectByEdit(@RequestParam(name = "filter", required = true) String filter) {
+    public Response selectByEdit(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(priceListService.SelectEdit(filter));
     }
 
     @GetMapping("/Se")
-    public Response SampleGetAllDepandancy(@RequestParam(name = "filter", required = true) String filter) {
+    public Response SampleGetAllDependency(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(priceListService.SE(filter));
     }
 
@@ -96,29 +94,29 @@ public class PriceListApi {
     }
 
     @GetMapping("/select")
-    public Response selectList(@RequestParam(name = "filter", required = true) String filter) {
+    public Response selectList(@RequestParam(name = "filter") String filter) {
+        log.warn(filter);
         return Response.ok().setPayload(priceListService.SelectList());
     }
 
 
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
+
         log.warn(Entity);
-        String Dto = Entity;
-        List<PriceListExcelDto> priceListExcelDtos =
+        List<PriceListExcelDto> priceListExcelList =
                 (List<PriceListExcelDto>) convertExcelService.ConvertExcelToObjects(PriceListExcelDto.class, excel);
 
-        if (priceListService.ExcelValidation(priceListExcelDtos)) {
+        if (priceListService.ExcelValidation(priceListExcelList)) {
 
-            List<PriceListDto> priceListDtos = priceListService.ImportExcel(priceListExcelDtos);
-            int Detailscount = 0;
-            for (PriceListDto priceListDto : priceListDtos) {
-                Detailscount += priceListDto.getPriceListDetails().size();
+            List<PriceListDto> priceListList = priceListService.ImportExcel(priceListExcelList);
+            int DetailsCount = 0;
+            for (PriceListDto priceListDto : priceListList) {
+                DetailsCount += priceListDto.getPriceListDetails().size();
             }
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("priceList", priceListDtos.size());
-            jsonObject.put("priceListDetails", Detailscount);
+            jsonObject.put("priceList", priceListList.size());
+            jsonObject.put("priceListDetails", DetailsCount);
             return Response.ok().setPayload(jsonObject);
         } else {
             return Response.exception();

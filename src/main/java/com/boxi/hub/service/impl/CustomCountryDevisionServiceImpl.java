@@ -107,8 +107,8 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
     }
 
     @Override
-    public SelectResponse toSelect(CustomCountryDevision countryDevision) {
-        return new SelectResponse(countryDevision.getId(), countryDevision.getName());
+    public SelectResponse toSelect(CustomCountryDevision countryDivision) {
+        return new SelectResponse(countryDivision.getId(), countryDivision.getName());
     }
 
     @Override
@@ -171,10 +171,10 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
     }
 
     @Override
-    public boolean ExcelValidation(List<CustomCountryDevisionExcelDto> exceptionExcelDtos) {
+    public boolean ExcelValidation(List<CustomCountryDevisionExcelDto> exceptionExcelList) {
 
         int i = 1;
-        for (CustomCountryDevisionExcelDto exceptionExcelDto : exceptionExcelDtos) {
+        for (CustomCountryDevisionExcelDto exceptionExcelDto : exceptionExcelList) {
 
             if (exceptionExcelDto != null) {
                 if (customCountryDevisionRepository.existsByCode(exceptionExcelDto.getCode()) && exceptionExcelDto.getCode() != null)
@@ -206,7 +206,7 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
 
                 i++;
             } else {
-                exceptionExcelDtos.remove(i);
+                exceptionExcelList.remove(i);
             }
 
         }
@@ -217,15 +217,15 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
     }
 
     @Override
-    public List<CustomCountryDevisionDto> ImportExcel(List<CustomCountryDevisionExcelDto> customCountryDevisionDtos) {
+    public List<CustomCountryDevisionDto> ImportExcel(List<CustomCountryDevisionExcelDto> customCountryDivisionList) {
         List<CustomCountryDevisionDto> customCountryDevisionDtos1 = new ArrayList<>();
-        for (CustomCountryDevisionExcelDto customCountryDevisionDto : customCountryDevisionDtos) {
+        for (CustomCountryDevisionExcelDto customCountryDevisionDto : customCountryDivisionList) {
             CustomCountryDevisionDto customCountryDevisionDto1 = customCountryDevisionConverter.fromExcelToDto(customCountryDevisionDto);
             List<CustomDevisionDetailDto> customDevisionDetailDtos = new ArrayList<>();
             for (CustomDevisionDetailDto customDevisionDetail : customCountryDevisionDto1.getCustomDevisionDetails()) {
                 CustomDevisionDetailDto customDevisionDetailDto = new CustomDevisionDetailDto();
-                SelectResponse To = countryDevisionService.findByidInCode(customDevisionDetail.getToCountryDevision());
-                SelectResponse From = countryDevisionService.findByidInCode(customDevisionDetail.getFromCountryDevision());
+                SelectResponse To = countryDevisionService.findByIdInCode(customDevisionDetail.getToCountryDevision());
+                SelectResponse From = countryDevisionService.findByIdInCode(customDevisionDetail.getFromCountryDevision());
                 customDevisionDetailDto.setToCountryDevision(To);
                 customDevisionDetailDto.setFromCountryDevision(From);
                 customDevisionDetailDto.setIsActive(customDevisionDetail.getIsActive());

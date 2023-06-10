@@ -27,10 +27,10 @@ public class ExchangeApi {
     }
 
     @GetMapping("/selectRoute")
-    public List<RouteDto> selectRoute(@RequestParam(name = "source", required = true) Long source,
-                                      @RequestParam(name = "destination", required = true) Long destination) {
-        List<RouteDto> routeDtos = _service.selectRoute(source, destination).stream().collect(Collectors.toList());
-        return routeDtos;
+    public List<RouteDto> selectRoute(@RequestParam(name = "source" ) Long source,
+                                      @RequestParam(name = "destination" ) Long destination) {
+
+        return _service.selectRoute(source, destination).stream().collect(Collectors.toList());
     }
 
     @GetMapping("/connection/{id}")

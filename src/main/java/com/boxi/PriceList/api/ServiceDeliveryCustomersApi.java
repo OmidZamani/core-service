@@ -18,7 +18,7 @@ import java.util.List;
 public class ServiceDeliveryCustomersApi {
     private final ServiceDeliveryCustomersService service;
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter") String filter) {
         List<SelectResponse> response =service.select(filter);
         return  Response.ok().setPayload(response);
     }

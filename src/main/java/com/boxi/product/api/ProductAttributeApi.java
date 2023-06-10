@@ -72,13 +72,13 @@ public class ProductAttributeApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter", required = true) String filter) {
+    public Response select(@RequestParam(name = "filter" ) String filter) {
         Page<SelectResponse> response = productAttributeService.select(filter);
         return Response.ok().setPayload(response);
     }
 
     @GetMapping("/selectbyedit")
-    public Response selectByEdit(@RequestParam(name = "filter", required = true) String filter) {
+    public Response selectByEdit(@RequestParam(name = "filter" ) String filter) {
 
 
         return Response.ok().setPayload(productAttributeService.SelectEdit(filter));
@@ -90,7 +90,7 @@ public class ProductAttributeApi {
     }
 
     @GetMapping("/findByProduct/{id}")
-    public Response findallatt(@PathVariable Long id) {
+    public Response findAllAtt(@PathVariable Long id) {
         return Response.ok().setPayload(productAttributeService.findById(id));
     }
 

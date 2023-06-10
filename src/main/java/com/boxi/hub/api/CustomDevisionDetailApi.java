@@ -35,8 +35,7 @@ public class CustomDevisionDetailApi {
     @PostMapping
     public Response create(@RequestBody CustomDevisionDetailDto request) {
         log.warn(request.toJson());
-        CustomDevisionDetailDto customCountryDevisionDto = customDevisionDetailService.create(request);
-        return  Response.ok().setPayload(customCountryDevisionDto);
+        return  Response.ok().setPayload(customDevisionDetailService.create(request));
     }
 
     @PutMapping
@@ -61,7 +60,7 @@ public class CustomDevisionDetailApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter") String filter) {
         Page<SelectResponse> response = customDevisionDetailService.select(filter);
         return  Response.ok().setPayload(response);
     }

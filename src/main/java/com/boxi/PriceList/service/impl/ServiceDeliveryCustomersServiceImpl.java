@@ -1,7 +1,6 @@
 package com.boxi.PriceList.service.impl;
 
 import com.boxi.PriceList.entity.ServiceDeliveryCustomers;
-import com.boxi.PriceList.payload.converter.ServiceDeliveryCustomersConverter;
 import com.boxi.PriceList.repo.ServiceDeliveryCustomersRepository;
 import com.boxi.PriceList.service.ServiceDeliveryCustomersService;
 import com.boxi.core.response.SelectResponse;
@@ -13,19 +12,20 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @Transactional
 public class ServiceDeliveryCustomersServiceImpl implements ServiceDeliveryCustomersService {
     private final ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository;
-    private final ServiceDeliveryCustomersConverter serviceDeliveryCustomersConverter;
+
 
     @Autowired
     private CustomerClient customerClient;
 
-    public ServiceDeliveryCustomersServiceImpl(ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository,
-                                               ServiceDeliveryCustomersConverter serviceDeliveryCustomersConverter) {
+    public ServiceDeliveryCustomersServiceImpl(ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository
+    ) {
         this.serviceDeliveryCustomersRepository = serviceDeliveryCustomersRepository;
-        this.serviceDeliveryCustomersConverter = serviceDeliveryCustomersConverter;
+
     }
 
 
@@ -34,7 +34,7 @@ public class ServiceDeliveryCustomersServiceImpl implements ServiceDeliveryCusto
         List<ServiceDeliveryCustomers> all = serviceDeliveryCustomersRepository.findAll();
         List<SelectResponse> selectResponses = new ArrayList<>();
         for (ServiceDeliveryCustomers serviceDeliveryCustomers : all) {
-            selectResponses.add(new SelectResponse(serviceDeliveryCustomers.getId(),serviceDeliveryCustomers.getServiceDelivery().getName()));
+            selectResponses.add(new SelectResponse(serviceDeliveryCustomers.getId(), serviceDeliveryCustomers.getServiceDelivery().getName()));
         }
         return selectResponses;
 

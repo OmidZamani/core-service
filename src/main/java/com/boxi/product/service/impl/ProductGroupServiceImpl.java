@@ -36,7 +36,7 @@ public class ProductGroupServiceImpl implements ProductGroupService {
 
     @Override
     public Page<SelectResponse> selectProduct(String filter) {
-        Pageable pageable = PageRequest.of(0, 100);
+
         return null;
     }
 
@@ -125,18 +125,6 @@ public class ProductGroupServiceImpl implements ProductGroupService {
         return productConvert.fromModelToDto(saved);
     }
 
-    private Page<SelectResponse> getProducts(Long productId, String filter, Pageable pageable) {
-
-        return productRepository.findAll((Specification<ProductGroup>) (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("PRODUCTID"), productId)));
-            if (filter != null && !filter.isEmpty()) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.like(criteriaBuilder.upper(root.get("name")), "%" + filter.trim() + "%")));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        }, pageable).map(this::toSelect);
-    }
 
 
     @Override

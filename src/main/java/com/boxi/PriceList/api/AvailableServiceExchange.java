@@ -36,12 +36,12 @@ public class AvailableServiceExchange {
     }
 
     @GetMapping("/exchange/basetypeselect")
-    public List<SelectResponse> exchangebaseTypeSelect() {
+    public List<SelectResponse> exchangeBaseTypeSelect() {
         return serviceService.baseTypeSelect();
     }
 
     @GetMapping("/exchange/findById/{id}")
-    public ServiceDto ServicefindByid(@PathVariable Long id) {
+    public ServiceDto serviceFindById(@PathVariable Long id) {
         return serviceService.findById(id);
     }
 }

@@ -2,7 +2,6 @@ package com.boxi.hub.api;
 
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.hub.payload.dto.CountryDevisionPolygonDto;
 import com.boxi.hub.service.CountryDevisionService;
 import com.boxi.product.payload.dto.CountryDevisionDto;
 import com.boxi.product.response.ContryDevistionSelect;
@@ -49,52 +48,51 @@ public class CountryDevisionApi {
     }
 
     @GetMapping("/findbyhub")
-    public Response findByHubId(@RequestParam(name = "code", required = true) String code, @RequestParam(name = "hubid", required = true) String hubid) {
-        List<CountryDevisionPolygonDto> byhubCode = _service.findByhubCode(code, hubid);
-        return Response.ok().setPayload(byhubCode);
+    public Response findByHubId(@RequestParam(name = "code" ) String code, @RequestParam(name = "hubid" ) String hubid) {
+
+        return Response.ok().setPayload( _service.findByHubCode(code, hubid));
     }
 
     @GetMapping("/findbyBaseHub")
-    public Response findbyBaseHub(@RequestParam(name = "hubid", required = true) String hubid) {
-        CountryDevisionPolygonDto byhubCode = _service.findbyBaseHub(hubid);
-        return Response.ok().setPayload(byhubCode);
+    public Response findbyBaseHub(@RequestParam(name = "hubid" ) String hubid) {
+
+        return Response.ok().setPayload(_service.findByBaseHub(hubid));
     }
 
     @GetMapping
-    public Response getProvince(@RequestParam(name = "filter", required = true) String filter) {
+    public Response getProvince(@RequestParam(name = "filter" ) String filter) {
         return Response.ok().setPayload(_service.selectProvince(filter));
     }
 
     @GetMapping("/provincewithcode")
-    public Response getProvincewithcode(@RequestParam(name = "filter", required = true) String filter) {
-        return Response.ok().setPayload(_service.provincewithCode(filter));
+    public Response getProvinceWithCode(@RequestParam(name = "filter" ) String filter) {
+        return Response.ok().setPayload(_service.provinceWithCode(filter));
     }
 
     @GetMapping("/province/{provinceId}/city")
-    public Response getCity(@PathVariable Long provinceId, @RequestParam(name = "filter", required = true) String filter) {
+    public Response getCity(@PathVariable Long provinceId, @RequestParam(name = "filter" ) String filter) {
         return Response.ok().setPayload(_service.selectCity(provinceId, filter));
     }
 
     @PostMapping()
-    public Response getfindlist(@RequestBody List<SelectResponse> provincelist) {
-        return Response.ok().setPayload(_service.selectCityofprovinceBylist(provincelist));
+    public Response getFindList(@RequestBody List<SelectResponse> provinceList) {
+        return Response.ok().setPayload(_service.selectCityOfProvinceByList(provinceList));
     }
 
     @GetMapping("/city/{cityId}/loc")
-    public Response getLoc(@PathVariable Long cityId, @RequestParam(name = "filter", required = true) String filter) {
+    public Response getLoc(@PathVariable Long cityId, @RequestParam(name = "filter" ) String filter) {
         return Response.ok().setPayload(_service.selectLoc(cityId, filter));
     }
 
     @GetMapping("/findTreeToParent/{Id}")
-    public Response gettree(@PathVariable Long Id) {
+    public Response getTree(@PathVariable Long Id) {
         return Response.ok().setPayload(_service.SelectTreeToParent(Id));
     }
 
 
     @GetMapping("/findIdincode/{Code}")
     public ContryDevistionSelect findIdincode(@PathVariable String Code) {
-        ContryDevistionSelect byidInCodefeign = _service.findByidInCodefeign(new SelectResponse(null, Code));
-        return byidInCodefeign;
+        return _service.findByIdInCodeFeign(new SelectResponse(null, Code));
     }
 
     @GetMapping("/{id}")
@@ -104,11 +102,11 @@ public class CountryDevisionApi {
 
     @GetMapping("/findById/{id}")
     public CountryDevisionDto getLocfindById(@PathVariable Long id) {
-        return _service.selectByIdfindById(id);
+        return _service.selectFindById(id);
     }
 
     @GetMapping("/findbytype")
-    public Response findbytypes(@RequestParam(name = "type", required = true) Long typeId) {
+    public Response findByTypes(@RequestParam(name = "type" ) Long typeId) {
         return Response.ok().setPayload(_service.findByTypes(typeId));
     }
 

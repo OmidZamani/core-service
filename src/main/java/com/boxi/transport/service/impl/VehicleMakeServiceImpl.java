@@ -1,12 +1,8 @@
 package com.boxi.transport.service.impl;
 
-import com.boxi.PriceList.entity.PriceList;
-import com.boxi.PriceList.entity.PriceListDetail;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
-import com.boxi.core.request.GenericFilter;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.transport.entity.Vehicle;
 import com.boxi.transport.entity.VehicleMake;
 import com.boxi.transport.entity.Vendor;
 import com.boxi.transport.enums.FuelType;
@@ -30,7 +26,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -159,9 +154,9 @@ public class VehicleMakeServiceImpl implements VehicleMakeService {
     }
 
     @Override
-    public boolean ExcelValidation(List<VehicleMakeExcelDto> vehicleMakeExcelDtos) {
+    public boolean ExcelValidation(List<VehicleMakeExcelDto> vehicleMakeExcelList) {
         int i = 0;
-        for (VehicleMakeExcelDto vehicleMakeExcelDto : vehicleMakeExcelDtos) {
+        for (VehicleMakeExcelDto vehicleMakeExcelDto : vehicleMakeExcelList) {
             if (vehicleMakeRepository.existsByCodeAndIsDeletedFalse(vehicleMakeExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.VehicleMake,
                         "vehicle.make.is.duplicate",
@@ -173,10 +168,10 @@ public class VehicleMakeServiceImpl implements VehicleMakeService {
     }
 
     @Override
-    public List<VehicleMakeDto> ImportExcel(List<VehicleMakeExcelDto> vehicleMakeExcelDtos) {
+    public List<VehicleMakeDto> ImportExcel(List<VehicleMakeExcelDto> vehicleMakeExcelList) {
 
         List<VehicleMakeDto> vehicleDtos = new ArrayList<>();
-        for (VehicleMakeExcelDto vehicleMakeExcelDto : vehicleMakeExcelDtos) {
+        for (VehicleMakeExcelDto vehicleMakeExcelDto : vehicleMakeExcelList) {
             VehicleMakeDto vehicleMakeDto = vehicleMakeConverter.fromExcelToDto(vehicleMakeExcelDto);
             Vendor byCode = vendorRepository.findByCode(vehicleMakeExcelDto.getVendorSelect());
             vehicleMakeDto.setVendorSelect(new SelectResponse(byCode.getId(), byCode.getName()));

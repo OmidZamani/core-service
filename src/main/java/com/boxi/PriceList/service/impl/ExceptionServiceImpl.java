@@ -99,25 +99,25 @@ public class ExceptionServiceImpl implements ExceptionService {
     }
 
     @Override
-    public List<ExceptionDto> ImportExcel(List<ExceptionExcelDto> exceptionExcelDtos) {
-        List<ExceptionDto> exceptionDtos = new ArrayList<>();
-        for (ExceptionExcelDto exceptionExcelDto : exceptionExcelDtos) {
+    public List<ExceptionDto> ImportExcel(List<ExceptionExcelDto> exceptionExcelList) {
+        List<ExceptionDto> exceptionList = new ArrayList<>();
+        for (ExceptionExcelDto exceptionExcelDto : exceptionExcelList) {
             if (exceptionExcelDto.getCode() != null) {
                 ExceptionDto exceptionDto = exceptionConverter.fromExcelToDto(exceptionExcelDto);
                 exceptionDto.setIsDeleted(false);
                 Exception save = exceptionRepository.save(exceptionConverter.fromDtoToModel(exceptionDto));
                 exceptionDto.setId(save.getId());
 
-                exceptionDtos.add(exceptionDto);
+                exceptionList.add(exceptionDto);
             }
         }
-        return exceptionDtos;
+        return exceptionList;
     }
 
     @Override
-    public boolean ExcelValidation(List<ExceptionExcelDto> exceptionExcelDtos) {
+    public boolean ExcelValidation(List<ExceptionExcelDto> exceptionExcelList) {
         int i = 1;
-        for (ExceptionExcelDto exceptionExcelDto : exceptionExcelDtos) {
+        for (ExceptionExcelDto exceptionExcelDto : exceptionExcelList) {
 
             if (exceptionRepository.existsByCode(exceptionExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.EXCEPTION,
@@ -159,7 +159,7 @@ public class ExceptionServiceImpl implements ExceptionService {
 
         }, pageable);
 
-        return all.map(this::toselect);
+        return all.map(this::toSelect);
 
     }
 
@@ -179,7 +179,7 @@ public class ExceptionServiceImpl implements ExceptionService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         });
 
-        return all.stream().map(this::toselect).collect(Collectors.toList());
+        return all.stream().map(this::toSelect).collect(Collectors.toList());
 
 
     }
@@ -189,7 +189,7 @@ public class ExceptionServiceImpl implements ExceptionService {
         return null;
     }
 
-    public SelectResponse toselect(Exception exception){
+    public SelectResponse toSelect(Exception exception){
         return new SelectResponse(exception.getId(),exception.getName());
     }
 }

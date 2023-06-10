@@ -30,9 +30,9 @@ public interface RouteService {
 
     RouteDto get(Long id);
 
-    boolean ExcelValidation(List<RouteExcelDto> routeExcelDtos);
+    boolean ExcelValidation(List<RouteExcelDto> routeExcelList);
 
-    List<RouteDto> ImportExcel(List<RouteExcelDto> routeExcelDtos);
+    List<RouteDto> ImportExcel(List<RouteExcelDto> routeExcelList);
 
     Page<RouteDto> selectRoute(Long source, Long destination);
 }

@@ -26,7 +26,7 @@ public class SalesChannelApi {
 
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         List<SelectResponse> response = salesChannelService.SelectChannel(filter);
         return  Response.ok().setPayload(response);
     }

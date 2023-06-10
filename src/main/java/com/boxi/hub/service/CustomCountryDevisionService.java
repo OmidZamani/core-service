@@ -17,7 +17,7 @@ public interface CustomCountryDevisionService {
 
     Page<CustomCountryDevisionFilterDto> filter(FilterCustomCountryDevision filter, Pageable pageable);
 
-    SelectResponse toSelect(CustomCountryDevision countryDevision);
+    SelectResponse toSelect(CustomCountryDevision countryDivision);
 
     CustomCountryDevision fromSelect(SelectResponse select) ;
 
@@ -27,7 +27,7 @@ public interface CustomCountryDevisionService {
 
     CustomCountryDevisionDto edit(CustomCountryDevisionDto request);
 
-    boolean ExcelValidation(List<CustomCountryDevisionExcelDto> exceptionExcelDtos);
+    boolean ExcelValidation(List<CustomCountryDevisionExcelDto> exceptionExcelList);
 
-    List<CustomCountryDevisionDto> ImportExcel(List<CustomCountryDevisionExcelDto> customCountryDevisionDtos);
+    List<CustomCountryDevisionDto> ImportExcel(List<CustomCountryDevisionExcelDto> customCountryDivisionList);
 }

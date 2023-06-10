@@ -1,9 +1,7 @@
 package com.boxi.transport.api;
 //100802	vehicle make	VehicleMakeApi	حمل و نقل - مدل وسیله نقلیه
-import com.boxi.core.request.GenericFilter;
 import com.boxi.core.response.Response;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
-import com.boxi.transport.entity.VehicleMake;
 import com.boxi.transport.enums.FuelType;
 import com.boxi.transport.payload.dto.*;
 import com.boxi.transport.payload.request.VehicleMakeFilter;
@@ -59,7 +57,7 @@ public class VehicleMakeApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         return Response.ok().setPayload(_service.select(filter));
     }
 
@@ -85,17 +83,16 @@ public class VehicleMakeApi {
     // @PreAuthorize("hasPermission('hasAccess','10080202')")
     @PostMapping("/importexcelfile")
     public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
-        log.warn(Entity);
 
-        List<VehicleMakeExcelDto> vehicleMakeExcelDtos =
+        log.warn(Entity);
+        List<VehicleMakeExcelDto> vehicleMakeExcelList =
                 (List<VehicleMakeExcelDto>) convertExcelService.ConvertExcelToObjects(VehicleMakeExcelDto.class, excel);
 
-        if (_service.ExcelValidation(vehicleMakeExcelDtos)) {
+        if (_service.ExcelValidation(vehicleMakeExcelList)) {
 
-            List<VehicleMakeDto> vendorExcelDtos1 = _service.ImportExcel(vehicleMakeExcelDtos);
+            List<VehicleMakeDto> vendorExcelList = _service.ImportExcel(vehicleMakeExcelList);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("vehicleMake",vendorExcelDtos1.size());
+            jsonObject.put("vehicleMake", vendorExcelList.size());
             return Response.ok().setPayload(jsonObject);
         }
         else {

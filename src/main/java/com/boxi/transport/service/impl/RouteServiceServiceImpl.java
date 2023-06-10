@@ -212,10 +212,10 @@ public class RouteServiceServiceImpl implements RouteService {
     }
 
     @Override
-    public boolean ExcelValidation(List<RouteExcelDto> routeExcelDtos) {
+    public boolean ExcelValidation(List<RouteExcelDto> routeExcelList) {
 
         int i = 1;
-        for (RouteExcelDto routeExcelDto : routeExcelDtos) {
+        for (RouteExcelDto routeExcelDto : routeExcelList) {
             if (routeRepository.existsByCodeAndIsDeletedFalse(routeExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.Route,
                         "route.is.duplicate",
@@ -240,12 +240,12 @@ public class RouteServiceServiceImpl implements RouteService {
     }
 
     @Override
-    public List<RouteDto> ImportExcel(List<RouteExcelDto> routeExcelDtos) {
+    public List<RouteDto> ImportExcel(List<RouteExcelDto> routeExcelList) {
 
         List<RouteDto> routeDtos = new ArrayList<>();
 
 
-        for (RouteExcelDto routeExcelDto : routeExcelDtos) {
+        for (RouteExcelDto routeExcelDto : routeExcelList) {
             RouteDto routeDto = routeConverter.fromExcelToDto(routeExcelDto);
 
             Hub source = hubRepository.findByCode(routeExcelDto.getSelectSourceHub());

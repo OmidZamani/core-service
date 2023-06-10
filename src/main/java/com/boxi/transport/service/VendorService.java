@@ -22,7 +22,7 @@ public interface VendorService {
     SelectResponse toSelect(Vendor vendor);
     void createByExcel(MultipartFile excel);
 
-    boolean ExcelValidation(List<VendorExcelDto> vendorExcelDtos);
+    boolean ExcelValidation(List<VendorExcelDto> vendorExcelList);
 
-    List<VendorDto> ImportExcel(List<VendorExcelDto> vendorExcelDtos);
+    List<VendorDto> ImportExcel(List<VendorExcelDto> vendorExcelList);
 }

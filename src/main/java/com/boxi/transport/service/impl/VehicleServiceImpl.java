@@ -379,7 +379,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<CarTagDto> findbycartagnumberSuggest(CarTagDto dto) {
+    public List<CarTagDto> findByCarTagNumberSuggest(CarTagDto dto) {
         return vehicleRepository.findByVehicleNumber0OrVehicleNumber1OrVehicleNumber2OrVehicleNumber3(dto.getVehicleNumber0(),
                 dto.getVehicleNumber1(),
                 dto.getVehicleNumber2(),

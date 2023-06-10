@@ -79,16 +79,15 @@ public class ExceptionApi {
 
     // @PreAuthorize("hasPermission('hasAccess','10080602')")
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
-        log.warn(Entity);
-        String Dto = Entity;
-        List<ExceptionExcelDto> exceptionExcelDtos = (List<ExceptionExcelDto>) convertExcelService.ConvertExcelToObjects(ExceptionExcelDto.class, excel);
-        if (exceptionService.ExcelValidation(exceptionExcelDtos)) {
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
 
-            List<ExceptionDto> exceptionDtos = exceptionService.ImportExcel(exceptionExcelDtos);
+        log.warn(Entity);
+        List<ExceptionExcelDto> exceptionExcelList = (List<ExceptionExcelDto>) convertExcelService.ConvertExcelToObjects(ExceptionExcelDto.class, excel);
+        if (exceptionService.ExcelValidation(exceptionExcelList)) {
+
+            List<ExceptionDto> exceptionList = exceptionService.ImportExcel(exceptionExcelList);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Exception",exceptionDtos.size());
+            jsonObject.put("Exception", exceptionList.size());
 
             return Response.ok().setPayload(jsonObject);
         }

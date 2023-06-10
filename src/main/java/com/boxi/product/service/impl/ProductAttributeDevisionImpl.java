@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -46,16 +47,16 @@ public class ProductAttributeDevisionImpl implements ProductAttributeDevisionSer
         }, pageable).map(this::toSelect);
     }
 
-    private ProductAttributeDevision findProductAttributeDevisionById(Long id) {
+    private ProductAttributeDevision findProductAttributeDivisionById(Long id) {
         return productAttributeDevisionRepository.findById(id).orElseThrow(() -> {
-            throw BusinessException.entityNotFoundException(EntityType.ProductAttributeDevision, "product.attribute.devision.not.found");
+            throw BusinessException.entityNotFoundException(EntityType.ProductAttributeDevision, "product.attribute.division.not.found");
         });
     }
 
     @Override
     public ProductAttributeDevision fromSelect(SelectResponse select) {
         if (select == null) return null;
-        return findProductAttributeDevisionById(select.getId());
+        return findProductAttributeDivisionById(select.getId());
     }
 
     @Override
@@ -71,9 +72,9 @@ public class ProductAttributeDevisionImpl implements ProductAttributeDevisionSer
     }
 
     @Override
-    public List<ProductAttributeDevision> saveAll(List<ProductAttributeDevision> productAttributeDevisions) {
+    public List<ProductAttributeDevision> saveAll(List<ProductAttributeDevision> productAttributeDivisions) {
 
-        return productAttributeDevisionRepository.saveAll(productAttributeDevisions);
+        return productAttributeDevisionRepository.saveAll(productAttributeDivisions);
 
     }
 
@@ -86,14 +87,11 @@ public class ProductAttributeDevisionImpl implements ProductAttributeDevisionSer
     private ProductAttributeDevision findById(Long id) {
 
         return productAttributeDevisionRepository.findById(id).orElseThrow(() -> {
-            throw BusinessException.entityNotFoundException(EntityType.ProductAttributeDevision, "product.attribute.devision.not.found");
+            throw BusinessException.entityNotFoundException(EntityType.ProductAttributeDevision, "product.attribute.division.not.found");
         });
     }
 
-    private Boolean isExist(Long id) {
-        return productAttributeDevisionRepository.existsByid(id);
 
-    }
 
     @Override
     public ProductAttributeDevisionDto edit(ProductAttributeDevisionDto request) {
@@ -121,7 +119,7 @@ public class ProductAttributeDevisionImpl implements ProductAttributeDevisionSer
                     }
 
                     if (filter.getProductAttribute() != null && StringUtils.isNotBlank(filter.getProductAttribute().getProduct().getName())) {
-                        predicates.add(criteriaBuilder.equal(root.get("timeUnit"), TimeUnit.findByFa(filter.getProductAttribute().getProduct().getName()).getValue()));
+                        predicates.add(criteriaBuilder.equal(root.get("timeUnit"), Objects.requireNonNull(TimeUnit.findByFa(filter.getProductAttribute().getProduct().getName())).getValue()));
 
                     }
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));

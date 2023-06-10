@@ -15,8 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +65,7 @@ public class GateApi {
 
 
     @PostMapping("/select")
-    public Response select(@RequestParam(name = "filter", required = true) String filter,
+    public Response select(@RequestParam(name = "filter" ) String filter,
                            @RequestBody HubFilter hubFilter) {
         Page<SelectResponse> response = _service.select(filter, hubFilter);
         return Response.ok().setPayload(response);
@@ -75,18 +73,16 @@ public class GateApi {
 
     // @PreAuthorize("hasPermission('hasAccess','10080902')")
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
         log.warn(Entity);
-        String Dto = Entity;
-        List<GateExcelDto> gateExcelDtos =
+        List<GateExcelDto> gateExcelList =
                 (List<GateExcelDto>) convertExcelService.ConvertExcelToObjects(GateExcelDto.class, excel);
 
-        if (_service.ExcelValidation(gateExcelDtos)) {
+        if (_service.ExcelValidation(gateExcelList)) {
 
-            List<GateDto> bagDtos = _service.ImportExcel(gateExcelDtos);
+            List<GateDto> gateList = _service.ImportExcel(gateExcelList);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Gate", bagDtos.size());
+            jsonObject.put("Gate", gateList.size());
             return Response.ok().setPayload(jsonObject);
         } else {
             return Response.exception();
@@ -95,6 +91,6 @@ public class GateApi {
 
     @GetMapping("/{id}")
     public Response findById(@PathVariable Long id) {
-        return Response.ok().setPayload(_service.findByIddto(id));
+        return Response.ok().setPayload(_service.findByIdDto(id));
     }
 }

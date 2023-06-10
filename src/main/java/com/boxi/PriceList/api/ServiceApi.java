@@ -78,7 +78,7 @@ public class ServiceApi {
     }
 
     @GetMapping("/{id}")
-    public Response getByid(@PathVariable Long id) {
+    public Response getById(@PathVariable Long id) {
         return Response.ok().setPayload(serviceService.findById(id));
     }
 

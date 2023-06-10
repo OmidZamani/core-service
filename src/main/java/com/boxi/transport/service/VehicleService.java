@@ -45,7 +45,7 @@ public interface VehicleService {
 
     VehicleMakeDto findByMakeById(Long id);
 
-    List<CarTagDto> findbycartagnumberSuggest(CarTagDto dto);
+    List<CarTagDto> findByCarTagNumberSuggest(CarTagDto dto);
 
     List<VehicleExceptionsDto> findVehicleException(VehicleExceptionsDto dto);
 

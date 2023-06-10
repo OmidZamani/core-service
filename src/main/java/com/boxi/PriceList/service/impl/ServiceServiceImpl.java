@@ -33,7 +33,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Join;
@@ -42,7 +41,6 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,7 +57,7 @@ public class ServiceServiceImpl implements ServiceService {
     private final ProductRepository productRepository;
     private final ProductAttributeRepository productAttributeRepository;
 
-    private final ServiceDeliveryRepository serviceDeliveryRepository;
+
     private final ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository;
 
     private final TermsOfServicesRepository termsOfServicesRepository;
@@ -73,9 +71,10 @@ public class ServiceServiceImpl implements ServiceService {
             , PriceListRepository priceListRepository
             , PriceListConverter priceListConverter
             , ProductRepository productRepository
-            , ProductAttributeRepository productAttributeRepository, ServiceDeliveryRepository serviceDeliveryRepository
+            , ProductAttributeRepository productAttributeRepository
             , ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository
-            , TermsOfServicesRepository termsOfServicesRepository, TermsOfServicesConverter termsOfServicesConverter
+            , TermsOfServicesRepository termsOfServicesRepository
+            , TermsOfServicesConverter termsOfServicesConverter
             , CustomCountryDevisionRepository customCountryDevisionRepository) {
         this.serviceRepository = serviceRepository;
         this.serviceConvertor = serviceConvertor;
@@ -83,7 +82,7 @@ public class ServiceServiceImpl implements ServiceService {
         this.priceListConverter = priceListConverter;
         this.productRepository = productRepository;
         this.productAttributeRepository = productAttributeRepository;
-        this.serviceDeliveryRepository = serviceDeliveryRepository;
+
         this.serviceDeliveryCustomersRepository = serviceDeliveryCustomersRepository;
         this.termsOfServicesRepository = termsOfServicesRepository;
 
@@ -230,23 +229,23 @@ public class ServiceServiceImpl implements ServiceService {
         });
         PriceListDto priceListDto = priceListConverter.fromModelToDto(priceList);
 
-        Date servicefromdate = DateUtil.convertDateToJalaliDateDto(request.getValidDateFrom());
-        Date servicetodate = DateUtil.convertDateToJalaliDateDto(request.getValidDateTo());
+        Date serviceFromDate = DateUtil.convertDateToJalaliDateDto(request.getValidDateFrom());
+        Date serviceToDate = DateUtil.convertDateToJalaliDateDto(request.getValidDateTo());
 
-        Date pricelisttodate = DateUtil.convertDateToJalaliDateDto(priceListDto.getValidDateTo());
+        Date priceListToDate = DateUtil.convertDateToJalaliDateDto(priceListDto.getValidDateTo());
 
-        Date pricelistfromdate = DateUtil.convertDateToJalaliDateDto(priceListDto.getValidDateFrom());
+        Date priceListFromDate = DateUtil.convertDateToJalaliDateDto(priceListDto.getValidDateFrom());
 
-        if (servicefromdate.compareTo(servicetodate) > 0) {
+        if (serviceFromDate.compareTo(serviceToDate) > 0) {
             throw BusinessException.valueException(EntityType.Service, "price.list.fromdate.notvalid");
         }
 
-        if (servicefromdate.compareTo(pricelistfromdate) < 0) {
+        if (serviceFromDate.compareTo(priceListFromDate) < 0) {
             throw BusinessException.valueException(EntityType.Service, "price.list.fromdate.notvalid");
         }
 
 
-        if (servicetodate.compareTo(pricelisttodate) > 0) {
+        if (serviceToDate.compareTo(priceListToDate) > 0) {
             throw BusinessException.valueException(EntityType.Service, "price.list.fromdate.notvalid");
         }
 
@@ -337,7 +336,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public List<ServiceDto> ImportExcel(List<CreateServiceExcelRequest> createServiceExcelRequests) {
-        List<ServiceDto> serviceDtos = new ArrayList<>();
+        List<ServiceDto> serviceList = new ArrayList<>();
 
         for (CreateServiceExcelRequest createServiceExcelRequest : createServiceExcelRequests) {
 
@@ -357,13 +356,13 @@ public class ServiceServiceImpl implements ServiceService {
                 serviceDto1.setPriceList(serviceDto.getPriceList());
 
 
-                serviceDtos.add(serviceDto1);
+                serviceList.add(serviceDto1);
 
             }
 
 
         }
-        return serviceDtos;
+        return serviceList;
 
     }
 
@@ -400,7 +399,7 @@ public class ServiceServiceImpl implements ServiceService {
     public List<SelectResponse> select(String filter) {
         List<Services> all = serviceRepository.findAll((Specification<Services>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (filter != null && StringUtils.isNotBlank(filter))
+            if (StringUtils.isNotBlank(filter))
                 predicates.add(criteriaBuilder.like(root.get("name"), "%" + filter.trim() + "%"));
 
 

@@ -1,6 +1,5 @@
 package com.boxi.transport.service;
 
-import com.boxi.core.request.GenericFilter;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.transport.entity.VehicleMake;
 import com.boxi.transport.payload.dto.VehicleMakeDto;
@@ -30,7 +29,7 @@ public interface VehicleMakeService {
 
     VehicleMakeDto get(Long id);
 
-    boolean ExcelValidation(List<VehicleMakeExcelDto> vehicleMakeExcelDtos);
+    boolean ExcelValidation(List<VehicleMakeExcelDto> vehicleMakeExcelList);
 
-    List<VehicleMakeDto> ImportExcel(List<VehicleMakeExcelDto> vehicleMakeExcelDtos);
+    List<VehicleMakeDto> ImportExcel(List<VehicleMakeExcelDto> vehicleMakeExcelList);
 }

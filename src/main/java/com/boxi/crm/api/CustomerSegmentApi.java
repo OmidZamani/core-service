@@ -2,13 +2,9 @@ package com.boxi.crm.api;
 
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.crm.entity.SegmentCustomers;
 import com.boxi.crm.payload.dto.CustomerSegmentDto;
-import com.boxi.crm.payload.dto.SegmentCustomersDto;
 import com.boxi.crm.payload.request.CustomerSegmentFilter;
 import com.boxi.crm.service.CustomerSegmentService;
-import com.boxi.hub.payload.dto.HubDto;
-import com.boxi.hub.payload.request.FilterHub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +24,7 @@ public class CustomerSegmentApi {
 
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter", required = true) String filter) {
+    public Response select(@RequestParam(name = "filter" ) String filter) {
         List<SelectResponse> response = customerSegmentService.Select(filter);
         return Response.ok().setPayload(response);
     }
@@ -58,7 +54,7 @@ public class CustomerSegmentApi {
 
     @GetMapping("/{id}")
     public Response findbyid(@PathVariable Long id) {
-        return Response.ok().setPayload(customerSegmentService.findedit(id));
+        return Response.ok().setPayload(customerSegmentService.findEdit(id));
     }
 
     @DeleteMapping("/{id}")

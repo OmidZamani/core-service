@@ -4,7 +4,6 @@ import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.CountryDevision;
-import com.boxi.hub.payload.converter.CountryDevisionConverter;
 import com.boxi.hub.service.CountryDevisionService;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
@@ -12,7 +11,6 @@ import com.boxi.product.entity.ProductAttributeDevision;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.payload.converter.ProductAttributeConverter;
 import com.boxi.product.payload.converter.ProductAttributeDevisionConverter;
-import com.boxi.product.payload.converter.UsingProductConverter;
 import com.boxi.product.payload.dto.ProductAttributeDevisionDto;
 import com.boxi.product.payload.dto.ProductAttributeDevisionSelectDto;
 import com.boxi.product.payload.dto.ProductAttributeDto;
@@ -52,13 +50,11 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     private final ProductAttributeDevisionService productAttributeDevisionService;
 
     private final UsingProductRepository productRepository;
-    private final UsingProductConverter usingProductConverter;
 
     private final CountryDevisionService countryDevisionService;
-    private final CountryDevisionConverter countryDevisionConverter;
+
 
     private final ProductService productService;
-
     private final ProductRepository productRepositorys;
 
     public ProductAttributeServiceImpl(ProductAttributeRepository productAttributeRepository,
@@ -66,18 +62,16 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                                        ProductAttributeDevisionRepository productAttributeDevisionRepository,
                                        ProductAttributeDevisionConverter productAttributeDevisionConverter,
                                        ProductAttributeDevisionService productAttributeDevisionService,
-                                       UsingProductRepository productRepository, UsingProductConverter
-                                               usingProductConverter, CountryDevisionService countryDevisionService,
-                                       CountryDevisionConverter countryDevisionConverter, ProductService productService, ProductRepository productRepositorys) {
+                                       UsingProductRepository productRepository,
+                                       CountryDevisionService countryDevisionService,
+                                       ProductService productService, ProductRepository productRepositorys) {
         this.productAttributeRepository = productAttributeRepository;
         this.productAttributeConverter = productAttributeConverter;
         this.productAttributeDevisionRepository = productAttributeDevisionRepository;
         this.productAttributeDevisionConverter = productAttributeDevisionConverter;
         this.productAttributeDevisionService = productAttributeDevisionService;
         this.productRepository = productRepository;
-        this.usingProductConverter = usingProductConverter;
         this.countryDevisionService = countryDevisionService;
-        this.countryDevisionConverter = countryDevisionConverter;
         this.productService = productService;
         this.productRepositorys = productRepositorys;
     }
@@ -114,8 +108,8 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
 
     public List<ProductAttributeDto> create(List<ProductAttributeDto> request) {
-        ProductAttributeDto productAttributeDto1 = null;
-        List<ProductAttributeDto> productAttributeDtos = new ArrayList<>();
+        ProductAttributeDto productAttributeDto1 ;
+        List<ProductAttributeDto> productAttributeList = new ArrayList<>();
 
 
         for (ProductAttributeDto productAttributeDto : request) {
@@ -123,7 +117,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
             ProductAttribute productAttribute = productAttributeConverter.fromDtoToModel(productAttributeDto);
             ProductAttribute save = productAttributeRepository.save(productAttribute);
 
-            List<ProductAttributeDevision> productAttributeDevisions =
+            List<ProductAttributeDevision> productAttributeDivisions =
                     productAttributeDto.getAttributeDivition().stream().map(productAttributeDevisionConverter::fromDtoToModel).peek(c ->
                     {
                         c.setIsActive(true);
@@ -131,7 +125,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                         c.setIsDeleted(false);
                         c.setProductAttribute(save);
                     }).collect(Collectors.toList());
-            List<ProductAttributeDevision> saved = productAttributeDevisionService.saveAll(productAttributeDevisions);
+            List<ProductAttributeDevision> saved = productAttributeDevisionService.saveAll(productAttributeDivisions);
             if (productAttributeDto.getUsingProduct() != null)
                 for (UsingProductDto usingProductDto : productAttributeDto.getUsingProduct()) {
                     UsingProduct usingProduct = new UsingProduct();
@@ -149,23 +143,21 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
             productAttributeDto.setAttributeDivition(productAttributeDto.getAttributeDivition());
             productAttributeDto1 = productAttributeConverter.fromModelToDto(save);
             productAttributeDto1.setAttributeDivition(productAttributeDevisionConverter.fromModelToDtoList(saved));
-            productAttributeDtos.add(productAttributeDto1);
+            productAttributeList.add(productAttributeDto1);
         }
 
 
-        return productAttributeDtos;
+        return productAttributeList;
     }
 
 
     public ProductAttributeDto SaveEdit(ProductAttributeDto request, ProductAttribute productAttribute) {
-        ProductAttributeDto productAttributeDto1 = null;
-        List<ProductAttributeDto> productAttributeDtos = new ArrayList<>();
-
-//        productAttributeDevisionRepository.deleteAllByProductAttributeDivistion(productAttribute);
+        ProductAttributeDto productAttributeDto1 ;
+        List<ProductAttributeDto> productAttributeList = new ArrayList<>();
         productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
 
 
-        List<ProductAttributeDevision> productAttributeDevisions =
+        List<ProductAttributeDevision> productAttributeDivisions =
                 request.getAttributeDivition().stream().map(productAttributeDevisionConverter::fromDtoToModel).peek(c ->
                 {
                     c.setIsActive(true);
@@ -173,11 +165,11 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                     c.setIsDeleted(false);
                     c.setProductAttribute(productAttribute);
                 }).collect(Collectors.toList());
-        List<ProductAttributeDevision> saved = productAttributeDevisionService.saveAll(productAttributeDevisions);
+        List<ProductAttributeDevision> saved = productAttributeDevisionService.saveAll(productAttributeDivisions);
         request.setAttributeDivition(request.getAttributeDivition());
         productAttributeDto1 = productAttributeConverter.fromModelToDto(productAttribute);
         productAttributeDto1.setAttributeDivition(productAttributeDevisionConverter.fromModelToDtoList(saved));
-        productAttributeDtos.add(productAttributeDto1);
+        productAttributeList.add(productAttributeDto1);
 
 
         return request;
@@ -188,7 +180,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         return productAttributeConverter.fromModelToDto(saved);
     }
 
-    public ProductAttribute findbyId(Long id) {
+    public ProductAttribute findTopById(Long id) {
 
         return productAttributeRepository.findById(id).orElseThrow(() -> {
             throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.attribute.not.found");
@@ -197,10 +189,6 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     }
 
-    private Boolean isExist(Long id) {
-        return productAttributeRepository.existsById(id);
-
-    }
 
     private ProductAttributeDto saveData(ProductAttribute attribute) {
         ProductAttribute saved = productAttributeRepository.save(attribute);
@@ -211,14 +199,14 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     public List<ProductAttributeDto> edit(List<ProductAttributeDto> request) {
 
         ProductAttributeDto productAttributeDto1 = new ProductAttributeDto();
-        List<ProductAttributeDto> productAttributeDtos = new ArrayList<>();
+        List<ProductAttributeDto> productAttributeList = new ArrayList<>();
         for (ProductAttributeDto productAttributeDto : request) {
             ProductAttribute productAttribute = productAttributeConverter.fromDtoToModel(productAttributeDto);
             ProductAttribute save = productAttributeRepository.save(productAttribute);
             if (productAttributeDto.getAttributeDivition().size() != 0) {
 
                 productAttributeDevisionRepository.deleteAllByProductAttribute(save);
-                List<ProductAttributeDevision> productAttributeDevisions = new ArrayList<>();
+                List<ProductAttributeDevision> productAttributeDivisions = new ArrayList<>();
                 for (ProductAttributeDevisionDto productAttributeDevisionDto : productAttributeDto.getAttributeDivition()) {
                     ProductAttributeDevision c = productAttributeDevisionConverter.fromDtoToModel(productAttributeDevisionDto);
                     c.setIsActive(true);
@@ -229,13 +217,13 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                     if (productAttributeDevisionDto.getFromCountryDevision() != null)
                         c.setFromCountryDevision(new CountryDevision().setId(productAttributeDevisionDto.getFromCountryDevision().getId()));
                     ProductAttributeDevision save1 = productAttributeDevisionRepository.save(c);
-                    productAttributeDevisions.add(save1);
+                    productAttributeDivisions.add(save1);
                 }
 
-                productAttributeDto1.setAttributeDivition(productAttributeDevisionConverter.fromModelToDtoList(productAttributeDevisions));
+                productAttributeDto1.setAttributeDivition(productAttributeDevisionConverter.fromModelToDtoList(productAttributeDivisions));
             }
             if (productAttributeDto.getUsingProduct() != null) {
-                List<UsingProductDto> usingProductDtos = new ArrayList<>();
+                List<UsingProductDto> usingProductList = new ArrayList<>();
                 productRepository.deleteByProductAttribute(save);
                 for (UsingProductDto usingProductDto : productAttributeDto.getUsingProduct()) {
                     UsingProduct usingProduct = new UsingProduct();
@@ -247,44 +235,44 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                     usingProduct.setProductAttribute(save);
                     UsingProduct save1 = productRepository.save(usingProduct);
                     usingProductDto.setId(save1.getId());
-                    usingProductDtos.add(usingProductDto);
+                    usingProductList.add(usingProductDto);
 
 
                 }
-                productAttributeDto.setUsingProduct(usingProductDtos);
+                productAttributeDto.setUsingProduct(usingProductList);
             }
 
 
             productAttributeDto.setAttributeDivition(productAttributeDto.getAttributeDivition());
             productAttributeDto1 = productAttributeConverter.fromModelToDto(save);
-            productAttributeDtos.add(productAttributeDto);
+            productAttributeList.add(productAttributeDto);
         }
 
 
-        return productAttributeDtos;
+        return productAttributeList;
     }
 
     @Override
     public List<ProductAttributeSelectDto> filter(FilterProductAttribute filter, Pageable pageable) {
-        List<ProductAttributeSelectDto> productAttributeSelectDtos = new ArrayList<>();
+        List<ProductAttributeSelectDto> productAttributeSelectList = new ArrayList<>();
         for (ProductAttribute productAttribute : productAttributeRepository.FeatchProductAttributeDevision(filter.getProduct().getId())) {
             List<ProductAttributeDevision> byProductAttribute = productAttributeDevisionRepository.findByProductAttribute(productAttribute);
-            List<ProductAttributeDevisionSelectDto> productAttributeDevisionSelectDto1 = new ArrayList<>();
+            List<ProductAttributeDevisionSelectDto> productAttributeDivisionSelectDto1 = new ArrayList<>();
             ProductAttributeSelectDto productAttributeDto = productAttributeConverter.fromDtoToSelect(productAttributeConverter.fromModelToDto(productAttribute));
             for (ProductAttributeDevision productAttributeDevision : byProductAttribute) {
                 ProductAttributeDevisionSelectDto productAttributeDevisionSelectDto = new ProductAttributeDevisionSelectDto();
                 productAttributeDevisionSelectDto.setId(productAttributeDevision.getId());
                 productAttributeDevisionSelectDto.setToCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getToCountryDevision().getId()));
                 productAttributeDevisionSelectDto.setFromCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getFromCountryDevision().getId()));
-                productAttributeDevisionSelectDto1.add(productAttributeDevisionSelectDto);
+                productAttributeDivisionSelectDto1.add(productAttributeDevisionSelectDto);
             }
-            productAttributeDto.setAttributeDivition(productAttributeDevisionSelectDto1);
+            productAttributeDto.setAttributeDivition(productAttributeDivisionSelectDto1);
             List<UsingProduct> byParent = productRepository.findByProductAttribute(productAttribute);
-            productAttributeDto.setUsingProduct(productService.featchUsingProducts(byParent));
-            productAttributeSelectDtos.add(productAttributeDto);
+            productAttributeDto.setUsingProduct(productService.fetchUsingProducts(byParent));
+            productAttributeSelectList.add(productAttributeDto);
         }
 
-        return productAttributeSelectDtos;
+        return productAttributeSelectList;
     }
 
 
@@ -351,7 +339,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     @Override
     public void delete(Long id) {
-        ProductAttribute productAttribute = findbyId(id);
+        ProductAttribute productAttribute = findTopById(id);
         productRepository.deleteByProductAttribute(productAttribute);
         if (productAttributeRepository.existsById(id)) {
             productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
@@ -362,22 +350,22 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     @Override
     public ProductAttributeSelectDto SelectEdit(String filter) {
-        ProductAttribute productAttribute = findbyId(Long.valueOf(filter));
+        ProductAttribute productAttribute = findTopById(Long.valueOf(filter));
 
         ProductAttributeDto productAttributeDto1 = productAttributeConverter.fromModelToDto(productAttribute);
 
         ProductAttributeSelectDto productAttributeSelectDto = productAttributeConverter.fromDtoToSelect(productAttributeDto1);
         List<ProductAttributeDevision> byProductAttribute = productAttributeDevisionRepository.findByProductAttribute(productAttribute);
         ProductAttributeDevisionSelectDto productAttributeDevisionSelectDto = new ProductAttributeDevisionSelectDto();
-        List<ProductAttributeDevisionSelectDto> productAttributeDevisionSelectDto1 = new ArrayList<>();
+        List<ProductAttributeDevisionSelectDto> productAttributeDivisionSelectDto1 = new ArrayList<>();
         for (ProductAttributeDevision productAttributeDevision : byProductAttribute) {
 
             productAttributeDevisionSelectDto.setId(productAttributeDevision.getId());
             productAttributeDevisionSelectDto.setToCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getFromCountryDevision().getId()));
             productAttributeDevisionSelectDto.setFromCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getToCountryDevision().getId()));
-            productAttributeDevisionSelectDto1.add(productAttributeDevisionSelectDto);
+            productAttributeDivisionSelectDto1.add(productAttributeDevisionSelectDto);
         }
-        productAttributeSelectDto.setAttributeDivition(productAttributeDevisionSelectDto1);
+        productAttributeSelectDto.setAttributeDivition(productAttributeDivisionSelectDto1);
         return productAttributeSelectDto;
     }
 
@@ -385,31 +373,27 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     public List<ProductAttributeDto> findById(Long id) {
 
         List<ProductAttribute> allByProduct = productAttributeRepository.findAllByProduct(new Product().setId(id));
-//        List<ProductAttribute> productAttributes = productAttributeRepository.FeatchProductAttributeDevision(productRepository.findById(id).orElseThrow(()->{
-//            throw BusinessException.valueException(EntityType.ProductAttribute,"product.attribute.not.found");
-//        }).getId());
-
         return allByProduct.stream().map(productAttributeConverter::fromModelToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ProductAttributeSelectDto> findByAttribute(Long id) {
-        List<ProductAttributeSelectDto> productAttributeSelectDtos = new ArrayList<>();
+        List<ProductAttributeSelectDto> productAttributeSelectList = new ArrayList<>();
         List<ProductAttribute> allByProduct = productAttributeRepository.findAllByProduct(new Product().setId(id));
         for (ProductAttribute productAttribute : allByProduct) {
             ProductAttributeDto productAttributeDto1 = productAttributeConverter.fromModelToDto(productAttribute);
 
             ProductAttributeSelectDto productAttributeSelectDto = productAttributeConverter.fromDtoToSelect(productAttributeDto1);
             List<ProductAttributeDevision> byProductAttribute = productAttributeDevisionRepository.findByProductAttribute(productAttribute);
-            List<ProductAttributeDevisionSelectDto> productAttributeDevisionSelectDto1 = new ArrayList<>();
+            List<ProductAttributeDevisionSelectDto> productAttributeDivisionSelectDto1 = new ArrayList<>();
             for (ProductAttributeDevision productAttributeDevision : byProductAttribute) {
                 ProductAttributeDevisionSelectDto productAttributeDevisionSelectDto = new ProductAttributeDevisionSelectDto();
                 productAttributeDevisionSelectDto.setId(productAttributeDevision.getId());
                 productAttributeDevisionSelectDto.setToCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getToCountryDevision().getId()));
                 productAttributeDevisionSelectDto.setFromCountryDevision(countryDevisionService.SelectTreeToParent(productAttributeDevision.getFromCountryDevision().getId()));
-                productAttributeDevisionSelectDto1.add(productAttributeDevisionSelectDto);
+                productAttributeDivisionSelectDto1.add(productAttributeDevisionSelectDto);
             }
-            productAttributeSelectDto.setAttributeDivition(productAttributeDevisionSelectDto1);
+            productAttributeSelectDto.setAttributeDivition(productAttributeDivisionSelectDto1);
             List<SelectResponse> selectResponses = new ArrayList<>();
             if (productAttributeSelectDto.getUsingProduct() != null) {
                 for (SelectResponse selectResponse : productAttributeSelectDto.getUsingProduct()) {
@@ -418,10 +402,10 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                     selectResponses.add(new SelectResponse(product.getId(), product.getName()));
                 }
                 productAttributeSelectDto.setUsingProduct(selectResponses);
-                productAttributeSelectDtos.add(productAttributeSelectDto);
+                productAttributeSelectList.add(productAttributeSelectDto);
             }
         }
-        return productAttributeSelectDtos;
+        return productAttributeSelectList;
 
     }
 }

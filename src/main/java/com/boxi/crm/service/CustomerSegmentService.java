@@ -14,7 +14,7 @@ public interface CustomerSegmentService {
     CustomerSegmentDto create(CustomerSegmentDto customerSegmentDto);
     CustomerSegmentDto edit(CustomerSegmentDto customerSegmentDto);
     Page<CustomerSegmentDto> filter(CustomerSegmentFilter filter, Pageable pageable);
-    CustomerSegmentDto findedit(Long id);
+    CustomerSegmentDto findEdit(Long id);
     void delete(Long id);
 
 }

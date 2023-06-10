@@ -28,21 +28,21 @@ public class CalendarApi {
     private final CalendarService calendarService;
 
     @PostMapping
-    public Response createcalender(@RequestBody CalendarHubDto dto) {
+    public Response createCalender(@RequestBody CalendarHubDto dto) {
 
-        return Response.ok().setPayload(calendarService.createcalendarhub(dto));
+        return Response.ok().setPayload(calendarService.createCalendarHub(dto));
     }
 
     @PutMapping
-    public Response editcalender(@RequestBody DispatchShiftDto dto) {
+    public Response editCalender(@RequestBody DispatchShiftDto dto) {
         log.warn(dto.toJson());
         return Response.ok().setPayload(calendarService.edit(dto));
     }
 
     @PutMapping("/calendar")
-    public Response editcalenderhub(@RequestBody CalendarHubDto dto) {
+    public Response editCalenderHub(@RequestBody CalendarHubDto dto) {
 
-        return Response.ok().setPayload(calendarService.editcalendarhub(dto));
+        return Response.ok().setPayload(calendarService.editCalendarHub(dto));
     }
 
     @DeleteMapping("/")
@@ -52,17 +52,17 @@ public class CalendarApi {
     }
 
     @GetMapping("/month")
-    public Response getmonth() {
+    public Response getMonth() {
         return Response.ok().setPayload(MONTH.select());
     }
 
     @GetMapping("/day")
-    public Response getday() {
+    public Response getDay() {
         return Response.ok().setPayload(DAY.select());
     }
 
     @GetMapping("/dispatchshift")
-    public Response getdispatchshift() {
+    public Response getDispatchShift() {
         return Response.ok().setPayload(DispatchShiftType.select());
     }
 
@@ -76,90 +76,89 @@ public class CalendarApi {
     }
 
     @PostMapping("/dispatchshift")
-    public Response getfindbycalendardis(@RequestBody SelectResponse calendar) {
-        return Response.ok().setPayload(calendarService.findbyDispatchershift(calendar));
+    public Response getFindByCalendarDis(@RequestBody SelectResponse calendar) {
+        return Response.ok().setPayload(calendarService.findByDispatcherShift(calendar));
     }
 
     @PostMapping("/dispatchshiftbydate")
-    public Response getfindbycalendardisByDate(@RequestBody DateDto calendar) {
+    public Response getFindByCalendarDisByDate(@RequestBody DateDto calendar) {
 
-        return Response.ok().setPayload(calendarService.findbyDispatchershiftByDate(calendar,null));
+        return Response.ok().setPayload(calendarService.findByDispatcherShiftByDate(calendar,null));
     }
 
     @PostMapping("/dispatchshiftbydateandHub")
-    public Response getfindbycalendardisByDateByhub(@RequestBody FindByDispatcherByHubDto dto) {
+    public Response getFindByCalendarDisByDateByHub(@RequestBody FindByDispatcherByHubDto dto) {
 
-        return Response.ok().setPayload(calendarService.getfindbycalendardisByDateByhub(dto));
+        return Response.ok().setPayload(calendarService.getFindByCalendarDisByDateByHub(dto));
     }
     @PostMapping("/copyshift")
-    public Response copyshift(@RequestBody CopyDispatchShiftDto calendar) {
+    public Response copyShift(@RequestBody CopyDispatchShiftDto calendar) {
         return Response.ok().setPayload(calendarService.copyDispatchShift(calendar));
     }
 
 
     @PostMapping("/createnormalshift")
-    public Response deleteselectshift(@RequestBody NormalShiftDto shift) {
-        String createnormalshift = calendarService.createnormalshift(shift);
-        if (!createnormalshift.equals(""))
-            throw BusinessException.valueException(EntityType.CALENDAR, "calender.dispatcher.is.exists", createnormalshift);
+    public Response deleteSelectShift(@RequestBody NormalShiftDto shift) {
+        String s = calendarService.createNormalShift(shift);
+        if (!s.equals(""))
+            throw BusinessException.valueException(EntityType.CALENDAR, "calender.dispatcher.is.exists", s);
         return Response.ok();
     }
 
     @PostMapping("/copyyearhubbyday")
-    public Response copyyearhubbyday(@RequestBody CopyYearHubDto dto) {
-        calendarService.copyyearhubbyday(dto);
+    public Response copyYearHubByDay(@RequestBody CopyYearHubDto dto) {
+        calendarService.copyYearHubByDay(dto);
         return Response.ok();
     }
 
     @PostMapping("/copyyearhubbyweekday")
-    public Response copyyearhubbyweekday(@RequestBody CopyYearHubDto dto) {
-        calendarService.copyyearhubbyweekday(dto);
+    public Response copyYearHubByWeekDay(@RequestBody CopyYearHubDto dto) {
+        calendarService.copyYearHubByWeekday(dto);
         return Response.ok();
     }
 
     @GetMapping("/year")
-    public Response getyear() {
-
-        return Response.ok().setPayload(calendarService.getyears());
+    public Response getYear() {
+        return Response.ok().setPayload(calendarService.getYears());
     }
 
     @PostMapping("/filtertrm")
-    public Response filtertrm(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+    public Response filterTrm(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                               @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                               @RequestBody FilterCalendar request) {
 
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return Response.ok().setPayload(calendarService.filtertrm(request, pageable));
+        return Response.ok().setPayload(calendarService.filterTrm(request, pageable));
 
     }
 
     @PostMapping("/dispatcher")
-    public Response createdispatcher(@RequestBody DispatchShiftDto dto) {
+    public Response createDispatcher(@RequestBody DispatchShiftDto dto) {
         return Response.ok().setPayload(calendarService.createDispatcher(dto));
     }
 
     @DeleteMapping("/calendar/{id}")
-    public Response deletecalendat(@PathVariable Long id) {
-        calendarService.deletecalenderhub(id);
+    public Response deleteCalendar(@PathVariable Long id) {
+        calendarService.deleteCalenderHub(id);
         return Response.ok();
     }
 
     @GetMapping("/findshiftbyid/{id}")
     public DispatchShiftDto findshiftbyid(@PathVariable Long id) {
-        DispatchShiftDto findshiftbyid = calendarService.findshiftbyid(id);
-        return findshiftbyid;
+
+        return calendarService.findShiftById(id);
     }
     @GetMapping("/findnextshiftbyid/{id}")
     public DispatchShiftDto findnextshiftbyid(@PathVariable Long id) {
-        DispatchShiftDto findshiftbyid = calendarService.findnextshiftbyid(id);
-        return findshiftbyid;
+
+        return calendarService.findNextShiftById(id);
     }
 
     @PostMapping("/findShiftBytype/{type}/{hubid}")
-    public List<SelectResponse> findShiftBytype(@PathVariable Long type ,@RequestBody DateDto dateDto,@PathVariable Long hubid ) {
-        List<SelectResponse> findshiftbyid = calendarService.findShiftBytype(type,dateDto,hubid);
-        return findshiftbyid;
+    public List<SelectResponse> findShiftByType(@PathVariable Long type ,@RequestBody DateDto dateDto,@PathVariable Long hubid ) {
+
+        return calendarService.findShiftByType(type,dateDto,hubid);
     }
 
 

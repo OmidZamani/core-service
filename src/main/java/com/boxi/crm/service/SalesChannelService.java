@@ -2,9 +2,7 @@ package com.boxi.crm.service;
 
 import com.boxi.core.request.GenericFilter;
 import com.boxi.core.response.SelectResponse;
-import com.boxi.crm.payload.dto.CustomerSegmentDto;
 import com.boxi.crm.payload.dto.SalesChannelDto;
-import com.boxi.crm.payload.request.CustomerSegmentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

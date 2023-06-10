@@ -58,12 +58,12 @@ public class HubApi {
     }
 
     @PostMapping("/filtergroupby")
-    public Response filtergroupby(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+    public Response filterGroupBy(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                                   @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                   @RequestBody FilterHub request) {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<HubDto> response = hubService.filtergroupby(request, pageable);
+        Page<HubDto> response = hubService.filterGroupBy(request, pageable);
         return Response.ok().setPayload(response);
     }
 
@@ -76,18 +76,18 @@ public class HubApi {
     }
 
     @PostMapping("/selectmainhub")
-    public Response selectmainhub(@RequestParam(name = "filter", required = false) String filter,
+    public Response selectMainHub(@RequestParam(name = "filter", required = false) String filter,
                                   @RequestBody HubFilter hubFilter) {
         log.warn(hubFilter.toString());
-        Page<SelectResponse> response = hubService.selectMainhub(filter, hubFilter);
+        Page<SelectResponse> response = hubService.selectMainHub(filter, hubFilter);
         return Response.ok().setPayload(response);
     }
 
     @PostMapping("/selectbranchhub")
-    public Response selectbranchhub(@RequestParam(name = "filter", required = false) String filter,
+    public Response selectBranchHub(@RequestParam(name = "filter", required = false) String filter,
                                     @RequestBody HubFilter hubFilter) {
         log.warn(hubFilter.toString());
-        Page<SelectResponse> response = hubService.selectbranchhub(filter, hubFilter);
+        Page<SelectResponse> response = hubService.selectBranchHub(filter, hubFilter);
         return Response.ok().setPayload(response);
     }
 
@@ -128,19 +128,19 @@ public class HubApi {
 
 
     @GetMapping("/zone")
-    public Response getzone() {
-        return Response.ok().setPayload(hubService.listofAllzone());
+    public Response getZone() {
+        return Response.ok().setPayload(hubService.listOfAllZone());
     }
 
 
     @GetMapping("/zone/{id}")
-    public Response getzone(@PathVariable Long id) {
-        return Response.ok().setPayload(hubService.findzonebyid(id));
+    public Response getZone(@PathVariable Long id) {
+        return Response.ok().setPayload(hubService.findZoneById(id));
     }
 
     @DeleteMapping("/zone/delete")
     public Response delete(@RequestBody ZoneHubDto dto) {
-        hubService.deletezobehub(dto);
+        hubService.deleteZoneHub(dto);
         return Response.ok();
     }
 
@@ -151,24 +151,24 @@ public class HubApi {
     }
 
     @DeleteMapping("/zone/deletepolygon")
-    public Response deactivezonehub(@RequestBody ZoneHubDto dto) {
-        hubService.deactivezonehub(dto);
+    public Response deActiveZoneHub(@RequestBody ZoneHubDto dto) {
+        hubService.deActiveZoneHub(dto);
         return Response.ok();
     }
 
     @GetMapping("/zone/findbyid/{id}")
-    public Response findbyzoneid(@PathVariable Long id) {
-        return Response.ok().setPayload(hubService.findbysubzoneid(id));
+    public Response findByZoneId(@PathVariable Long id) {
+        return Response.ok().setPayload(hubService.findBySubZoneId(id));
     }
 
     @PostMapping("/zone")
-    public Response createzone(@RequestBody ZoneDto dto) {
-        return Response.ok().setPayload(hubService.createzone(dto));
+    public Response CreateZone(@RequestBody ZoneDto dto) {
+        return Response.ok().setPayload(hubService.createZone(dto));
     }
 
     @PostMapping("/zone/createSubzone")
-    public Response createSubzone(@RequestBody ZoneDto dto) {
-        return Response.ok().setPayload(hubService.createSubzone(dto));
+    public Response createSubZone(@RequestBody ZoneDto dto) {
+        return Response.ok().setPayload(hubService.createSubZone(dto));
     }
 
     @PostMapping("/zone/position")
@@ -177,10 +177,10 @@ public class HubApi {
     }
 
     @GetMapping("/zone/findbycity")
-    public Response findBypriviance(@RequestParam(name = "city", required = true) Long cityid,
-                                    @RequestParam(name = "hubname") String hubname,
+    public Response findByProvince(@RequestParam(name = "city") Long cityId,
+                                    @RequestParam(name = "hubname") String hubName,
                                     @RequestParam(name = "type") Long type) {
-        return Response.ok().setPayload(hubService.findbycity(cityid, hubname, type));
+        return Response.ok().setPayload(hubService.findByCity(cityId, hubName, type));
     }
 
     @GetMapping("/enterChange/{id}")
@@ -202,19 +202,17 @@ public class HubApi {
 
     @PostMapping("/enterChange/fetchHubByCodes")
     public List<SimpleHubDto> fetchHubByCodes(@RequestBody SimpleArrayWrapper hubCodes) {
-        List<SimpleHubDto> xxxx = hubService.getHubsByCodes(hubCodes);
-        log.warn(">>>>>>>>>>>>>>>>>>>{} , {}", xxxx.toString(), xxxx.size());
-        return xxxx;
+        return hubService.getHubsByCodes(hubCodes);
     }
 
     @PutMapping("/update")
-    public Response updatehub(@RequestBody HubDto hubDto) {
-        return Response.ok().setPayload(hubService.updateHubzone(hubDto));
+    public Response updateHub(@RequestBody HubDto hubDto) {
+        return Response.ok().setPayload(hubService.updateHubZone(hubDto));
     }
 
     @GetMapping("/hubLocation")
-    public Response hubLocation(@RequestParam(name = "filter") String hubname, @RequestParam(name = "cityid") String cityId) {
-        return Response.ok().setPayload(hubService.hubLocation(hubname, cityId));
+    public Response hubLocation(@RequestParam(name = "filter") String hubName, @RequestParam(name = "cityid") String cityId) {
+        return Response.ok().setPayload(hubService.hubLocation(hubName, cityId));
     }
 
     //      PROVINCE("استان",0), CITY("شهر",1),  hubRegion(" هاب", 2), pickupRegion(" جمع آوری", 3),
@@ -226,23 +224,23 @@ public class HubApi {
 
     @GetMapping("/zone/findByRegion/{id}")
     public Response fidByRegion(@PathVariable Long id) {
-        return Response.ok().setPayload(hubService.findByZoneRegionPolygone(id));
+        return Response.ok().setPayload(hubService.findByZoneRegionPolyGone(id));
     }
 
     @GetMapping("/zone/findByRegionCountryDevision/{id}")
-    public Response findByRegionCountryDevision(@PathVariable Long id) {
-        return Response.ok().setPayload(hubService.findByRegionCountryDevision(id));
+    public Response findByRegionCountryDivision(@PathVariable Long id) {
+        return Response.ok().setPayload(hubService.findByRegionCountryDivision(id));
     }
 
     @PutMapping("/zone/updateCountryDevision")
-    public Response updateCountryDevision(@RequestBody SelectResponse dto) {
-        return Response.ok().setPayload(hubService.updateCountryDevision(dto));
+    public Response updateCountryDivision(@RequestBody SelectResponse dto) {
+        return Response.ok().setPayload(hubService.updateCountryDivision(dto));
     }
 
 
     @GetMapping("/findByCityinHub/{id}")
-    public Response findByCityinHub(@PathVariable Long id ){
-        return Response.ok().setPayload(hubService.findByCityinHub(id));
+    public Response findByCityInHub(@PathVariable Long id ){
+        return Response.ok().setPayload(hubService.findByCityInHub(id));
     }
 
 }

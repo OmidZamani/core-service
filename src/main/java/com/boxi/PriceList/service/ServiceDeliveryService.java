@@ -21,9 +21,9 @@ public interface ServiceDeliveryService {
 
     ServiceDeliveryDto edit(ServiceDeliveryDto request);
 
-    boolean ExcelValidation(List<ServiceDeliveryExcelDto> exceptionExcelDtos);
+    boolean ExcelValidation(List<ServiceDeliveryExcelDto> exceptionExcelList);
 
-    List<ServiceDeliveryDto> ImportExcel(List<ServiceDeliveryExcelDto> exceptionExcelDtos);
+    List<ServiceDeliveryDto> ImportExcel(List<ServiceDeliveryExcelDto> exceptionExcelList);
 
     void deleteDiscount(Long Id);
 

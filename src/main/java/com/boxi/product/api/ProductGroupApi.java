@@ -64,7 +64,7 @@ public class ProductGroupApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         Page<SelectResponse> response = productService.select(filter);
         return  Response.ok().setPayload(response);
     }

@@ -63,8 +63,8 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public Page<SelectResponse> select(String filter, HubFilter hublist) {
-        if (hublist.getHublist() != null) {
+    public Page<SelectResponse> select(String filter, HubFilter hubList) {
+        if (hubList.getHublist() != null) {
             Pageable pageable = PageRequest.of(0, 100);
             Page<Bag> res = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
@@ -73,7 +73,7 @@ public class BagServiceImpl implements BagService {
                     predicates.add(criteriaBuilder.like(root.get("bagNumber"), "%" + filter.trim() + "%"));
                 }
 
-                List<Long> ids = findAllhubid(hublist.getHublist());
+                List<Long> ids = findAllhubid(hubList.getHublist());
                 Join<Object, Object> hubjoinsource = root.join("sourceHub", JoinType.LEFT);
                 Predicate source = criteriaBuilder.and(criteriaBuilder.or(hubjoinsource.get("id").in(ids)));
 
@@ -236,9 +236,9 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public boolean ExcelValidation(List<BagExcelDto> bagExcelDtos) {
+    public boolean ExcelValidation(List<BagExcelDto> bagExcelList) {
         int i = 1;
-        for (BagExcelDto bagExcelDto : bagExcelDtos) {
+        for (BagExcelDto bagExcelDto : bagExcelList) {
             if (bagRepository.existsByBagNumber(bagExcelDto.getBagNumber())) {
                 throw BusinessException.valueException(EntityType.EXCEPTION, "bag.is.duplicate", bagExcelDto.getBagNumber() + "  ردیف " + i);
             }
@@ -258,9 +258,9 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public List<BagDto> ImportExcel(List<BagExcelDto> bagExcelDtos) {
+    public List<BagDto> ImportExcel(List<BagExcelDto> bagExcelList) {
         List<BagDto> bagDtos = new ArrayList<>();
-        for (BagExcelDto bagExcelDto : bagExcelDtos) {
+        for (BagExcelDto bagExcelDto : bagExcelList) {
             BagDto bagDto = new BagDto();
 
             bagDto.setBagNumber(bagExcelDto.getBagNumber());
@@ -277,7 +277,7 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public BagDto findBybagnumber(String number) {
+    public BagDto findByBagNumber(String number) {
         Bag byBagNumber = bagRepository.findByBagNumber(number);
         return bagConverter.fromModelToDto(byBagNumber);
     }
@@ -299,8 +299,8 @@ public class BagServiceImpl implements BagService {
 
 
     @Override
-    public List<SelectResponse> reportTotal(Long hubid) {
-        List<String> selectResponses = bagRepository.totalReport(new Hub().setId(hubid));
+    public List<SelectResponse> reportTotal(Long hubId) {
+        List<String> selectResponses = bagRepository.totalReport(new Hub().setId(hubId));
         List<SelectResponse> list = new ArrayList<>();
         list.add(new SelectResponse(0L, "Bagging"));
         list.add(new SelectResponse(0L, "bagged"));

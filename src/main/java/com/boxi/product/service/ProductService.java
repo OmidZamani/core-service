@@ -29,9 +29,9 @@ public interface ProductService {
 
     Page<SelectResponse> select(String filter);
 
-    List<SelectResponse> featchUsingProducts(List<UsingProduct> usingProductDtos);
+    List<SelectResponse> fetchUsingProducts(List<UsingProduct> usingProductList);
 
-    boolean ExcelValidation(List<ProductExcelDto> productExcelDtos);
+    boolean ExcelValidation(List<ProductExcelDto> productExcelList);
 
-    List<ProductDto> ImportExcel(List<ProductExcelDto> productExcelDtos);
+    List<ProductDto> ImportExcel(List<ProductExcelDto> productExcelList);
 }

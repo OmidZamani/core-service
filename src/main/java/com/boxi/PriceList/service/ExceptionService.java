@@ -20,9 +20,9 @@ public interface ExceptionService {
 
     Page<ExceptionDto> filter(FilterException filter, Pageable pageable);
 
-    List<ExceptionDto> ImportExcel(List<ExceptionExcelDto> exceptionExcelDtos);
+    List<ExceptionDto> ImportExcel(List<ExceptionExcelDto> exceptionExcelList);
 
-    boolean ExcelValidation(List<ExceptionExcelDto> exceptionExcelDtos);
+    boolean ExcelValidation(List<ExceptionExcelDto> exceptionExcelList);
 
     Exception findById(Long id);
 
@@ -30,5 +30,5 @@ public interface ExceptionService {
 
     List<SelectResponse> selectByType(String filter, Long type);
 
-    List<ExceptionDto> vehicleException(FindVehicleInException vehicle);
+    List<ExceptionDto> vehicleException(FindVehicleInException vehicle); //TODO
 }

@@ -153,10 +153,10 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public boolean ExcelValidation(List<VendorExcelDto> vendorExcelDtos) {
+    public boolean ExcelValidation(List<VendorExcelDto> vendorExcelList) {
 
         int i = 1;
-        for (VendorExcelDto vendorExcelDto : vendorExcelDtos) {
+        for (VendorExcelDto vendorExcelDto : vendorExcelList) {
             if (vendorRepository.existsByCodeAndIsDeletedFalse(vendorExcelDto.getCode()))
                 throw BusinessException.valueException(EntityType.Vendor,
                         "vendor.is.duplicate",
@@ -169,9 +169,9 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public List<VendorDto> ImportExcel(List<VendorExcelDto> vendorExcelDtos) {
+    public List<VendorDto> ImportExcel(List<VendorExcelDto> vendorExcelList) {
         List<VendorDto> vendorExcelDtoslist = new ArrayList<>();
-        for (VendorExcelDto vendorExcelDto : vendorExcelDtos) {
+        for (VendorExcelDto vendorExcelDto : vendorExcelList) {
             vendorExcelDtoslist.add(createVendor(vendorConverter.fromExcelDto(vendorExcelDto)));
 
         }

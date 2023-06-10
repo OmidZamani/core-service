@@ -56,7 +56,7 @@ public class CustomerSegmentServiceImpl implements CustomerSegmentService {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
-            if (filter != null && StringUtils.isNotBlank(filter))
+            if ( StringUtils.isNotBlank(filter))
                 predicates.add(criteriaBuilder.equal(root.get("name"), "%" + filter + "%"));
 
             return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));
@@ -76,13 +76,13 @@ public class CustomerSegmentServiceImpl implements CustomerSegmentService {
     @Override
     public CustomerSegmentDto create(CustomerSegmentDto customerSegmentDto) {
 
-        return savecreate(customerSegmentDto);
+        return saveCreate(customerSegmentDto);
 
     }
 
     @Override
     public CustomerSegmentDto edit(CustomerSegmentDto customerSegmentDto) {
-        return saveedit(customerSegmentDto);
+        return saveEdit(customerSegmentDto);
     }
 
     @Override
@@ -107,21 +107,20 @@ public class CustomerSegmentServiceImpl implements CustomerSegmentService {
     }
 
     @Override
-    public CustomerSegmentDto findedit(Long id) {
+    public CustomerSegmentDto findEdit(Long id) {
         CustomerSegment segment = customerSegmentRepository.findById(id).orElseThrow(() -> {
                     throw BusinessException.valueException(EntityType.CUSEOMERSEGMENT, "Customer.Segment.not.found");
                 }
         );
         CustomerSegmentDto dto = customerSegmentConvert.fromModelToDto(segment);
-        List<SegmentCustomersDto> segmentCustomersDtos = new ArrayList<>();
+        List<SegmentCustomersDto> segmentCustomersList = new ArrayList<>();
 
         for (SegmentCustomersDto segmentCustomer : dto.getSegmentCustomers()) {
-            SegmentCustomersDto segmentCustomersDto = segmentCustomer;
             CustomerDto customerDto = customerClient.getfindById(segmentCustomer.getSelectcustomer().getId());
-            segmentCustomersDto.setSelectcustomer(new SelectResponse(customerDto.getId(), customerDto.getName()));
-            segmentCustomersDtos.add(segmentCustomersDto);
+            segmentCustomer.setSelectcustomer(new SelectResponse(customerDto.getId(), customerDto.getName()));
+            segmentCustomersList.add(segmentCustomer);
         }
-        dto.setSegmentCustomers(segmentCustomersDtos);
+        dto.setSegmentCustomers(segmentCustomersList);
 
         return dto;
     }
@@ -132,26 +131,26 @@ public class CustomerSegmentServiceImpl implements CustomerSegmentService {
         customerSegmentRepository.logicalDelete(id);
     }
 
-    public CustomerSegmentDto saveedit(CustomerSegmentDto customerSegmentDto) {
+    public CustomerSegmentDto saveEdit(CustomerSegmentDto customerSegmentDto) {
 
         customerSegmentDto.setIsDeleted(false);
         CustomerSegment segment = customerSegmentRepository.save(customerSegmentConvert.fromDtoToModel(customerSegmentDto));
-        List<SegmentCustomersDto> segmentCustomersDtos = new ArrayList<>();
+        List<SegmentCustomersDto> segmentCustomersList = new ArrayList<>();
         for (SegmentCustomersDto segmentCustomer : customerSegmentDto.getSegmentCustomers()) {
             SegmentCustomers segmentCustomers = segmentCustomersConverter.fromDtoToModel(segmentCustomer);
             segmentCustomers.setSegment(segment);
             segmentCustomers.setCustomerId(segmentCustomer.getSelectcustomer().getId());
 
             SegmentCustomers save = segmentCustomersRepository.save(segmentCustomers);
-            segmentCustomersDtos.add(segmentCustomersConverter.fromModelToDto(save));
+            segmentCustomersList.add(segmentCustomersConverter.fromModelToDto(save));
         }
         CustomerSegmentDto dto = customerSegmentConvert.fromModelToDto(segment);
-        dto.setSegmentCustomers(segmentCustomersDtos);
+        dto.setSegmentCustomers(segmentCustomersList);
 
         return dto;
     }
 
-    public CustomerSegmentDto savecreate(CustomerSegmentDto customerSegmentDto) {
+    public CustomerSegmentDto saveCreate(CustomerSegmentDto customerSegmentDto) {
         if (isExists(customerSegmentDto.getCode()))
             throw BusinessException.valueException(EntityType.CUSEOMERSEGMENT, "Customer.Segment.is.duplicate");
 
@@ -161,16 +160,16 @@ public class CustomerSegmentServiceImpl implements CustomerSegmentService {
 
 
         CustomerSegment segment = customerSegmentRepository.save(customerSegment);
-        List<SegmentCustomersDto> segmentCustomersDtos = new ArrayList<>();
+        List<SegmentCustomersDto> segmentCustomersList = new ArrayList<>();
         for (SegmentCustomersDto segmentCustomer : customerSegmentDto.getSegmentCustomers()) {
             SegmentCustomers segmentCustomers = new SegmentCustomers();
             segmentCustomers.setSegment(segment);
             segmentCustomers.setCustomerId(segmentCustomer.getSelectcustomer().getId());
-            segmentCustomersDtos.add(segmentCustomersConverter.fromModelToDto(segmentCustomersRepository.save(segmentCustomers)));
+            segmentCustomersList.add(segmentCustomersConverter.fromModelToDto(segmentCustomersRepository.save(segmentCustomers)));
         }
 
         CustomerSegmentDto dto = customerSegmentConvert.fromModelToDto(segment);
-        dto.setSegmentCustomers(segmentCustomersDtos);
+        dto.setSegmentCustomers(segmentCustomersList);
         return dto;
     }
 

@@ -6,7 +6,6 @@ import com.boxi.PriceList.entity.PriceListDetail;
 import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.SuggestionPriceDto;
 import com.boxi.PriceList.repo.PriceListRepository;
-import com.boxi.PriceList.payload.request.PriceListRequest;
 import com.boxi.hub.entity.CustomCountryDevision;
 import com.boxi.hub.entity.CustomDevisionDetail;
 import com.boxi.utils.DateUtil;
@@ -18,7 +17,6 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CalculatePriceService {
@@ -26,7 +24,7 @@ public class CalculatePriceService {
     @Autowired
     PriceListRepository priceListRepository;
 
-    //TODO add product also to join ......join has unneccesary data
+    //TODO add product also to join ......join has unnecessary data
 
 
     public Optional<SuggestionPriceDto> priceSuggestion(ConsignmentInfoDto request) {
@@ -107,7 +105,7 @@ public class CalculatePriceService {
                     Join<PriceListDetail, CustomCountryDevision> joinCustomCountryDevision = priceListDetailJoin.join("customCountryDevision", JoinType.LEFT);
 
                     Join<CustomCountryDevision,CustomDevisionDetail> customDevisionDetailsJoin=joinCustomCountryDevision.join("customDevisionDetails",JoinType.LEFT);
-                    // Unable to locate Attribute  with the the given name [customDevisionDetails]
+                    // Unable to locate Attribute  with the given name [customDivisionDetails]
 
                     if(request.getFromStateId()!=null) {
                         predicates.add(cb.equal(customDevisionDetailsJoin.get("fromCountryDevision").get("id"), request.getFromStateId()));
@@ -141,7 +139,13 @@ public class CalculatePriceService {
 
     private SuggestionPriceDto mapToPriceList(PriceList in){
         SuggestionPriceDto out=new SuggestionPriceDto();
-        return out.setCode(in.getPriceListCode()).setName(in.getPriceListName()).setId(in.getId()).setPrice(in.getPriceListDetails().stream().map(PriceListDetail::getPrice).max(Comparator.naturalOrder()).get());
+        return out.setCode(in.getPriceListCode()).setName(in.getPriceListName())
+                .setId(in.getId())
+                .setPrice(in
+                        .getPriceListDetails()
+                        .stream()
+                        .map(PriceListDetail::getPrice)
+                        .max(Comparator.naturalOrder()).get());
     }
 
 

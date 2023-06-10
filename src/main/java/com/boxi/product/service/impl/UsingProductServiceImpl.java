@@ -77,8 +77,6 @@ public class UsingProductServiceImpl implements UsingProductService {
     @Override
     public UsingProductDto edit(UsingProductDto request) {
         UsingProduct usingProduct = findById(request.getId());
-//        if(isExist(usingProduct.getParent().getId()))
-//            throw BusinessException.throwException(EntityType.UsingProduct, ExceptionType.DUPLICATE_ENTITY);
         usingProductConverter.updateFromDto(request, usingProduct);
         return saveData(usingProduct);
     }

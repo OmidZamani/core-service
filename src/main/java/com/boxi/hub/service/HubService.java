@@ -23,7 +23,7 @@ public interface HubService {
 
     CreateHubCategoryResponse findHubCatById(Long id);
 
-    Page<SelectResponse> selectParentHub(String name);
+    Page<SelectResponse> selectParentHub(String name);//TODO
 
     Page<SelectResponse> selectHubCategory(String filter);
 
@@ -37,11 +37,11 @@ public interface HubService {
 
     Page<SelectResponse> select(String filter, HubFilter hubFilter);
 
-    Page<SelectResponse> selectMainhub(String filter, HubFilter hubFilter);
+    Page<SelectResponse> selectMainHub(String filter, HubFilter hubFilter);
 
     Hub fromSelect(SelectResponse select);
 
-    HubCategory fromSelectHubCategory(SelectResponse select);
+    HubCategory fromSelectHubCategory(SelectResponse select);//TODO
 
     SelectResponse toSelect(Hub hub);
 
@@ -65,43 +65,43 @@ public interface HubService {
 
     Map<Long, String> fetchHubsMapByIds(List<Long> deliveryHubId);
 
-    List<ZoneHubDto> listofAllzone();
+    List<ZoneHubDto> listOfAllZone();
 
-    ZoneDto createzone(ZoneDto dto);
+    ZoneDto createZone(ZoneDto dto);
 
-    ZoneDto createSubzone(ZoneDto dto);
+    ZoneDto createSubZone(ZoneDto dto);
 
-    List<ZoneHubDto> findzonebyid(Long id);
+    List<ZoneHubDto> findZoneById(Long id);
 
     List<ZoneHubDto> findByPosition(Double locLate, Double locLate1);
 
-    List<ZoneHubDto> findbycity(Long cityid, String hubname,Long type);
+    List<ZoneHubDto> findByCity(Long cityId, String hubName, Long type);
 
-    Page<HubDto> filtergroupby(FilterHub request, Pageable pageable);
+    Page<HubDto> filterGroupBy(FilterHub request, Pageable pageable);
 
-    HubDto updateHubzone(HubDto hubDto);
+    HubDto updateHubZone(HubDto hubDto);
 
-    ZoneHubDto findbysubzoneid(Long id);
+    ZoneHubDto findBySubZoneId(Long id);
 
-    void deletezobehub(ZoneHubDto dto);
+    void deleteZoneHub(ZoneHubDto dto);
 
-    void deactivezonehub(ZoneHubDto dto);
+    void deActiveZoneHub(ZoneHubDto dto);
 
-    List<HubWithLocationDto> hubLocation(String hubname, String cityId);
+    List<HubWithLocationDto> hubLocation(String hubName, String cityId);
 
-    Page<SelectResponse> selectbranchhub(String filter, HubFilter hubFilter);
+    Page<SelectResponse> selectBranchHub(String filter, HubFilter hubFilter);
 
     ZoneDto findRegionInZone(FindRegionInZoneDto dto);
 
-    ZoneHubDto findByZoneRegionPolygone(Long hubId);
+    ZoneHubDto findByZoneRegionPolyGone(Long hubId);
 
 
-    SelectResponse findByRegionCountryDevision(Long id);
+    SelectResponse findByRegionCountryDivision(Long id);
 
-    SelectResponse updateCountryDevision(SelectResponse dto);
+    SelectResponse updateCountryDivision(SelectResponse dto);
 
     void deleteSubZonePolygon(ZoneHubDto dto);
 
 
-    List<SelectResponse> findByCityinHub(Long id);
+    List<SelectResponse> findByCityInHub(Long id);
 }

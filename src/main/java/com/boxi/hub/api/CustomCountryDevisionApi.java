@@ -1,5 +1,6 @@
 package com.boxi.hub.api;
-//1013	custom country devision	CustomCountryDevisionApi	تعریف رده جغرافیایی سفارشی
+//1013	custom country division	CustomCountryDevisionApi	تعریف رده جغرافیایی سفارشی
+
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/core-api/customcountrydevision")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*",allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomCountryDevisionApi {
 
     private final CustomCountryDevisionService customCountryDevisionService;
@@ -38,7 +38,7 @@ public class CustomCountryDevisionApi {
     @GetMapping("/genPinCode")
     public Response genPinCode() {
         System.out.println("genPinCode");
-        return  Response.ok().setPayload(UUID.randomUUID().toString());
+        return Response.ok().setPayload(UUID.randomUUID().toString());
     }
 
 
@@ -47,7 +47,7 @@ public class CustomCountryDevisionApi {
     public Response create(@RequestBody CustomCountryDevisionDto request) {
         log.warn(request.toJson());
         CustomCountryDevisionDto customCountryDevisionDto = customCountryDevisionService.create(request);
-        return  Response.ok().setPayload(customCountryDevisionDto);
+        return Response.ok().setPayload(customCountryDevisionDto);
     }
 
     // @PreAuthorize("hasPermission('hasAccess','101303')")
@@ -55,61 +55,58 @@ public class CustomCountryDevisionApi {
     public Response edit(@Valid @RequestBody CustomCountryDevisionDto request) {
         log.warn(request.toJson());
         CustomCountryDevisionDto edit = customCountryDevisionService.edit(request);
-        return  Response.ok().setPayload(edit);
+        return Response.ok().setPayload(edit);
     }
 
     // @PreAuthorize("hasPermission('hasAccess','101304')")
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {
         customCountryDevisionService.delete(id);
-        return  Response.ok();
+        return Response.ok();
     }
 
 
     @PostMapping("/filter")
-    public Response filter(@RequestParam(name = "pageNumber",defaultValue = "1",required=false) Integer pageNumber,
-                           @RequestParam(name = "pageSize",defaultValue = "10",required=false) Integer pageSize,
+    public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+                           @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                            @RequestBody FilterCustomCountryDevision request) {
         log.warn(request.toJson());
-        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<CustomCountryDevisionFilterDto> filter = customCountryDevisionService.filter(request, pageable);
-        return  Response.ok().setPayload(filter);
+        return Response.ok().setPayload(filter);
     }
 
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter") String filter) {
         Page<SelectResponse> response = customCountryDevisionService.select(filter);
-        return  Response.ok().setPayload(response);
+        return Response.ok().setPayload(response);
     }
 
 
     // @PreAuthorize("hasPermission('hasAccess','101302')")
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
         log.warn(Entity);
-        String Dto = Entity;
-        List<CustomCountryDevisionExcelDto> customCountryDevisionDtos =
+        List<CustomCountryDevisionExcelDto> customCountryDivisionList =
                 (List<CustomCountryDevisionExcelDto>) convertExcelService.ConvertExcelToObjects(CustomCountryDevisionExcelDto.class, excel);
 
-        if (customCountryDevisionService.ExcelValidation(customCountryDevisionDtos)) {
+        if (customCountryDevisionService.ExcelValidation(customCountryDivisionList)) {
 
-            List<CustomCountryDevisionDto> customCountryDevisionDtos1 = customCountryDevisionService.ImportExcel(customCountryDevisionDtos);
-            int Detailscount=0;
+            List<CustomCountryDevisionDto> customCountryDivisionLists = customCountryDevisionService.ImportExcel(customCountryDivisionList);
 
-            for (CustomCountryDevisionDto customCountryDevisionDto : customCountryDevisionDtos1) {
+            int DetailsCount = 0;
+            for (CustomCountryDevisionDto customCountryDevisionDto : customCountryDivisionLists) {
 
-                Detailscount+=customCountryDevisionDto.getCustomDevisionDetails().size();
+                DetailsCount += customCountryDevisionDto.getCustomDevisionDetails().size();
             }
 
             JSONObject jsonObject = new JSONObject();
 
-            jsonObject.put("customcountrydevision",customCountryDevisionDtos1.size());
-            jsonObject.put("customDevisionDetails",Detailscount);
-            return Response.ok().setPayload(customCountryDevisionDtos1);
-        }
-        else {
+            jsonObject.put("customcountrydevision", customCountryDivisionLists.size());
+            jsonObject.put("customDevisionDetails", DetailsCount);
+            return Response.ok().setPayload(customCountryDivisionLists);
+        } else {
             return Response.ok();
         }
     }

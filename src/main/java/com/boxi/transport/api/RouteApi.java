@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -75,30 +75,29 @@ public class RouteApi {
 
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter",required = true) String filter) {
+    public Response select(@RequestParam(name = "filter"  ) String filter) {
         Page<SelectResponse> response = _service.select(filter);
         return  Response.ok().setPayload(response);
     }
 
     @GetMapping("/selectRoute")
-    public List<RouteDto> selectRoute(@RequestParam(name = "source",required = true) Long source,
-                              @RequestParam(name = "destination",required = true) Long destination) {
-        List<RouteDto> routeDtos = _service.selectRoute(source, destination).stream().collect(Collectors.toList());
-        return  routeDtos;
+    public List<RouteDto> selectRoute(@RequestParam(name = "source"  ) Long source,
+                              @RequestParam(name = "destination"  ) Long destination) {
+
+        return  _service.selectRoute(source, destination).stream().collect(Collectors.toList());
     }
     // @PreAuthorize("hasPermission('hasAccess','10080402')")
     @PostMapping("/importexcelfile")
-    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity, HttpServletRequest request) throws IOException {
-        String contextPath = request.getRequestURI();
+    public Response createByExcel(@RequestParam("file") MultipartFile excel, @RequestParam("Entity") String Entity) throws IOException {
+
         log.warn(Entity);
-        String Dto = Entity;
-        List<RouteExcelDto> routeExcelDtos =
+        List<RouteExcelDto> routeExcelList =
                 (List<RouteExcelDto>) convertExcelService.ConvertExcelToObjects(RouteExcelDto.class, excel);
 
-        if (_service.ExcelValidation(routeExcelDtos)) {
-            List<RouteDto> bagDtos = _service.ImportExcel(routeExcelDtos);
+        if (_service.ExcelValidation(routeExcelList)) {
+            List<RouteDto> routeList = _service.ImportExcel(routeExcelList);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("route",bagDtos.size());
+            jsonObject.put("route", routeList.size());
             return Response.ok().setPayload(jsonObject);
         }
         else {

@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Join;
@@ -34,6 +33,7 @@ import javax.persistence.criteria.Predicate;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,30 +64,30 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CalendarHubDto createcalendarhub(CalendarHubDto dto) {
+    public CalendarHubDto createCalendarHub(CalendarHubDto dto) {
         CalendarHub calendarHub = calendarHubConverter.fromDtoToModel(dto);
         calendarHub.setIsDeleted(false);
         calendarHub.setId(null);
         CalendarHub save = calendarHubRepository.save(calendarHub);
-        CalendarHubDto calendarHubDto = calendarHubConverter.fromModelToDto(save);
 
-        return calendarHubDto;
+
+        return calendarHubConverter.fromModelToDto(save);
     }
 
     @Override
-    public CalendarHubDto editcalendarhub(CalendarHubDto dto) {
+    public CalendarHubDto editCalendarHub(CalendarHubDto dto) {
         CalendarHub calendarHub = calendarHubConverter.fromDtoToModel(dto);
         calendarHub.setIsDeleted(false);
 
         CalendarHub save = calendarHubRepository.save(calendarHub);
-        CalendarHubDto calendarHubDto = calendarHubConverter.fromModelToDto(save);
 
-        return calendarHubDto;
+
+        return calendarHubConverter.fromModelToDto(save);
     }
 
     @Override
     public List<DispatchShiftDto> create(List<DispatchShiftDto> dto) {
-        return savecreate(dto);
+        return saveCreate(dto);
     }
 
     public Boolean checkDispatcherlist(List<DispatchShift> dispatchShifts) {
@@ -101,19 +101,19 @@ public class CalendarServiceImpl implements CalendarService {
         return true;
     }
 
-    public List<DispatchShiftDto> savecreate(List<DispatchShiftDto> dto) {
+    public List<DispatchShiftDto> saveCreate(List<DispatchShiftDto> dto) {
 
         List<DispatchShift> collect = dto.stream().map(dispatchShiftConverter::fromDtoToModel).collect(Collectors.toList());
         if (checkDispatcherlist(collect)) {
-            List<DispatchShiftDto> shiftDtos = new ArrayList<>();
+            List<DispatchShiftDto> shiftList = new ArrayList<>();
             for (DispatchShiftDto dispatchShiftDto : dto) {
                 DispatchShift dispatchShift = dispatchShiftConverter.fromDtoToModel(dispatchShiftDto);
                 dispatchShift.setIsDeleted(false);
                 dispatchShift.setIsActive(true);
                 DispatchShift save = dispatchShiftRepository.save(dispatchShift);
-                shiftDtos.add(dispatchShiftConverter.fromModelToDto(save));
+                shiftList.add(dispatchShiftConverter.fromModelToDto(save));
             }
-            return shiftDtos;
+            return shiftList;
         } else
             throw BusinessException.valueException(EntityType.CALENDAR, "dispatcher.time.exist");
 
@@ -121,10 +121,10 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public DispatchShiftDto edit(DispatchShiftDto dto) {
-        return saveedit(dto);
+        return saveEdit(dto);
     }
 
-    public DispatchShiftDto saveedit(DispatchShiftDto dto) {
+    public DispatchShiftDto saveEdit(DispatchShiftDto dto) {
 
         DispatchShift save = dispatchShiftRepository.save(dispatchShiftConverter.fromDtoToModel(dto));
         return dispatchShiftConverter.fromModelToDto(save);
@@ -170,11 +170,11 @@ public class CalendarServiceImpl implements CalendarService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         }, pageable).stream().map(calendarConverter::fromModelToDto).collect(Collectors.toList());
 
-        for (int i = 0; i < collect.size(); i++) {
+        for (CalendarDto dto : collect) {
 
-            List<DispatchShift> byCalendarDateAndHub = dispatchShiftRepository.findByCalendarDateAndHubAndCalendarHub(calendarConverter.fromDtoToModel(collect.get(i)),
+            List<DispatchShift> byCalendarDateAndHub = dispatchShiftRepository.findByCalendarDateAndHubAndCalendarHub(calendarConverter.fromDtoToModel(dto),
                     new Hub().setId(filter.getSelecthub().getId()).setName(filter.getSelecthub().getText()), new CalendarHub().setId(filter.getCalendarhub().getId()));
-            collect.get(i).setDispatchShifts(byCalendarDateAndHub.stream().map(dispatchShiftConverter::fromModelToDto).collect(Collectors.toList()));
+            dto.setDispatchShifts(byCalendarDateAndHub.stream().map(dispatchShiftConverter::fromModelToDto).collect(Collectors.toList()));
 
 
         }
@@ -182,9 +182,9 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public Page<CalendarHubDto> filtercalendarhub(FilterCalendar filter, Pageable pageable) {
+    public Page<CalendarHubDto> filterCalendarHub(FilterCalendar filter, Pageable pageable) {
 
-        Page<CalendarHubDto> map = calendarHubRepository.findAll((Specification<CalendarHub>) (root, query, criteriaBuilder) -> {
+        return calendarHubRepository.findAll((Specification<CalendarHub>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             Join<Object, Object> join = root.join("calendar");
             if (filter.getYear() != 0)
@@ -197,12 +197,10 @@ public class CalendarServiceImpl implements CalendarService {
             query.distinct(true);
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         }, pageable).map(calendarHubConverter::fromModelToDto);
-
-        return map;
     }
 
     @Override
-    public List<DispatchShiftDto> findbyDispatchershift(SelectResponse calendar) {
+    public List<DispatchShiftDto> findByDispatcherShift(SelectResponse calendar) {
         List<DispatchShift> shifts = dispatchShiftRepository.findByCalendarDate(calendarRepository.findById(calendar.getId()).orElseThrow(() -> {
             throw BusinessException.valueException(EntityType.CALENDAR, "calendar.not.found");
         }));
@@ -233,13 +231,13 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CopyDispatchShiftDto copyDispatchShift(CopyDispatchShiftDto shiftDtos) {
-        List<DispatchShift> collect = shiftDtos.getShiftDtos().stream().map(dispatchShiftConverter::fromDtoToModel).collect(Collectors.toList());
-        if (checkDispatcherlist(collect, new Calendar().setId(shiftDtos.getNewcalendar().getId()))) {
-            findbyDispatchershift(shiftDtos.getNewcalendar());
-            Calendar calendar = calendarRepository.findById(shiftDtos.getNewcalendar().getId()).orElseThrow();
+    public CopyDispatchShiftDto copyDispatchShift(CopyDispatchShiftDto shiftList) {
+        List<DispatchShift> collect = shiftList.getShiftDtos().stream().map(dispatchShiftConverter::fromDtoToModel).collect(Collectors.toList());
+        if (checkDispatcherlist(collect, new Calendar().setId(shiftList.getNewcalendar().getId()))) {
+            findByDispatcherShift(shiftList.getNewcalendar());
+            Calendar calendar = calendarRepository.findById(shiftList.getNewcalendar().getId()).orElseThrow();
 
-            for (DispatchShiftDto shiftDto : shiftDtos.getShiftDtos()) {
+            for (DispatchShiftDto shiftDto : shiftList.getShiftDtos()) {
                 DispatchShift dispatchShift = dispatchShiftConverter.fromDtoToModel(shiftDto);
                 dispatchShift.setCalendarDate(calendar);
                 dispatchShift.setId(null);
@@ -248,20 +246,20 @@ public class CalendarServiceImpl implements CalendarService {
                 dispatchShiftRepository.save(dispatchShift);
             }
 
-            return shiftDtos;
+            return shiftList;
         } else
             throw BusinessException.valueException(EntityType.CALENDAR, "dispatcher.time.exist");
     }
 
     @Override
-    public void deleteselectshift(List<DispatchShiftDto> shiftDtos) {
-        for (DispatchShiftDto shiftDto : shiftDtos) {
+    public void deleteSelectShift(List<DispatchShiftDto> shiftList) {
+        for (DispatchShiftDto shiftDto : shiftList) {
             dispatchShiftRepository.deleteById(shiftDto.getId());
         }
 
     }
 
-    public Boolean checkcalneder(List<Calendar> calendars, Hub hub, DispatchShiftType dispatchShiftType) {
+    public Boolean checkCalendar(List<Calendar> calendars, Hub hub, DispatchShiftType dispatchShiftType) {
         for (Calendar calendar : calendars) {
             List<DispatchShift> byCalendarDateAndHub = dispatchShiftRepository.findByCalendarDateAndHubAndDispatchShiftType(calendar, hub, dispatchShiftType);
             if (!byCalendarDateAndHub.isEmpty())
@@ -270,22 +268,22 @@ public class CalendarServiceImpl implements CalendarService {
         return false;
     }
 
-    public String normalcreate(List<DispatchShiftDto> dto, Long year, Long month, DAY day, SelectResponse
-            selecthub, SelectResponse dispatchShiftType) {
-        List<Calendar> calendarByShamsiDayNOAndYearNOAndMonthNO = calendarRepository.findCalendarByShamsiDayNOAndYearNOAndMonthNO(day.getValue(), year, month);
+    public String normalCreate(List<DispatchShiftDto> dto, Long year, Long month, DAY day, SelectResponse
+            selectHub, SelectResponse dispatchShiftType) {
+        List<Calendar> calendars = calendarRepository.findCalendarByShamsiDayNOAndYearNOAndMonthNO(day.getValue(), year, month);
         String sReturn = "";
-        if (checkcalneder(calendarByShamsiDayNOAndYearNOAndMonthNO, new Hub().setId(selecthub.getId()).setName(selecthub.getText()), DispatchShiftType.findByValue(dispatchShiftType.getId())) == false) {
-            for (Calendar calendar : calendarByShamsiDayNOAndYearNOAndMonthNO) {
+        if (!checkCalendar(calendars, new Hub().setId(selectHub.getId()).setName(selectHub.getText()), DispatchShiftType.findByValue(dispatchShiftType.getId()))) {
+            for (Calendar calendar : calendars) {
                 int i = 1;
                 for (DispatchShiftDto dispatchShiftDto : dto) {
-                    dispatchShiftDto.setSelecthub(selecthub);
+                    dispatchShiftDto.setSelecthub(selectHub);
                     dispatchShiftDto.setCalendarDate(DateUtil.convertDateToJalaliDateDto(calendar.getMiladiDate()));
                     DispatchShift dispatchShift = dispatchShiftConverter.fromDtoToModel(dispatchShiftDto);
                     dispatchShift.setCalendarDate(calendar);
                     dispatchShift.setDispatchShiftType(DispatchShiftType.findByValue(dispatchShiftType.getId()));
                     dispatchShift.setIsDeleted(false);
                     dispatchShift.setIsActive(true);
-                    dispatchShift.setPrioraty(Long.valueOf(i));
+                    dispatchShift.setPrioraty((long) i);
                     dispatchShift.setCalendarHub(new CalendarHub().setId(dispatchShiftDto.getSelectcalendarhub().getId()));
                     dispatchShiftRepository.save(dispatchShift);
                     i++;
@@ -299,55 +297,55 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public String createnormalshift(NormalShiftDto dto) {
+    public String createNormalShift(NormalShiftDto dto) {
         String sReturn = "";
 
         if (dto.getSaturday() != null)
-            sReturn += normalcreate(dto.getSaturday(), dto.getYear(), dto.getMonth(), DAY.SATERDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getSaturday(), dto.getYear(), dto.getMonth(), DAY.SATERDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getSunday() != null)
-            sReturn += normalcreate(dto.getSunday(), dto.getYear(), dto.getMonth(), DAY.SUNDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getSunday(), dto.getYear(), dto.getMonth(), DAY.SUNDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getMonday() != null)
-            sReturn += normalcreate(dto.getMonday(), dto.getYear(), dto.getMonth(), DAY.MONDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getMonday(), dto.getYear(), dto.getMonth(), DAY.MONDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getTuesday() != null)
-            sReturn += normalcreate(dto.getTuesday(), dto.getYear(), dto.getMonth(), DAY.TUESDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getTuesday(), dto.getYear(), dto.getMonth(), DAY.TUESDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getWednesday() != null)
-            sReturn += normalcreate(dto.getWednesday(), dto.getYear(), dto.getMonth(), DAY.WEDNESDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getWednesday(), dto.getYear(), dto.getMonth(), DAY.WEDNESDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getThursday() != null)
-            sReturn += normalcreate(dto.getThursday(), dto.getYear(), dto.getMonth(), DAY.THURSDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getThursday(), dto.getYear(), dto.getMonth(), DAY.THURSDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         if (dto.getFriday() != null)
-            sReturn += normalcreate(dto.getFriday(), dto.getYear(), dto.getMonth(), DAY.FRIDAY, dto.getSelecthub(), dto.getDispatchShiftType());
+            sReturn += normalCreate(dto.getFriday(), dto.getYear(), dto.getMonth(), DAY.FRIDAY, dto.getSelecthub(), dto.getDispatchShiftType());
 
         return sReturn;
 
     }
 
     @Override
-    public void copyyearhubbyweekday(CopyYearHubDto dto) {
+    public void copyYearHubByWeekday(CopyYearHubDto dto) {
 
         Calendar newStart = calendarRepository.findTopByYearNOOrderByIdAsc(dto.getNewyear());
 
         List<Calendar> oldCalendar = calendarRepository.findCalendarByYearNOOrderByIdAsc(dto.getOldyear());
         List<Calendar> newCalendar = calendarRepository.findCalendarByYearNOOrderByIdAsc(dto.getNewyear());
 
-        Long newStartday = newStart.getShamsiDayNO();
+        Long newStartDay = newStart.getShamsiDayNO();
 
 
         int gap = 0;
         for (Calendar calendar : oldCalendar) {
-            if (calendar.getShamsiDayNO() == newStartday) {
+            if (Objects.equals(calendar.getShamsiDayNO(), newStartDay)) {
                 log.warn("----------->" + gap);
                 break;
             }
             gap++;
         }
-        List<CalendarDto> newcollectcal = newCalendar.stream().map(calendarConverter::fromModelToDto).collect(Collectors.toList());
-        for (CalendarDto calendarDto : newcollectcal) {
+        List<CalendarDto> newCollectCal = newCalendar.stream().map(calendarConverter::fromModelToDto).collect(Collectors.toList());
+        for (CalendarDto calendarDto : newCollectCal) {
             try {
                 List<DispatchShift> dispatchShifts = dispatchShiftRepository.findByCalendarDateAndHub(oldCalendar.get(gap), new Hub().setId(dto.getSelecthub().getId()));
                 List<DispatchShiftDto> collect1 = dispatchShifts.stream().map(dispatchShiftConverter::fromModelToDto).collect(Collectors.toList());
@@ -359,9 +357,9 @@ public class CalendarServiceImpl implements CalendarService {
 
                     String[] split = c.getSelectcalendar().getText().split("/");
                     split[0] = String.valueOf(dto.getNewyear());
-                    String NewShamisDate = split[0] + split[1] + split[2];
+                    String newPersianDate = split[0] + split[1] + split[2];
                     c.setCalendarDate(new DateDto().setYear(Integer.valueOf(split[0])).setMonth(Integer.valueOf(split[1])).setDay(Integer.valueOf(split[2])));
-                    c.setSelectcalendar(new SelectResponse(Long.valueOf(NewShamisDate), NewShamisDate));
+                    c.setSelectcalendar(new SelectResponse(Long.valueOf(newPersianDate), newPersianDate));
 
                 }).map(dispatchShiftConverter::fromDtoToModel).collect(Collectors.toList());
                 dispatchShiftRepository.saveAll(collect);
@@ -376,20 +374,20 @@ public class CalendarServiceImpl implements CalendarService {
 
 
     @Override
-    public void copyyearhubbyday(CopyYearHubDto dto) {
+    public void copyYearHubByDay(CopyYearHubDto dto) {
 
         CalendarHub calendarHub = calendarHubRepository.findById(dto.getSelectCalenderhub().getId()).orElseThrow();
         CalendarHubDto calendarHubDto = calendarHubConverter.fromModelToDto(calendarHub);
 
         calendarHubDto.setName(calendarHub.getName() + "_" + dto.getNewyear());
         calendarHubDto.setId(null);
-        CalendarHubDto createcalendarhub = createcalendarhub(calendarHubDto);
+        CalendarHubDto hub = createCalendarHub(calendarHubDto);
 
         for (DispatchShift shift : dispatchShiftRepository.findAllByCalendarHub(calendarHub)) {
 
             String newYear = String.valueOf(shift.getCalendarDate().getId()).replace(dto.getOldyear().toString(), dto.getNewyear().toString());
             shift.setCalendarDate(new Calendar().setId(Long.valueOf(newYear)));
-            shift.setCalendarHub(new CalendarHub().setId(createcalendarhub.getId()));
+            shift.setCalendarHub(new CalendarHub().setId(hub.getId()));
             shift.setHub(new Hub().setId(dto.getSelecthub().getId()));
 
             DispatchShiftDto dispatchShiftDto = dispatchShiftConverter.fromModelToDto(shift);
@@ -403,35 +401,35 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<SelectResponse> getyears() {
-        return calendarRepository.findyears().stream().map(this::selectto).collect(Collectors.toList());
+    public List<SelectResponse> getYears() {
+        return calendarRepository.findyears().stream().map(this::selectTo).collect(Collectors.toList());
     }
 
-    private List<Long> findchild(List<HubPermissionDto> hublist, Long parendId) {
+    private List<Long> findChild(List<HubPermissionDto> hubList, Long parentId) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
-            if (hubPermissionDto.getParent() == parendId) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
+            if (Objects.equals(hubPermissionDto.getParent(), parentId)) {
                 list.add(hubPermissionDto.getId());
                 if (hubPermissionDto.getChildren() != null)
-                    list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+                    list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
             } else
                 list.add(hubPermissionDto.getId());
         }
         return list;
     }
 
-    private List<Long> findAllhubid(List<HubPermissionDto> hublist) {
+    private List<Long> findAllHubId(List<HubPermissionDto> hubList) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
             list.add(hubPermissionDto.getId());
             if (hubPermissionDto.getChildren() != null)
-                list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+                list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
         }
         return list;
     }
 
     @Override
-    public Page<CalendarHubDto> filtertrm(FilterCalendar filter, Pageable pageable) {
+    public Page<CalendarHubDto> filterTrm(FilterCalendar filter, Pageable pageable) {
 
 
         Page<CalendarHub> all = calendarHubRepository.findAll((Specification<CalendarHub>) (root, query, criteriaBuilder) -> {
@@ -440,7 +438,7 @@ public class CalendarServiceImpl implements CalendarService {
             predicates.add(criteriaBuilder.equal(root.get("yearNO"), filter.getYear()));
 
             if (filter.getHublist() != null) {
-                List<Long> ids = findAllhubid(filter.getHublist());
+                List<Long> ids = findAllHubId(filter.getHublist());
                 predicates.add(criteriaBuilder.and(root.get("hub").get("id").in(ids)));
             } else
                 predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), filter.getSelecthub().getId()));
@@ -467,11 +465,11 @@ public class CalendarServiceImpl implements CalendarService {
     public DispatchShiftDto createDispatcher(DispatchShiftDto dto) {
 
         DispatchShift shift = dispatchShiftConverter.fromDtoToModel(dto);
-        String[] splitfrom = dto.getTimeFrom().split(":");
-        Timestamp from = DateUtil.convertJalaliDayTimeToTimeStampWithTime(dto.getCalendarDate(), Integer.parseInt(splitfrom[0]), Integer.parseInt(splitfrom[1]));
+        String[] splitFrom = dto.getTimeFrom().split(":");
+        Timestamp from = DateUtil.convertJalaliDayTimeToTimeStampWithTime(dto.getCalendarDate(), Integer.parseInt(splitFrom[0]), Integer.parseInt(splitFrom[1]));
 
-        String[] splitto = dto.getTimeTo().split(":");
-        Timestamp to = DateUtil.convertJalaliDayTimeToTimeStampWithTime(dto.getCalendarDate(), Integer.parseInt(splitto[0]), Integer.parseInt(splitto[1]));
+        String[] splitTo = dto.getTimeTo().split(":");
+        Timestamp to = DateUtil.convertJalaliDayTimeToTimeStampWithTime(dto.getCalendarDate(), Integer.parseInt(splitTo[0]), Integer.parseInt(splitTo[1]));
 
         List<DispatchShift> strings = dispatchShiftRepository.checkDispatcherfrom(from
                 , new Hub().setId(dto.getSelecthub().getId())
@@ -500,21 +498,21 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public void deletecalenderhub(Long id) {
+    public void deleteCalenderHub(Long id) {
 
         dispatchShiftRepository.deleteAllByCalendarHub(calendarHubRepository.findById(id).orElseThrow());
         calendarHubRepository.deleteById(id);
-//        TODO Delte calendat hub
+//        TODO Delete calendar hub
     }
 
     @Override
-    public DispatchShiftDto findshiftbyid(Long id) {
+    public DispatchShiftDto findShiftById(Long id) {
         DispatchShift shift = dispatchShiftRepository.findById(id).orElseThrow();
         return dispatchShiftConverter.fromModelToDto(shift);
     }
 
     @Override
-    public DispatchShiftDto findnextshiftbyid(Long id) {
+    public DispatchShiftDto findNextShiftById(Long id) {
         DispatchShift shift = dispatchShiftRepository.findById(id).orElseThrow();
         DispatchShift firstByIdAfterAndHubAndCalendarDate = dispatchShiftRepository.findFirstByIdAfterAndHubAndCalendarDate(shift.getId(),
                 shift.getHub(), shift.getCalendarDate());
@@ -524,16 +522,16 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<DispatchShiftDto> findbyDispatchershiftByDate(DateDto calendar, Long hubid) {
+    public List<DispatchShiftDto> findByDispatcherShiftByDate(DateDto calendar, Long hubId) {
 
-        List<Calendar> calendarByShamsiDayNOAndYearNOAndMonthNO = calendarRepository.findCalendarByShamsiDayNumberAndYearNOAndMonthNO(Long.valueOf(calendar.getDay())
+        List<Calendar> calendars = calendarRepository.findCalendarByShamsiDayNumberAndYearNOAndMonthNO(Long.valueOf(calendar.getDay())
                 , Long.valueOf(calendar.getYear()), Long.valueOf(calendar.getMonth()));
-        List<DispatchShiftDto> shiftDtos = findbyDispatchershift(new SelectResponse(calendarByShamsiDayNOAndYearNOAndMonthNO.get(0).getId(), calendarByShamsiDayNOAndYearNOAndMonthNO.get(0).getShamsi()));
-        return shiftDtos;
+
+        return findByDispatcherShift(new SelectResponse(calendars.get(0).getId(), calendars.get(0).getShamsi()));
     }
 
     @Override
-    public List<SelectResponse> findShiftBytype(Long type, DateDto dateDto, Long hubid) {
+    public List<SelectResponse> findShiftByType(Long type, DateDto dateDto, Long hubId) {
         List<DispatchShift> all = dispatchShiftRepository.findAll((Specification<DispatchShift>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.findByValue(type)));
@@ -549,17 +547,17 @@ public class CalendarServiceImpl implements CalendarService {
             predicates.add(criteriaBuilder.equal(root.get("calendarDate").get("id"), MyDate));
             predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
 
-            predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), hubid));
+            predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), hubId));
 
             predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         });
 
-        return all.stream().map(this::toselect).collect(Collectors.toList());
+        return all.stream().map(this::toSelect).collect(Collectors.toList());
     }
 
     @Override
-    public List<DispatchShiftDto> getfindbycalendardisByDateByhub(FindByDispatcherByHubDto dto) {
+    public List<DispatchShiftDto> getFindByCalendarDisByDateByHub(FindByDispatcherByHubDto dto) {
         String MyDate = dto.getDateDto().getYear().toString();
         String month = "0" + dto.getDateDto().getMonth().toString();
         month = month.substring(month.length() - 2, month.length());
@@ -582,10 +580,7 @@ public class CalendarServiceImpl implements CalendarService {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
             });
-//            byCalendarDateAndHub = dispatchShiftRepository.findByCalendarDateAndHubAndDispatchShiftTypeOrDispatchShiftType(new Calendar().setId(Long.valueOf(MyDate))
-//                    , new Hub().setId(dto.getHubid())
-//                    , DispatchShiftType.findByValue(dto.getShiftType().getId())
-//                    , DispatchShiftType.PICKUPDELIVERY);
+
         }
 
 
@@ -593,11 +588,11 @@ public class CalendarServiceImpl implements CalendarService {
 
     }
 
-    private SelectResponse toselect(DispatchShift dispatchShift) {
+    private SelectResponse toSelect(DispatchShift dispatchShift) {
         return new SelectResponse(dispatchShift.getId(), dispatchShift.getTimeFrom() + " - " + dispatchShift.getTimeTo());
     }
 
-    private SelectResponse selectto(String s) {
+    private SelectResponse selectTo(String s) {
         return new SelectResponse(Long.valueOf(s), s);
     }
 
