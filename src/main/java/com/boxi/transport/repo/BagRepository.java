@@ -27,4 +27,6 @@ public interface BagRepository extends JpaRepository<Bag, Long>, JpaSpecificatio
 
     @Query(value = "select count(b.status )as id,b.status as text  from Bag  b  where b.currentHub = ?1 and b.status is not null group by b.status")
     List<String> totalReport(Hub hub);
+
+    Bag findTopByCurrentHubOrderByIdDesc(Hub hub);
 }

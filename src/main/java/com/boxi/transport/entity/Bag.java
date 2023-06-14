@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 
@@ -37,7 +38,19 @@ public class Bag extends BaseEntity implements java.io.Serializable {
 
    @Basic(optional=true)
    @Column(name="WEIGHTCAPACITY", insertable=true, updatable=true)
-   private Double weightCapacity;
+   private BigDecimal weightCapacity;
+
+   @Basic(optional=true)
+   @Column(name="VOLUMECAPACITY", insertable=true, updatable=true)
+   private BigDecimal volumeCapacity;
+
+   @Basic(optional=true)
+   @Column(name="ALLOCATEDWEIGHT", insertable=true, updatable=true)
+   private BigDecimal allocatedWeight;
+
+   @Basic(optional=true)
+   @Column(name="ALLOCATEDVOLUME", insertable=true, updatable=true)
+   private BigDecimal allocatedVolume;
 
    @Basic(optional=true)
    @Column(name="WEIGHT", insertable=true, updatable=true)

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
@@ -21,13 +22,13 @@ public class BagDto extends JsonBase {
 
     private SelectResponse selectBagType;
 
-//    @NotNull
+    //    @NotNull
     private SelectResponse selectSourceHub;
 
-//    @NotNull
+    //    @NotNull
     private SelectResponse selectConsignmentsDestinationHub;
 
-//    @NotNull
+    //    @NotNull
     private SelectResponse selectDestinationHub;
 
     private SelectResponse selectOwnerHub;
@@ -42,11 +43,15 @@ public class BagDto extends JsonBase {
 
     private SelectResponse selectCurrentHub;
 
-    private Double weightCapacity;
-
     private Double weight;
 
+    private BigDecimal weightCapacity;
 
+    private BigDecimal volumeCapacity;
+
+    private BigDecimal allocatedWeight;
+
+    private BigDecimal allocatedVolume;
 
 
 }

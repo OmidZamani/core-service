@@ -184,7 +184,8 @@ public class BagServiceImpl implements BagService {
 
     @Override
     public BagDto create(BagDto request) {
-        log.warn(">>>>>>>>>>>>>>>>>>{}", request.toJson());
+
+        log.warn(request.toJson());
         request.setId(null);
         if (StringUtils.hasText(request.getBagNumber())) {
             if (isExist(request.getBagNumber())) {
@@ -193,7 +194,6 @@ public class BagServiceImpl implements BagService {
         } else {
             request.setBagNumber(uniqueBarCodeNum(request));
         }
-        log.warn(request.toJson());
         Bag bag = bagConverter.fromDtoToModel(request);
         bag.setIsActive(request.getIsActive());
         bag.setIsDeleted(false);
@@ -212,6 +212,16 @@ public class BagServiceImpl implements BagService {
     }
 
     private BagDto saveData(Bag bag) {
+        if (!StringUtils.hasText(bag.getBagNumber())) {
+            String BagNumbers = "";
+            Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
+            if(topByCurrentHubOrderByIdDesc==null) {
+                BagNumbers ="000001";
+//                BagNumbers=BagNumbers.substring()
+//                bag.getCurrentHub().getId().toString().length()
+            }
+//            bag.setBagNumber("1" + bag.getCurrentHub().getId().toString() +)
+        }
         Bag saved = bagRepository.save(bag);
         return bagConverter.fromModelToDto(saved);
     }
