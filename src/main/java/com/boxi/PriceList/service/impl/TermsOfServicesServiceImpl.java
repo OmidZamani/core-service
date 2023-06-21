@@ -72,6 +72,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         return saveEdit(dto);
     }
 
+    //سرویس های اصلی
     @Override
     public Page<TermsOfServicesDto> filter(TermsOfServicesDto filter, Pageable pageable) {
 
