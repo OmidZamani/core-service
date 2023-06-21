@@ -1,11 +1,18 @@
 package com.boxi.PriceList.service.impl;
 
+import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
+import com.boxi.PriceList.payload.dto.SuggestDetailServiceInfDto;
+import com.boxi.PriceList.payload.dto.SuggestionServiceDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
+import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.repo.TermsOfServicesRepository;
 import com.boxi.PriceList.service.TermsOfServicesService;
+import com.boxi.product.entity.Product;
+import com.boxi.product.entity.UsingProduct;
+import com.boxi.product.repo.UsingProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +20,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -26,11 +36,15 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
 
     private final TermsOfServicesRepository termsOfServicesRepository;
     private final TermsOfServicesConverter termsOfServicesConverter;
+    private final ServiceRepository ServiceRepository;
+    private final UsingProductRepository usingProductRepository;
 
     public TermsOfServicesServiceImpl(TermsOfServicesRepository termsOfServicesRepository
-            , TermsOfServicesConverter termsOfServicesConverter) {
+            , TermsOfServicesConverter termsOfServicesConverter, com.boxi.PriceList.repo.ServiceRepository serviceRepository, UsingProductRepository usingProductRepository) {
         this.termsOfServicesRepository = termsOfServicesRepository;
         this.termsOfServicesConverter = termsOfServicesConverter;
+        ServiceRepository = serviceRepository;
+        this.usingProductRepository = usingProductRepository;
     }
 
     @Override
@@ -51,7 +65,6 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         TermsOfServices termsOfServices = termsOfServicesConverter.fromDtoToModel(dto);
         termsOfServices.setId(null);
         return termsOfServicesConverter.fromModelToDto(termsOfServicesRepository.save(termsOfServices));
-
     }
 
     @Override
@@ -140,6 +153,64 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         return termsOfServices.map(termsOfServicesConverter::fromModelToDto);
 
 
+    }
+
+    @Override
+    public List<SuggestionServiceDto> detailsSuggestService(Long id) {
+        Services getServiceProduct = ServiceRepository.findById(id).orElseThrow();
+        List<SuggestionServiceDto> services = new ArrayList<>();
+        List<UsingProduct> all1 = usingProductRepository.findAll((Specification<UsingProduct>) (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Join<Object, Object> product = root.join("child");
+            predicates.add(cb.equal(product.get("id"), getServiceProduct.getProduct().getId()));
+            query.distinct(true);
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        });
+
+        for (UsingProduct usingProduct : all1) {
+            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getsuggestDetails(usingProduct.getChild().getId(), new Date());
+            for (SuggestDetailServiceInfDto serviceInfDto : serviceInfList) {
+                SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
+                suggestionServiceDto.setId(serviceInfDto.getId());
+
+
+                Services byPriceListAndProduct = ServiceRepository.findTopByPriceListAndProductAndType(new PriceList().setId(serviceInfDto.getPriceListId()), new Product().setId(serviceInfDto.getProductId()), 1L);
+                if (byPriceListAndProduct != null) {
+                    suggestionServiceDto.setId(byPriceListAndProduct.getId());
+                    suggestionServiceDto.setName(byPriceListAndProduct.getName());
+                    suggestionServiceDto.setPrice(serviceInfDto.getPrice());
+                    suggestionServiceDto.setServiceType(0L);
+
+
+                    if (checkArrayList(services, suggestionServiceDto))
+                        services.add(suggestionServiceDto);
+                    else {
+                        for (SuggestionServiceDto service : services) {
+                            if (!Objects.equals(service.getPrice(), serviceInfDto.getPrice()))
+                                suggestionServiceDto.setPrice(serviceInfDto.getPrice());
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        return services;
+
+    }
+
+    public Boolean checkArrayList(List<SuggestionServiceDto> list, SuggestionServiceDto dto) {
+
+        for (SuggestionServiceDto suggestionServiceDto : list) {
+            if (Objects.equals(suggestionServiceDto.getId(), dto.getId())) {
+                return false;
+            }
+        }
+
+
+        return true;
     }
 
     public TermsOfServicesDto saveEdit(TermsOfServicesDto dto) {
