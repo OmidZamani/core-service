@@ -1,7 +1,6 @@
 package com.boxi.hub.payload.dto;
 
 import com.boxi.core.response.SelectResponse;
-import com.boxi.hub.entity.CountryDevision;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

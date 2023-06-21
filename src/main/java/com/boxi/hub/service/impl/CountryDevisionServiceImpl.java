@@ -265,7 +265,7 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
 
             return countryDevisionDtos;
         } else {
-            throw BusinessException.valueException(EntityType.CountryDevision, "hub.not.found");
+            throw BusinessException.valueException(EntityType.CountryDevision, "countryDivision.hub.not.found");
         }
 
     }
