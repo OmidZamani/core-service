@@ -21,10 +21,10 @@ public class RuleConf {
         return new DefaultRulesEngine();
     }
 
-    @Bean
+ /*   @Bean
     public List<CustomRuleAction> customRuleAction() {
         return List.of(
                 new CustomRuleAction("personCanHaveInsurance",
                         "personService.personCanHaveInsurance(person);"));
-    }
+    }*/
 }

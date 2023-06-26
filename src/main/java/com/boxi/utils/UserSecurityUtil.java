@@ -24,10 +24,10 @@ public class UserSecurityUtil {
 
     }
 
-    public static String getAuthorizationInfo() {
+    public static String getAuthName() {
         Authentication authentication = getContext().getAuthentication();
-        Principal principal = (Principal) authentication.getPrincipal();
-        return (String) principal.getName();
+        log.warn(">>>>>>>>>>>"+authentication.getName());
+        return authentication.getName();
     }
 
 /*

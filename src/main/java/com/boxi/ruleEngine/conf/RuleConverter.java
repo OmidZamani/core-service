@@ -1,6 +1,7 @@
 package com.boxi.ruleEngine.conf;
 
 
+import com.boxi.ruleEngine.dto.RuleModelDto;
 import com.boxi.ruleEngine.entity.RuleModel;
 import lombok.RequiredArgsConstructor;
 import org.jeasy.rules.api.Rule;
@@ -23,7 +24,7 @@ public class RuleConverter {
                 .description(ruleModel.getDescription())
                 .priority(ruleModel.getPriority())
                 .when(ruleModel.getCondition())
-                .then(defineActionMethod(ruleModel.getAction()));
+                .then(ruleModel.getAction());
     }
 
     private String defineActionMethod(String action) {

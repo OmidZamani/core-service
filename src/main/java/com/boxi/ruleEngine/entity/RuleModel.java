@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
+@Table(name="TBL_RULEMODEL")
 @Data
 public class RuleModel extends BaseEntity
         implements java.io.Serializable {
@@ -28,6 +29,7 @@ public class RuleModel extends BaseEntity
     private String action;
 
     private String description;
+
 
 
 }

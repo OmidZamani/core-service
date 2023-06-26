@@ -16,10 +16,10 @@ import javax.annotation.security.RolesAllowed;
 
 public class StatusApi {
 
-/*    @RolesAllowed("user")*/
+
     @GetMapping()
     public Response createWorkContent() {
-        String user = UserSecurityUtil.getAuthorizationInfo();
+        String user = UserSecurityUtil.getAuthName();
         return Response.ok().setPayload("working .."+user);
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/rules")
+@RequestMapping("/core-service/rules")
 @RequiredArgsConstructor
 public class RuleController {
 

@@ -1,6 +1,7 @@
 package com.boxi.ruleEngine.service;
 
 import com.boxi.ruleEngine.conf.RuleConverter;
+import com.boxi.ruleEngine.dto.RuleModelDto;
 import com.boxi.ruleEngine.entity.RuleModel;
 import com.boxi.ruleEngine.repo.RuleModelRepo;
 import org.jeasy.rules.api.Rules;
@@ -38,7 +39,7 @@ public class RuleModelService {
     }
 
 
-    public Iterable<RuleModel> findAll() {
+    public List<RuleModel> findAll() {
         return ruleModelRepo.findAll();
     }
 
@@ -48,6 +49,8 @@ public class RuleModelService {
     }
 
     public RuleModel save(RuleModel rule) {
+
+
 
         rules.register(ruleConverter.convertToRule(rule));
         try {
