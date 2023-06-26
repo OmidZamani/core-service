@@ -151,7 +151,10 @@ public class BagServiceImpl implements BagService {
                 if (StringUtils.hasText(filter.getVehicleNumber3())) {
                     predicates.add(criteriaBuilder.equal(root.get("carrier").get("vehicleNumber3"), filter.getVehicleNumber3()));
                 }
-                //TODO add status
+
+                if (filter.getStatus() != null)
+                    predicates.add(criteriaBuilder.equal(root.get("status"), BagStatus.findByValue(filter.getStatus().getId())));
+
                 if (filter.getHublist() != null && filter.getSelectsourceHub() == null) {
                     List<Long> ids = findAllhubid(filter.getHublist());
 
@@ -215,8 +218,8 @@ public class BagServiceImpl implements BagService {
         if (!StringUtils.hasText(bag.getBagNumber())) {
             String BagNumbers = "";
             Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
-            if(topByCurrentHubOrderByIdDesc==null) {
-                BagNumbers ="000001";
+            if (topByCurrentHubOrderByIdDesc == null) {
+                BagNumbers = "000001";
 //                BagNumbers=BagNumbers.substring()
 //                bag.getCurrentHub().getId().toString().length()
             }

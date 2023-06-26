@@ -4,6 +4,7 @@ package com.boxi.transport.api;
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
+import com.boxi.transport.enums.BagStatus;
 import com.boxi.transport.enums.BagType;
 import com.boxi.transport.payload.dto.*;
 import com.boxi.transport.payload.request.HubFilter;
@@ -132,4 +133,10 @@ public class BagApi {
     public Response reportTotal(@PathVariable Long hubid) {
         return Response.ok().setPayload(_service.reportTotal(hubid));
     }
+
+    @GetMapping("/bagStatus")
+    public Response bagStatus() {
+        return Response.ok().setPayload(BagStatus.select());
+    }
+
 }
