@@ -4,6 +4,7 @@ import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
+import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.SuggestDetailServiceInfDto;
 import com.boxi.PriceList.payload.dto.SuggestionServiceDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
@@ -15,6 +16,7 @@ import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.UsingProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -153,6 +155,23 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         return termsOfServices.map(termsOfServicesConverter::fromModelToDto);
 
 
+    }
+
+    @Override
+    public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
+        TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
+        Pageable pageables = PageRequest.of(0, 100);
+        Page<TermsOfServicesDto> filter1 = filter(termsOfServicesDto, pageables);
+        List<SuggestionServiceDto> suggestionServiceDtos = new ArrayList<>();
+        for (TermsOfServicesDto ofServicesDto : filter1) {
+            SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
+            suggestionServiceDto.setName(ofServicesDto.getServiceName());
+            suggestionServiceDto.setId(ofServicesDto.getSelectService().getId());
+            suggestionServiceDto.setPrice(ofServicesDto.getPrice());
+            suggestionServiceDto.setServiceType(ofServicesDto.getServiceType().getId());
+            suggestionServiceDtos.add(suggestionServiceDto);
+        }
+        return suggestionServiceDtos;
     }
 
     @Override

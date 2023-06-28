@@ -4,6 +4,7 @@ import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.ServiceDto;
 import com.boxi.PriceList.payload.dto.SuggestionServiceDto;
 import com.boxi.PriceList.service.ServiceService;
+import com.boxi.PriceList.service.TermsOfServicesService;
 import com.boxi.PriceList.service.impl.AvailableServiceSuggestion;
 import com.boxi.core.response.SelectResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,13 @@ public class AvailableServiceExchange {
     @Autowired
     ServiceService serviceService;
 
+    @Autowired
+    TermsOfServicesService termsOfServicesService;
+
     @PostMapping("/suggestionService")
     List<SuggestionServiceDto> post(@RequestBody ConsignmentInfoDto request) {
-        return availableServiceSuggestion.serviceSuggestionDetails(request);
+//        return availableServiceSuggestion.serviceSuggestionDetails(request);
+        return termsOfServicesService.suggestionTermOfService(request,null);
     }
 
     @GetMapping("/{id}")

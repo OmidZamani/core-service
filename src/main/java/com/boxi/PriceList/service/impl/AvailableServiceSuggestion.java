@@ -76,6 +76,8 @@ public class AvailableServiceSuggestion {
 
 
     public List<SuggestionServiceDto> serviceSuggestionDetails(ConsignmentInfoDto consignmentInfoDto) {
+
+
         List<PriceListDetail> all = priceListDetailRepository.findAll((Specification<PriceListDetail>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("isActive"), true));

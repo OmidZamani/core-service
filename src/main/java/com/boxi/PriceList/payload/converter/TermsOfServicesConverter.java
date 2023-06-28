@@ -4,6 +4,7 @@ import com.boxi.PriceList.Enum.ConsignmentType;
 import com.boxi.PriceList.Enum.ServiceType;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
+import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.product.entity.ProductAttribute;
@@ -24,11 +25,24 @@ public interface TermsOfServicesConverter {
 
     TermsOfServices fromServiceToTerms(Services services);
 
+    TermsOfServicesDto fromConsignmentInfoDtoToTermDto(ConsignmentInfoDto consignmentInfoDto);
+
 
     TermsOfServices fromProductAttributesToTerms(ProductAttribute productAttribute);
 
+
     @AfterMapping
-    default void  afterFromProductAttributesToTerms(ProductAttribute productAttribute ,@MappingTarget TermsOfServices termsOfServices){
+    default void afterFromConsignmentInfoDtoToTermDto(ConsignmentInfoDto consignmentInfoDto, @MappingTarget TermsOfServicesDto termsOfServices) {
+
+        termsOfServices.setSelectToCity(new SelectResponse(consignmentInfoDto.getToCityId(),consignmentInfoDto.getToCityId().toString()));
+        termsOfServices.setSelectFromCity(new SelectResponse(consignmentInfoDto.getFromCityId(),consignmentInfoDto.getFromCityId().toString()));
+        termsOfServices.setFromWeight(consignmentInfoDto.getDeclarativeWeight());
+        termsOfServices.setToWeight(consignmentInfoDto.getDeclarativeWidth());
+
+    }
+
+    @AfterMapping
+    default void afterFromProductAttributesToTerms(ProductAttribute productAttribute, @MappingTarget TermsOfServices termsOfServices) {
 
     }
 
