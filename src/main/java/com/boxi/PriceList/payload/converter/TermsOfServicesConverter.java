@@ -63,6 +63,9 @@ public interface TermsOfServicesConverter {
 
         if (termsOfServices.getConsignmentType() != null)
             dto.setConsignmentType(new SelectResponse(termsOfServices.getConsignmentType().getValue(), termsOfServices.getConsignmentType().getType()));
+
+        if(termsOfServices.getService()!=null)
+            dto.setSelectService(new SelectResponse(termsOfServices.getService().getId(),termsOfServices.getService().getName()));
     }
 
 }
