@@ -36,8 +36,15 @@ public interface TermsOfServicesConverter {
 
         termsOfServices.setSelectToCity(new SelectResponse(consignmentInfoDto.getToCityId(),consignmentInfoDto.getToCityId().toString()));
         termsOfServices.setSelectFromCity(new SelectResponse(consignmentInfoDto.getFromCityId(),consignmentInfoDto.getFromCityId().toString()));
+
         termsOfServices.setFromWeight(consignmentInfoDto.getDeclarativeWeight());
-        termsOfServices.setToWeight(consignmentInfoDto.getDeclarativeWidth());
+        termsOfServices.setToWeight(consignmentInfoDto.getDeclarativeWeight());
+
+        termsOfServices.setFromValue(consignmentInfoDto.getDeclarativeValue());
+        termsOfServices.setToValue(consignmentInfoDto.getDeclarativeValue());
+
+
+
 
     }
 

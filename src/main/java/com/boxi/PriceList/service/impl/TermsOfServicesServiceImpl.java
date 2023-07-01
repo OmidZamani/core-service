@@ -103,18 +103,25 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromWeight"), filter.getFromWeight()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toWeight"), filter.getToWeight()));
+
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
+
+//                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromWeight"), filter.getFromWeight()));
+//                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toWeight"), filter.getToWeight()));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromDim"), filter.getFromDim()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toDimension"), filter.getToDimension()));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromDim()), root.get("fromDim"), root.get("toDimension")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToDimension()), root.get("fromDim"), root.get("toDimension")));
+
+
             }
 
             if (filter.getFromValue() != null && filter.getToValue() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromValue"), filter.getFromValue()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toValue"), filter.getToValue()));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")));
+
             }
 
             if (filter.getFromNumber() != null && filter.getToNumber() != null) {
@@ -135,10 +142,10 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timeCommitmentTimeUnit"), filter.getTimeCommitmentTimeUnit()));
             }
             if (filter.getSelectToCity() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("toCity"), filter.getSelectToCity().getId()));
+                predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getSelectToCity().getId()));
             }
             if (filter.getSelectFromCity() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromCity"), filter.getSelectFromCity().getId()));
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getSelectFromCity().getId()));
             }
 
             if (filter.getSelectService() != null) {
