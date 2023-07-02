@@ -29,4 +29,8 @@ public interface BagRepository extends JpaRepository<Bag, Long>, JpaSpecificatio
     List<String> totalReport(Hub hub);
 
     Bag findTopByCurrentHubOrderByIdDesc(Hub hub);
+
+    @Query(value = "select max(b.bagNumber) from Bag b  order by b.bagNumber desc")
+    String findTopOrderByBagNumberDesc();
+
 }

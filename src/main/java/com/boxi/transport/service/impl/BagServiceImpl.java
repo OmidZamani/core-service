@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -190,21 +191,31 @@ public class BagServiceImpl implements BagService {
 
         log.warn(request.toJson());
         request.setId(null);
-        if (StringUtils.hasText(request.getBagNumber())) {
-            if (isExist(request.getBagNumber())) {
-                throw BusinessException.valueException(EntityType.Bag, "bag.is.duplicate");
-            }
-        } else {
-            request.setBagNumber(uniqueBarCodeNum(request));
-        }
+        request.setBagNumber(AutoGenerateBarcode());
         Bag bag = bagConverter.fromDtoToModel(request);
         bag.setIsActive(request.getIsActive());
         bag.setIsDeleted(false);
         bag.setStatus(BagStatus.waitingForBagging);
         bag.setCurrentHub(new Hub().setId(request.getSelectSourceHub().getId()));
-//        bag.setSourceHub(new Hub().setId(request.getSelectCurrentHub().getId()));
         if (request.getIsActive() == null) bag.setIsActive(true);
         return saveData(bag);
+    }
+
+    private String AutoGenerateBarcode() {
+        String bag = bagRepository.findTopOrderByBagNumberDesc();
+        if (StringUtils.hasText(bag)) {
+            Long LastBagNumber = Long.valueOf(bag) + 1;
+            String s = String.valueOf(LastBagNumber);
+            if (! s.substring(0,1).equals("1") ) {
+                s = "1" + s;
+                return s;
+            } else {
+                return String.valueOf(LastBagNumber);
+            }
+        } else {
+            return "100000000";
+        }
+
     }
 
     @Override
