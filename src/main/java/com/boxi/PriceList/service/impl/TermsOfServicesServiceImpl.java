@@ -11,6 +11,7 @@ import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.repo.TermsOfServicesRepository;
 import com.boxi.PriceList.service.TermsOfServicesService;
+import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.UsingProductRepository;
@@ -41,12 +42,16 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     private final ServiceRepository ServiceRepository;
     private final UsingProductRepository usingProductRepository;
 
+    private final CountryDevisionRepository countryDevisionRepository;
+
+
     public TermsOfServicesServiceImpl(TermsOfServicesRepository termsOfServicesRepository
-            , TermsOfServicesConverter termsOfServicesConverter, com.boxi.PriceList.repo.ServiceRepository serviceRepository, UsingProductRepository usingProductRepository) {
+            , TermsOfServicesConverter termsOfServicesConverter, com.boxi.PriceList.repo.ServiceRepository serviceRepository, UsingProductRepository usingProductRepository, CountryDevisionRepository countryDevisionRepository) {
         this.termsOfServicesRepository = termsOfServicesRepository;
         this.termsOfServicesConverter = termsOfServicesConverter;
         ServiceRepository = serviceRepository;
         this.usingProductRepository = usingProductRepository;
+        this.countryDevisionRepository = countryDevisionRepository;
     }
 
     @Override
@@ -103,12 +108,8 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
-
-//                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromWeight"), filter.getFromWeight()));
-//                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toWeight"), filter.getToWeight()));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
@@ -148,6 +149,13 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getSelectFromCity().getId()));
             }
 
+            if (filter.getFromRegionId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getFromRegionId()));
+            }
+            if (filter.getToRegionId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getToRegionId()));
+            }
+
             if (filter.getSelectService() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("service"), filter.getSelectService().getId()));
             }
@@ -169,7 +177,16 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
         Pageable pageables = PageRequest.of(0, 100);
         Page<TermsOfServicesDto> filter1 = filter(termsOfServicesDto, pageables);
+        if (filter1.getTotalElements() == 0) {
+            termsOfServicesDto.setSelectFromCity(null);
+            termsOfServicesDto.setSelectToCity(null);
+            termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
+            termsOfServicesDto.setToRegionId(filter.getToRegionId());
+            filter1 = filter(termsOfServicesDto, pageables);
+
+        }
         List<SuggestionServiceDto> suggestionServiceDtos = new ArrayList<>();
+
         for (TermsOfServicesDto ofServicesDto : filter1) {
             SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
             suggestionServiceDto.setName(ofServicesDto.getServiceName());
