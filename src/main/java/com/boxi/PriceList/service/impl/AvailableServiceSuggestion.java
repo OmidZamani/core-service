@@ -181,7 +181,7 @@ public class AvailableServiceSuggestion {
         List<UsingProduct> all1 = usingProductRepository.findAll((Specification<UsingProduct>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            Join<Object, Object> product = root.join("child");
+            Join<Object, Object> product = root.join("parent");
             predicates.add(cb.equal(product.get("id"), getServiceProduct.getProduct().getId()));
             query.distinct(true);
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
