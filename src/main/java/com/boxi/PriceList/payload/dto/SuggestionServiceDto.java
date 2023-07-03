@@ -1,6 +1,7 @@
 package com.boxi.PriceList.payload.dto;
 
 import com.boxi.PriceList.Enum.ServiceType;
+import com.boxi.core.response.SelectResponse;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -16,4 +17,7 @@ public class SuggestionServiceDto {
     private BigDecimal price;
     private Long serviceType;
     private Boolean supplementary;
+    private String timeTo;
+    private String timeFrom;
+    private SelectResponse timeType;
 }

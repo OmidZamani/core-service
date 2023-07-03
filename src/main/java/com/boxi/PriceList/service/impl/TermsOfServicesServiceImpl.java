@@ -11,8 +11,11 @@ import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.repo.TermsOfServicesRepository;
 import com.boxi.PriceList.service.TermsOfServicesService;
+import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.repo.CountryDevisionRepository;
+import com.boxi.product.Enum.TimeUnit;
 import com.boxi.product.entity.Product;
+import com.boxi.product.entity.TimeCommitment;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.UsingProductRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -180,8 +183,10 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         if (filter1.getTotalElements() == 0) {
             termsOfServicesDto.setSelectFromCity(null);
             termsOfServicesDto.setSelectToCity(null);
-            termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
-            termsOfServicesDto.setToRegionId(filter.getToRegionId());
+            if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
+                termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
+                termsOfServicesDto.setToRegionId(filter.getToRegionId());
+            }
             filter1 = filter(termsOfServicesDto, pageables);
 
         }
@@ -193,7 +198,13 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             suggestionServiceDto.setId(ofServicesDto.getSelectService().getId());
             suggestionServiceDto.setPrice(ofServicesDto.getPrice());
             suggestionServiceDto.setServiceType(ofServicesDto.getServiceType().getId());
+            suggestionServiceDto.setTimeFrom(ofServicesDto.getTimeCommitmentFrom().toString());
+            suggestionServiceDto.setTimeTo(ofServicesDto.getTimeCommitmentTo().toString());
+            TimeUnit byValue = TimeUnit.findByValue(ofServicesDto.getTimeCommitmentTimeUnit());
+            suggestionServiceDto.setTimeType(new SelectResponse(byValue.getValue(), byValue.getType()));
+
             suggestionServiceDtos.add(suggestionServiceDto);
+
         }
         return suggestionServiceDtos;
     }
