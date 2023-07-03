@@ -3,6 +3,7 @@ package com.boxi.PriceList.service;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.payload.dto.PriceListDto;
 import com.boxi.PriceList.payload.dto.ServiceDto;
+import com.boxi.PriceList.payload.dto.ServiceNameWithCodeDto;
 import com.boxi.PriceList.payload.request.FilterService;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.payload.CreateServiceExcelRequest;
@@ -41,4 +42,6 @@ public interface ServiceService {
     SelectResponse toSelect(Services services);
 
     ServiceDto findById(Long id);
+
+    List<ServiceNameWithCodeDto> serviceNameWithCode();
 }

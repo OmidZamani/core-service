@@ -4,7 +4,9 @@ package com.boxi.ruleEngine.api;
 
 import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.service.PriceListService;
+import com.boxi.core.response.Response;
 import com.boxi.ruleEngine.dto.ProductPriceRequest;
+import com.boxi.ruleEngine.dto.RuleFact;
 import com.boxi.ruleEngine.service.RuleExecutionService;
 import org.jeasy.rules.api.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,8 @@ public class RuleExecuteController {
     }
 
     @GetMapping("/process")
-    public Map<Rule, Boolean> process(@RequestBody ProductPriceRequest request) {
-        return ruleExecutionService.process(request);
+    public Response process(@RequestBody ProductPriceRequest request) {
+        return Response.ok().setPayload(ruleExecutionService.process(request));
+
     }
 }

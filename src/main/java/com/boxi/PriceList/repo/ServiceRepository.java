@@ -2,6 +2,7 @@ package com.boxi.PriceList.repo;
 
 import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.Services;
+import com.boxi.PriceList.payload.dto.ServiceNameWithCodeDto;
 import com.boxi.PriceList.payload.dto.SuggestDetailServiceInfDto;
 import com.boxi.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,4 +40,6 @@ public interface ServiceRepository extends JpaRepository<Services, Long>, JpaSpe
             "            ON TU.FK_CHILD_ID = tp.PK_PRODUCT_ID\n" +
             "         WHERE tu.FK_PARENT_ID = ?1 AND ?2 BETWEEN otp.validdatefrom AND otp.validdateto)",nativeQuery = true)
     List<SuggestDetailServiceInfDto> getsuggestDetails(Long productId , Date date);
+
+    List<ServiceNameWithCodeDto> findByIsDeletedFalseAndIsActiveIsTrue();
 }
