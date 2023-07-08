@@ -2,6 +2,7 @@ package com.boxi.core;
 
 
 import com.boxi.ruleEngine.dto.ProductPriceRequest;
+import com.boxi.ruleEngine.dto.RuleFact;
 import com.boxi.ruleEngine.dto.RulePriceResponse;
 import com.boxi.ruleEngine.engine.RuleExecutionService;
 import com.boxi.ruleEngine.entity.RuleModel;
@@ -16,6 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.boxi.ruleEngine.dto.RuleFactAction;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,7 +43,6 @@ public class RuleEngineTest {
         String rule="package com.boxi.price;\n" +
                 "\n" +
                 "import com.boxi.ruleEngine.dto.RuleFact;\n" +
-                "import com.boxi.ruleEngine.dto.RuleFactAction; \n" +
                 "\n" +
                 "rule  \"YYYY\" \n" +
                 "    no-loop \n" +
@@ -49,10 +52,111 @@ public class RuleEngineTest {
                 "       ruleFact.setPrice($w);  \n" +
                 "       update(ruleFact); \n" +
                 "end";
+
         RuleModel n = new RuleModel().setContent(rule);
         RuleModel saved = ruleModelService.edit(22L, n);
         assertNotNull(saved);
     }
+
+    @Test()
+    @DisplayName("update s001")
+    public void updateFormula_s001() {
+        // (ruleFact.service=="s001") && (ruleFact.w <= 1) && (ruleFact.cdt=="INNER")
+        // (ruleFact.service=="s001") && (ruleFact.w <= 1) && (ruleFact.cdt=="CLOSER") 23400
+        //(ruleFact.service=="s001") && (ruleFact.w<=1) && (ruleFact.cdt=="OUTER") 26450
+
+        // (ruleFact.service=="s001") && (ruleFact.w>1 && ruleFact.w<=2) && (ruleFact.cdt=="INNER")
+        // (ruleFact.service=="s001") && (ruleFact.w>1 && ruleFact.w<=2) && ( ruleFact.cdt=="CLOSER")
+        // (ruleFact.service=="s001") && (ruleFact.w>1 && ruleFact.w<=2) && ( ruleFact.cdt=="CLOSER")
+
+
+        String rule="package com.boxi.price;\n" +
+                "\n" +
+                "import com.boxi.ruleEngine.dto.RuleFact;\n" +
+                "\n" +
+                "rule  \"s001_1\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w <= 1.0 , cdt ==\"INNER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(12650);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n" +
+
+                "rule  \"s001_2\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w <= 1.0 , cdt ==\"CLOSER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(23400);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n" +
+
+                "rule  \"s001_3\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w <= 1.0 , cdt ==\"OUTER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(25200);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n" +
+
+                "rule  \"s001_4\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w > 1.0 , $w < 2.0 , cdt ==\"INNER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(26450);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n" +
+
+
+                "rule  \"s001_5\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w > 1.0 , $w < 2.0 , cdt ==\"CLOSER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(40300);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n" +
+
+
+                "rule  \"s001_6\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null , $w > 1.0 , $w < 2.0 , cdt ==\"OUTER\");\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice(43400);  \n" +
+                "       update(ruleFact); \n" +
+                "end \n";
+
+        RuleModel n = new RuleModel().setContent(rule);
+        RuleModel saved = ruleModelService.edit(22L, n);
+        assertNotNull(saved);
+    }
+
+
+
+    @Test()
+    @DisplayName("stress test ss001")
+    public void stress_test_s001() throws InterruptedException {
+
+        request=new ProductPriceRequest();
+        request.setServiceCode("s001").setCdt("OUTER").setWeight(1.2);
+
+        long startTime = System.currentTimeMillis();
+        for(int i=0; i <100 ;i++){
+                RulePriceResponse response = ruleExecutionService.process(request);
+                System.out.println(response.getPrice());
+            }
+        long endTime = System.currentTimeMillis();
+        Long t=(endTime - startTime);
+        System.out.println("executionTime:"+ t +"ms" );
+        assertThat(t+"",endTime>startTime);
+
+    }
+
+
 
 
     @Test()

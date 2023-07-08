@@ -32,7 +32,7 @@ public class RuleFact {
     private String service="-"; //available name of product as service
 
     //...........
-    private Double price=0d;
+    private Integer price=0;
 
 
     public Double getW() {
@@ -115,11 +115,11 @@ public class RuleFact {
         this.service = service;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 }

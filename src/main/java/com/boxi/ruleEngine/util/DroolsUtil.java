@@ -33,10 +33,6 @@ public final class DroolsUtil {
     final RuleModelRepo ruleModelRepo;
 
 
-/*
-  //TODO Cache
-   public List<RuleModel> rules;*/
-
     @Autowired
     public DroolsUtil(RuleModelRepo ruleModelRepo) {
         this.ruleModelRepo = ruleModelRepo;
@@ -47,13 +43,13 @@ public final class DroolsUtil {
     public KieSession getKSession(String drl) {
         try {
             KieServices ks = KieServices.Factory.get();
-            String inMemoryDrlFileName = "src/main/resources/rules/"+ Calendar.getInstance().getTimeInMillis() + ".drl";
+            String inMemoryDrlFileName = "src/main/resources/rules/"+System.nanoTime() + ".drl";
             log.warn(inMemoryDrlFileName);
             KieFileSystem kfs = ks.newKieFileSystem();
             kfs.write(inMemoryDrlFileName, ks.getResources().newReaderResource(new StringReader(drl)).setResourceType(ResourceType.DRL));
             KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
             if (kieBuilder.getResults().hasMessages(Message.Level.ERROR)) {
-                System.err.println(kieBuilder.getResults().toString());
+                log.error(kieBuilder.getResults().toString());
             }
             KieContainer kContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
             KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
