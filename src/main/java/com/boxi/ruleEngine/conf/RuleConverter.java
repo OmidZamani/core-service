@@ -4,8 +4,6 @@ package com.boxi.ruleEngine.conf;
 import com.boxi.ruleEngine.dto.RuleModelDto;
 import com.boxi.ruleEngine.entity.RuleModel;
 import lombok.RequiredArgsConstructor;
-import org.jeasy.rules.api.Rule;
-import org.jeasy.rules.mvel.MVELRule;
 import org.springframework.stereotype.Component;
 
 
@@ -18,7 +16,7 @@ public class RuleConverter {
 
     private final List<CustomRuleAction> ruleActions;
 
-    public Rule convertToRule(RuleModel ruleModel) {
+/*    public Rule convertToRule(RuleModel ruleModel) {
         return new MVELRule()
                 .name(ruleModel.getName())
                 .description(ruleModel.getDescription())
@@ -33,6 +31,6 @@ public class RuleConverter {
                 .map(CustomRuleAction::getActionMethod)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Undefined : " + action));
-    }
+    }*/
 
 }

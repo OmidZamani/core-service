@@ -11,4 +11,6 @@ import java.util.List;
 public interface RuleModelRepo extends JpaRepository<RuleModel, Long>, JpaSpecificationExecutor<RuleModel> {
 
     RuleModel findByCode(String code);
+
+    Boolean existsByCode(String code);
 }

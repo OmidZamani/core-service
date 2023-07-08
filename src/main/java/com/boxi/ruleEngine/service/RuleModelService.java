@@ -1,10 +1,10 @@
 package com.boxi.ruleEngine.service;
 
+import com.boxi.core.errors.BusinessException;
+import com.boxi.core.errors.EntityType;
 import com.boxi.ruleEngine.conf.RuleConverter;
-import com.boxi.ruleEngine.dto.RuleModelDto;
 import com.boxi.ruleEngine.entity.RuleModel;
 import com.boxi.ruleEngine.repo.RuleModelRepo;
-import org.jeasy.rules.api.Rules;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +20,12 @@ public class RuleModelService {
 
     private final RuleConverter ruleConverter;
 
-    private final Rules rules;
 
 
     @Autowired
-    public RuleModelService(RuleModelRepo ruleModelRepo, RuleConverter ruleConverter, Rules rules) {
+    public RuleModelService(RuleModelRepo ruleModelRepo, RuleConverter ruleConverter) {
         this.ruleModelRepo = ruleModelRepo;
         this.ruleConverter = ruleConverter;
-        this.rules = rules;
     }
 
     public List<RuleModel> getAllRules(){
@@ -50,9 +48,10 @@ public class RuleModelService {
 
     public RuleModel save(RuleModel rule) {
 
+        if(ruleModelRepo.existsByCode(rule.getCode())){
+            throw BusinessException.valueException(EntityType.RULEMODEL, "code.exist");
+        }
 
-
-        rules.register(ruleConverter.convertToRule(rule));
         try {
             return ruleModelRepo.save(rule);
         } catch (Exception e) {
@@ -64,4 +63,9 @@ public class RuleModelService {
         ruleModelRepo.deleteById(id);
     }
 
+    public RuleModel edit(Long id, RuleModel ruleModel) {
+        RuleModel old = findById(id);
+        old.setContent(ruleModel.getContent());
+        return ruleModelRepo.save(old);
+    }
 }

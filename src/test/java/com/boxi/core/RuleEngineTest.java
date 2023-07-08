@@ -1,30 +1,24 @@
 package com.boxi.core;
 
 
-import com.boxi.hub.repo.HubRepository;
-import com.boxi.hub.service.impl.HubServiceImpl;
 import com.boxi.ruleEngine.dto.ProductPriceRequest;
 import com.boxi.ruleEngine.dto.RulePriceResponse;
-import com.boxi.ruleEngine.service.RuleExecutionService;
+import com.boxi.ruleEngine.engine.RuleExecutionService;
+import com.boxi.ruleEngine.entity.RuleModel;
+import com.boxi.ruleEngine.service.RuleModelService;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
+import com.boxi.ruleEngine.dto.RuleFactAction;
 
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -35,6 +29,30 @@ public class RuleEngineTest {
     @Autowired
     RuleExecutionService ruleExecutionService;
 
+    @Autowired
+    RuleModelService ruleModelService;
+
+
+    @Test()
+    @DisplayName("update rule")
+    public void update() {
+        String rule="package com.boxi.price;\n" +
+                "\n" +
+                "import com.boxi.ruleEngine.dto.RuleFact;\n" +
+                "import com.boxi.ruleEngine.dto.RuleFactAction; \n" +
+                "\n" +
+                "rule  \"YYYY\" \n" +
+                "    no-loop \n" +
+                "    when   \n" +
+                "       ruleFact : RuleFact( $w: w!=null );\n" +
+                "    then  \n" +
+                "       ruleFact.setPrice($w);  \n" +
+                "       update(ruleFact); \n" +
+                "end";
+        RuleModel n = new RuleModel().setContent(rule);
+        RuleModel saved = ruleModelService.edit(22L, n);
+        assertNotNull(saved);
+    }
 
 
     @Test()

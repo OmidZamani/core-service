@@ -8,7 +8,8 @@ import lombok.experimental.Accessors;
 public class ProductPriceRequest {
     private Double weight;
     private String cdt; //رده جغرافیایی
-    private String  timeCommitment; //مدت ارایه خدمت 12:10 format
     private String serviceCode;
-    //....TODO add other values
+    private Double timeCommitmentDuration; //مدت ارایه خدمت to-from
+    private Double timeCommitmentFrom; //from
+    private String countryDevision;
 }

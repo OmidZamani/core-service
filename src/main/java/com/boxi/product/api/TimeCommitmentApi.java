@@ -32,7 +32,7 @@ public class TimeCommitmentApi {
 
 
     @GetMapping("/selectTimeUnitTypes")
-    public Response hybTypes() {
+    public Response selectTimeUnitTypes() {
         return  Response.ok().setPayload(TimeUnit.select());
     }
 

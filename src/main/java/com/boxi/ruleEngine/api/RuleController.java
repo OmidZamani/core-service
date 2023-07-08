@@ -5,6 +5,7 @@ import com.boxi.ruleEngine.service.RuleModelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
 
 @RestController
@@ -25,8 +26,14 @@ public class RuleController {
     }
 
     @PostMapping("/save")
-    public RuleModel save(@RequestBody RuleModel ruleModel) {
+    public RuleModel save(@RequestBody @Valid RuleModel ruleModel) {
         return ruleService.save(ruleModel);
+    }
+
+
+    @PostMapping("/update/{id}")
+    public RuleModel update(@PathVariable Long id,@RequestBody @Valid RuleModel ruleModel) {
+        return ruleService.edit(id,ruleModel);
     }
 
     @DeleteMapping("/{id}")
