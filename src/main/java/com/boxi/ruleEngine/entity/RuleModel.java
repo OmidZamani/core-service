@@ -24,24 +24,35 @@ public class RuleModel extends BaseEntity
 
     private int priority;
 
+
+    private String condition;
+
+
+    private String action;
+
+    //...........................
+
+
     @NotBlank
     private String name;
 
     @NotBlank
     private String code;
 
-    @Lob
-    @NotBlank
-    private String condition;
-
     @Column(nullable = false)
     @Lob
+    @NotBlank
     private String content;
 
-    @NotBlank
-    private String action;
-
     private String description;
+
+    @Basic(optional=false)
+    @Column(name="ISACTIVE", nullable=false, insertable=true, updatable=true, length=1)
+    private Boolean isActive;
+
+    @Basic(optional=true)
+    @Column(name="ISDELETED", insertable=true, updatable=true, length=1)
+    private Boolean isDeleted;
 
 
 

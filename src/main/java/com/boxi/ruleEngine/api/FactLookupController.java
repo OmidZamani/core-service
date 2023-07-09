@@ -20,9 +20,10 @@ public class FactLookupController {
     }
 
     @GetMapping
-    public Iterable<FactLookup> getAll() {
-        return factLookupService.findAll();
+    public Response getAll() {
+        return  Response.ok().setPayload(factLookupService.findAll());
     }
+
 
 
     @PostMapping

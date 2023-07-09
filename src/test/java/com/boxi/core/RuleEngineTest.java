@@ -136,6 +136,9 @@ public class RuleEngineTest {
     }
 
 
+//(ruleFact.service=="in001") && (ruleFact.w <= 1) && (ruleFact.cd=="city_1126")
+//
+
 
     @Test()
     @DisplayName("stress test ss001")

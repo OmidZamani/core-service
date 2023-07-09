@@ -37,9 +37,15 @@ public class FactLookupService {
     public List<FactLookup> init() {
         if(factLookupRepo.count()==0) {
             persist("weight", "w", "وزن به کیلو", "-", "متغیر مستقیم");
-            persist("countryDevision", "cdt", "", "/core-service/cdt-info", "دریافت از طریق لیست مناطق");
-            persist("consignmentType", "cType", "نوع بسته", "/consignment-service/consignment-types", "DOCUMENT, NON_DOCUMENT, NEWS_PAPER");
-            persist("productName", "p", "محصولات نام گزاری شده", "/core-service/products", "دریافت از طریق لیست محصولات");
+            persist("countryDevision", "cd", "استان و شهر", "/core-service/cdt-info", "-");
+            persist("countryDevisionType", "cdt", "برون استانی-درون استانی-همجوار", "-", "INNER,CLOSER,OUTER");
+            persist("contentType", "cct", "محتوای بسته", "-", "DOCUMENT, NON_DOCUMENT, NEWS_PAPER");
+            persist("consignmentType", "cot", "نوع بسته", "-", "-");
+            persist("serviceName", "service", "سرویس های نام گذاری شده", "/core-api/service/available-service-list", "-");
+            persist("Timecomitment", "t", "مدت ارایه خدمت", "-", "-");
+            persist("AcceptTime", "at", "'زمان قبول مرسوله", "-", "-");
+            persist("v", "consignmentValue", "ارزش مرسوله", "-", "-");
+            persist("np", "numberOfPiece", "تعداد مرسولات سفارش", "-", "-");
         }
         return findAll();
     }

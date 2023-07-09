@@ -26,14 +26,13 @@ public class RuleFact {
 
     private Integer np; //تعداد مرسولات سفارش numberOfPiece
 
-
-    //...........
-
     private String service="-"; //available name of product as service
 
-    //...........
     private Integer price=0;
 
+    private Double helper;
+
+    //................................
 
     public Double getW() {
         return w;
@@ -121,5 +120,13 @@ public class RuleFact {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public Double getHelper() {
+        return helper;
+    }
+
+    public void setHelper(Double helper) {
+        this.helper = helper;
     }
 }

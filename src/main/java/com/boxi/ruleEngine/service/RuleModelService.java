@@ -51,12 +51,9 @@ public class RuleModelService {
         if(ruleModelRepo.existsByCode(rule.getCode())){
             throw BusinessException.valueException(EntityType.RULEMODEL, "code.exist");
         }
+       rule.setIsDeleted(false);
+       return ruleModelRepo.save(rule);
 
-        try {
-            return ruleModelRepo.save(rule);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Name should be unique, id: " + rule);
-        }
     }
 
     public void delete(Long id) {
