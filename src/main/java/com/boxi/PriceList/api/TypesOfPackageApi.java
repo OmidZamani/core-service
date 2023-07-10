@@ -34,6 +34,11 @@ public class TypesOfPackageApi {
         return Response.ok().setPayload(typesOfPackageService.findById(id));
     }
 
+    @GetMapping("/select")
+    public Response edit(@RequestParam(name = "filter")String filter) {
+        return Response.ok().setPayload(typesOfPackageService.select(filter));
+    }
+
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {
         typesOfPackageService.delete(id);

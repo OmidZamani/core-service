@@ -18,6 +18,6 @@ public enum EntityType {
     ProductAttribute,
     TimeCommitment,
     ProductGroup,
-    ProductAttributeDevision, CustomCountryDevision, ServiceDelivery, EXCEPTION, Service, Excel, PriceList, CustomCountryDevisionDetails, PriceListDetails, CUSEOMERSEGMENT, CALENDAR, PersonalizationForm;;
+    ProductAttributeDevision, CustomCountryDevision, ServiceDelivery, EXCEPTION, Service, Excel, PriceList, CustomCountryDevisionDetails, PriceListDetails, CUSEOMERSEGMENT, CALENDAR, PersonalizationForm, TypesOfPackage;;
 
 }

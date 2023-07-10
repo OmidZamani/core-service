@@ -37,7 +37,9 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -206,7 +208,7 @@ public class BagServiceImpl implements BagService {
         if (StringUtils.hasText(bag)) {
             Long LastBagNumber = Long.valueOf(bag) + 1;
             String s = String.valueOf(LastBagNumber);
-            if (! s.substring(0,1).equals("1") ) {
+            if (!s.substring(0, 1).equals("1")) {
                 s = "1" + s;
                 return s;
             } else {
@@ -343,6 +345,20 @@ public class BagServiceImpl implements BagService {
 
 
         return list;
+    }
+
+    @Override
+    public List<BagDto> bagList(String bagList) {
+
+        List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String[] longs = bagList.split(",");
+
+            predicates.add(criteriaBuilder.and(root.get("id").in(longs)));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+        return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
     }
 
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {

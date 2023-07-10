@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -61,8 +62,8 @@ public class BagApi {
     }
 
     @PutMapping("/changestatus")
-    public Response changeStatus(@RequestBody BagDto dto){
-        return Response.ok().setPayload(_service.editStatus( dto));
+    public Response changeStatus(@RequestBody BagDto dto) {
+        return Response.ok().setPayload(_service.editStatus(dto));
     }
 
 
@@ -78,14 +79,14 @@ public class BagApi {
 
 
     @PostMapping("/select")
-    public Response select(@RequestParam(name = "filter" ) String filter,
+    public Response select(@RequestParam(name = "filter") String filter,
                            @RequestBody HubFilter hubFilter) {
         Page<SelectResponse> response = _service.select(filter, hubFilter);
         return Response.ok().setPayload(response);
     }
 
     @PostMapping(value = "/barcode", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> barcode128(@RequestBody BarCodeDto dto)  {
+    public ResponseEntity<BufferedImage> barcode128(@RequestBody BarCodeDto dto) {
         BufferedImage image = BarCodeGeneration.generateCode128BarcodeImage(dto);
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
@@ -137,6 +138,11 @@ public class BagApi {
     @GetMapping("/bagStatus")
     public Response bagStatus() {
         return Response.ok().setPayload(BagStatus.select());
+    }
+
+    @GetMapping("/listOfBag")
+    public Response bagStatus(@RequestParam(name = "bagList") String bagList) {
+        return Response.ok().setPayload(_service.bagList(bagList));
     }
 
 }
