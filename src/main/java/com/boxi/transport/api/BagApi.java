@@ -141,8 +141,9 @@ public class BagApi {
     }
 
     @PostMapping("/listOfBag")
-    public Response bagStatus(@RequestBody String[] bagList) {
-        return Response.ok().setPayload(_service.bagListofList(bagList));
+    public List<BagDto> bagStatus(@RequestBody String[] bagList) {
+        List<BagDto> bagDtos = _service.bagListofList(bagList);
+        return bagDtos;
     }
 
 }
