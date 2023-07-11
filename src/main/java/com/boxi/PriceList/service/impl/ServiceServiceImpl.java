@@ -22,6 +22,7 @@ import com.boxi.hub.entity.CustomDevisionDetail;
 import com.boxi.hub.repo.CustomCountryDevisionRepository;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
+import com.boxi.product.entity.ProductAttributeDevision;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.ProductAttributeRepository;
 import com.boxi.product.repo.ProductRepository;
@@ -122,14 +123,26 @@ public class ServiceServiceImpl implements ServiceService {
                     if (priceListDetail.getCustomCountryDevision() != null) {
                         List<CountryDevision> To = priceListDetail.getCustomCountryDevision().getCustomDevisionDetails().stream().map(CustomDevisionDetail::getToCountryDevision).collect(Collectors.toList());
                         List<CountryDevision> From = priceListDetail.getCustomCountryDevision().getCustomDevisionDetails().stream().map(CustomDevisionDetail::getFromCountryDevision).collect(Collectors.toList());
+                        for (CountryDevision countryDevision : To) {
+                            log.warn("TO -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                        }
+                        for (CountryDevision countryDevision : From) {
+                            log.warn("From -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                        }
+
                         Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
-                    }
-
-                    if (priceListDetail.getPriceDetailDevisions() != null) {
+                    } else if (priceListDetail.getPriceDetailDevisions() != null) {
                         List<CountryDevision> To = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getFromCountryDevision).collect(Collectors.toList());
                         List<CountryDevision> From = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getToCountryDevision).collect(Collectors.toList());
+
+                        for (CountryDevision countryDevision : To) {
+                            log.warn("Dev TO -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                        }
+                        for (CountryDevision countryDevision : From) {
+                            log.warn("Dev From -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                        }
                         Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
@@ -198,7 +211,24 @@ public class ServiceServiceImpl implements ServiceService {
                                 termsOfServicesRepository.save(terms);
                             }
 
-                        } else {
+                        }
+//                        else if (productAttributes.getProductAttributeDevisions() != null) {
+//                            for (ProductAttributeDevision priceDetailDevision : productAttributes.getProductAttributeDevisions()) {
+//                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+//                                Object clone = SerializationUtils.clone(termsOfServices);
+//                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+//                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+//                                terms.setService(services);
+//                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
+//                                terms.setToCity(priceDetailDevision.getToCountryDevision());
+//                                terms.setId(null);
+//                                terms.setIsActive(true);
+//                                terms.setServiceDescription(services.getDescription());
+//                                termsOfServicesRepository.save(terms);
+//                            }
+//
+//                        }
+                        else {
                             termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
                             termsOfServices.setId(null);
                             termsOfServices.setIsActive(true);
