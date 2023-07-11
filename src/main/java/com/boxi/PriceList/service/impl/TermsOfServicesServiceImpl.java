@@ -148,17 +148,16 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
             if (filter.getSelectToCity() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getSelectToCity().getId()));
-            }
-            if (filter.getSelectFromCity() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getSelectFromCity().getId()));
-            }
-
-            if (filter.getFromRegionId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getFromRegionId()));
-            }
-            if (filter.getToRegionId() != null) {
+            } else if (filter.getToRegionId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getToRegionId()));
             }
+
+            if (filter.getSelectFromCity() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getSelectFromCity().getId()));
+            } else if (filter.getFromRegionId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getFromRegionId()));
+            }
+
 
             if (filter.getSelectService() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("service"), filter.getSelectService().getId()));
@@ -167,6 +166,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("parentService"), filter.getSelectParentService().getId()));
             }
 
+            query.distinct(true);
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);

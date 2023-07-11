@@ -23,7 +23,6 @@ import com.boxi.hub.repo.CustomCountryDevisionRepository;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
 import com.boxi.product.entity.ProductAttributeDevision;
-import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.ProductAttributeRepository;
 import com.boxi.product.repo.ProductRepository;
 import com.boxi.utils.DateUtil;
@@ -64,7 +63,10 @@ public class ServiceServiceImpl implements ServiceService {
     private final TermsOfServicesRepository termsOfServicesRepository;
     private final TermsOfServicesConverter termsOfServicesConverter;
 
+    private final PriceDetailDevisionRepository priceDetailDevisionRepository;
+
     private final CustomCountryDevisionRepository customCountryDevisionRepository;
+    private final PriceListDetailRepository priceListDetailRepository;
 
 
     public ServiceServiceImpl(ServiceRepository serviceRepository
@@ -76,7 +78,7 @@ public class ServiceServiceImpl implements ServiceService {
             , ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository
             , TermsOfServicesRepository termsOfServicesRepository
             , TermsOfServicesConverter termsOfServicesConverter
-            , CustomCountryDevisionRepository customCountryDevisionRepository) {
+            , PriceDetailDevisionRepository priceDetailDevisionRepository, CustomCountryDevisionRepository customCountryDevisionRepository, PriceListDetailRepository priceListDetailRepository) {
         this.serviceRepository = serviceRepository;
         this.serviceConvertor = serviceConvertor;
         this.priceListRepository = priceListRepository;
@@ -88,7 +90,9 @@ public class ServiceServiceImpl implements ServiceService {
         this.termsOfServicesRepository = termsOfServicesRepository;
 
         this.termsOfServicesConverter = termsOfServicesConverter;
+        this.priceDetailDevisionRepository = priceDetailDevisionRepository;
         this.customCountryDevisionRepository = customCountryDevisionRepository;
+        this.priceListDetailRepository = priceListDetailRepository;
     }
 
     public void createServiceInTermOfService(Services services) {
@@ -98,7 +102,8 @@ public class ServiceServiceImpl implements ServiceService {
 
         PriceList priceList = priceListRepository.findById(services.getPriceList().getId()).orElseThrow();
 
-        for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
+//        for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
+        for (PriceListDetail priceListDetail : priceListDetailRepository.findByPriceList(priceList)) {
             if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
 //          Find TimeCommitment  as Product Attribute
                 List<ProductAttribute> all = productAttributeRepository.findAll((Specification<ProductAttribute>) (root, query, criteriaBuilder) -> {
@@ -124,10 +129,10 @@ public class ServiceServiceImpl implements ServiceService {
                         List<CountryDevision> To = priceListDetail.getCustomCountryDevision().getCustomDevisionDetails().stream().map(CustomDevisionDetail::getToCountryDevision).collect(Collectors.toList());
                         List<CountryDevision> From = priceListDetail.getCustomCountryDevision().getCustomDevisionDetails().stream().map(CustomDevisionDetail::getFromCountryDevision).collect(Collectors.toList());
                         for (CountryDevision countryDevision : To) {
-                            log.warn("TO -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                            log.warn("TO -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
                         for (CountryDevision countryDevision : From) {
-                            log.warn("From -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                            log.warn("From -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
 
                         Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
@@ -138,10 +143,10 @@ public class ServiceServiceImpl implements ServiceService {
                         List<CountryDevision> From = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getToCountryDevision).collect(Collectors.toList());
 
                         for (CountryDevision countryDevision : To) {
-                            log.warn("Dev TO -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                            log.warn("Dev TO -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
                         for (CountryDevision countryDevision : From) {
-                            log.warn("Dev From -> "+countryDevision.getName()+" - "+countryDevision.getId());
+                            log.warn("Dev From -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
                         Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
@@ -152,7 +157,8 @@ public class ServiceServiceImpl implements ServiceService {
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 });
 
-
+                if (all.size() > 2)
+                    log.warn("up2");
                 if (all.size() != 0) {
                     for (ProductAttribute productAttributes : all) {
                         TermsOfServices termsOfServices = new TermsOfServices();
@@ -169,6 +175,7 @@ public class ServiceServiceImpl implements ServiceService {
                         termsOfServices.setTimeCommitmentFrom(productAttributes.getTimeCommitment().getFrom());
                         termsOfServices.setTimeCommitmentTo(productAttributes.getTimeCommitment().getTo());
                         termsOfServices.setTimeCommitmentTimeUnit(productAttributes.getTimeCommitment().getTimeUnit().getValue());
+
                         termsOfServices.setMinimumOrderQuantity(services.getMinimumOrderQuantity());
 
                         termsOfServices.setFromWeight(priceListDetail.getFromWeight());
@@ -182,6 +189,7 @@ public class ServiceServiceImpl implements ServiceService {
 
                         termsOfServices.setFromNumber(priceListDetail.getFromNumber());
                         termsOfServices.setToNumber(priceListDetail.getToNumber());
+
                         if (priceListDetail.getCustomCountryDevision() != null) {
                             CustomCountryDevision customCountryDevision = customCountryDevisionRepository.findById(priceListDetail.getCustomCountryDevision().getId()).orElseThrow();
                             for (CustomDevisionDetail customDevisionDetail : customCountryDevision.getCustomDevisionDetails()) {
@@ -194,10 +202,17 @@ public class ServiceServiceImpl implements ServiceService {
                                 terms.setId(null);
                                 terms.setIsActive(true);
                                 terms.setServiceDescription(services.getDescription());
+                                if(!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
+                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
+                                ))
                                 termsOfServicesRepository.save(terms);
+
                             }
-                        } else if (priceListDetail.getPriceDetailDevisions() != null) {
-                            for (PriceDetailDevision priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
+                        }
+                        if (priceListDetail.getPriceDetailDevisions() != null) {
+
+                            for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
                                 termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
                                 Object clone = SerializationUtils.clone(termsOfServices);
                                 TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
@@ -208,38 +223,42 @@ public class ServiceServiceImpl implements ServiceService {
                                 terms.setId(null);
                                 terms.setIsActive(true);
                                 terms.setServiceDescription(services.getDescription());
+                                if(! termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
+                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
+                                ))
                                 termsOfServicesRepository.save(terms);
                             }
 
                         }
-//                        else if (productAttributes.getProductAttributeDevisions() != null) {
-//                            for (ProductAttributeDevision priceDetailDevision : productAttributes.getProductAttributeDevisions()) {
-//                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-//                                Object clone = SerializationUtils.clone(termsOfServices);
-//                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-//                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-//                                terms.setService(services);
-//                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
-//                                terms.setToCity(priceDetailDevision.getToCountryDevision());
-//                                terms.setId(null);
-//                                terms.setIsActive(true);
-//                                terms.setServiceDescription(services.getDescription());
-//                                termsOfServicesRepository.save(terms);
-//                            }
-//
-//                        }
-                        else {
-                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                            termsOfServices.setId(null);
-                            termsOfServices.setIsActive(true);
-                            termsOfServices.setServiceDescription(services.getDescription());
-                            termsOfServicesRepository.save(termsOfServices);
-                        }
-                        if (productAttributes != null)
-                            for (UsingProduct usingProduct : productAttributes.getUsingProducts()) {
-
-                                log.warn(usingProduct.getId() + " - Parent " + usingProduct.getParent().getId() + " -  child " + usingProduct.getChild().getId());
+                        if (productAttributes.getProductAttributeDevisions() != null) {
+                            for (ProductAttributeDevision priceDetailDevision :   productAttributes.getProductAttributeDevisions()) {
+                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                Object clone = SerializationUtils.clone(termsOfServices);
+                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+                                terms.setService(services);
+                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
+                                terms.setToCity(priceDetailDevision.getToCountryDevision());
+                                terms.setId(null);
+                                terms.setIsActive(true);
+                                terms.setServiceDescription(services.getDescription());
+                                if(! termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
+                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
+                                ))
+                                termsOfServicesRepository.save(terms);
                             }
+
+                        }
+//                        else {
+//                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+//                            termsOfServices.setId(null);
+//                            termsOfServices.setIsActive(true);
+//                            termsOfServices.setServiceDescription(services.getDescription());
+//                            termsOfServicesRepository.save(termsOfServices);
+//                        }
+
                     }
                 }
             }
