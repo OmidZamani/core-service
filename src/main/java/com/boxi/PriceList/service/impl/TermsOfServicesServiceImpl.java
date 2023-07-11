@@ -12,6 +12,7 @@ import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.repo.TermsOfServicesRepository;
 import com.boxi.PriceList.service.TermsOfServicesService;
 import com.boxi.core.response.SelectResponse;
+import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.product.Enum.TimeUnit;
 import com.boxi.product.entity.Product;
@@ -181,12 +182,23 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         Pageable pageables = PageRequest.of(0, 100);
         Page<TermsOfServicesDto> filter1 = filter(termsOfServicesDto, pageables);
         if (filter1.getTotalElements() == 0) {
-            termsOfServicesDto.setSelectFromCity(null);
-            termsOfServicesDto.setSelectToCity(null);
             if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
+                termsOfServicesDto.setSelectFromCity(null);
+                termsOfServicesDto.setSelectToCity(null);
                 termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
                 termsOfServicesDto.setToRegionId(filter.getToRegionId());
             }
+            filter1 = filter(termsOfServicesDto, pageables);
+
+        }
+
+        if (filter1.getTotalElements() == 0) {
+            termsOfServicesDto.setSelectFromCity(null);
+            termsOfServicesDto.setSelectToCity(null);
+            CountryDevision countryDevisionfrom = countryDevisionRepository.findById(filter.getFromCityId()).orElseThrow();
+            CountryDevision countryDevisionTo = countryDevisionRepository.findById(filter.getToCityId()).orElseThrow();
+            termsOfServicesDto.setFromRegionId(countryDevisionfrom.getParent().getId());
+            termsOfServicesDto.setToRegionId(countryDevisionTo.getParent().getId());
             filter1 = filter(termsOfServicesDto, pageables);
 
         }
