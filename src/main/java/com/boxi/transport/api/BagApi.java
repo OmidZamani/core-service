@@ -140,9 +140,9 @@ public class BagApi {
         return Response.ok().setPayload(BagStatus.select());
     }
 
-    @GetMapping("/listOfBag")
-    public Response bagStatus(@RequestParam(name = "bagList") String bagList) {
-        return Response.ok().setPayload(_service.bagList(bagList));
+    @PostMapping("/listOfBag")
+    public Response bagStatus(@RequestBody String[] bagList) {
+        return Response.ok().setPayload(_service.bagListofList(bagList));
     }
 
 }

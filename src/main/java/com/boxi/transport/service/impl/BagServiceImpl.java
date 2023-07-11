@@ -361,6 +361,20 @@ public class BagServiceImpl implements BagService {
         return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<BagDto> bagListofList(String[] bagList) {
+
+        List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+
+
+            predicates.add(criteriaBuilder.and(root.get("id").in(bagList)));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+        return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {
         findById(dto.getSelectBag().getId());
         dto.setId(null);
