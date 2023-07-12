@@ -102,13 +102,16 @@ public class ServiceServiceImpl implements ServiceService {
 
         PriceList priceList = priceListRepository.findById(services.getPriceList().getId()).orElseThrow();
 
-//        for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
-        for (PriceListDetail priceListDetail : priceListDetailRepository.findByPriceList(priceList)) {
+        for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
             if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
 //          Find TimeCommitment  as Product Attribute
                 List<ProductAttribute> all = productAttributeRepository.findAll((Specification<ProductAttribute>) (root, query, criteriaBuilder) -> {
                     List<Predicate> predicates = new ArrayList<>();
                     predicates.add(criteriaBuilder.equal(root.get("product"), services.getProduct()));
+
+                    predicates.add(criteriaBuilder.equal(root.get("product").get("isDeleted"), false));
+                    predicates.add(criteriaBuilder.equal(root.get("product").get("isActive"), true));
+
 
                     if (priceListDetail.getFromDim() != null & priceListDetail.getToDimension() != null) {
 
@@ -135,7 +138,7 @@ public class ServiceServiceImpl implements ServiceService {
                             log.warn("From -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
 
-                        Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
+                        Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.INNER);
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
                     } else if (priceListDetail.getPriceDetailDevisions() != null) {
@@ -148,7 +151,7 @@ public class ServiceServiceImpl implements ServiceService {
                         for (CountryDevision countryDevision : From) {
                             log.warn("Dev From -> " + countryDevision.getName() + " - " + countryDevision.getId());
                         }
-                        Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.LEFT);
+                        Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.INNER);
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("fromCountryDevision").in(To)));
                         predicates.add(criteriaBuilder.and(productAttributeDevisions.get("toCountryDevision").in(From)));
                     }
@@ -157,100 +160,110 @@ public class ServiceServiceImpl implements ServiceService {
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 });
 
-                if (all.size() > 2)
+                if (all.size() > 1)
                     log.warn("up2");
                 if (all.size() != 0) {
                     for (ProductAttribute productAttributes : all) {
-                        TermsOfServices termsOfServices = new TermsOfServices();
-                        termsOfServices.setServiceName(services.getName());
-                        termsOfServices.setService(services);
-                        if (priceListDetail.getConsignmentType() != null)
-                            termsOfServices.setConsignmentType(ConsignmentType.findByValue(priceListDetail.getConsignmentType()));
 
-                        termsOfServices.setServiceValidDateFrom(services.getValidDateFrom());
-                        termsOfServices.setServiceValidDateTo(services.getValidDateTo());
-                        termsOfServices.setPrice(priceListDetail.getPrice());
+                        if (productAttributes.getProduct().getId() == services.getProduct().getId()) {
+                                TermsOfServices termsOfServices = new TermsOfServices();
+                            termsOfServices.setServiceName(services.getName());
+                            termsOfServices.setService(services);
+                            if (priceListDetail.getConsignmentType() != null)
+                                termsOfServices.setConsignmentType(ConsignmentType.findByValue(priceListDetail.getConsignmentType()));
+
+                            termsOfServices.setServiceValidDateFrom(services.getValidDateFrom());
+                            termsOfServices.setServiceValidDateTo(services.getValidDateTo());
+                            termsOfServices.setPrice(priceListDetail.getPrice());
 
 
-                        termsOfServices.setTimeCommitmentFrom(productAttributes.getTimeCommitment().getFrom());
-                        termsOfServices.setTimeCommitmentTo(productAttributes.getTimeCommitment().getTo());
-                        termsOfServices.setTimeCommitmentTimeUnit(productAttributes.getTimeCommitment().getTimeUnit().getValue());
+                            termsOfServices.setTimeCommitmentFrom(productAttributes.getTimeCommitment().getFrom());
+                            termsOfServices.setTimeCommitmentTo(productAttributes.getTimeCommitment().getTo());
+                            termsOfServices.setTimeCommitmentTimeUnit(productAttributes.getTimeCommitment().getTimeUnit().getValue());
 
-                        termsOfServices.setMinimumOrderQuantity(services.getMinimumOrderQuantity());
+                            termsOfServices.setMinimumOrderQuantity(services.getMinimumOrderQuantity());
 
-                        termsOfServices.setFromWeight(priceListDetail.getFromWeight());
-                        termsOfServices.setToWeight(priceListDetail.getToWeight());
+                            termsOfServices.setFromWeight(priceListDetail.getFromWeight());
+                            termsOfServices.setToWeight(priceListDetail.getToWeight());
 
-                        termsOfServices.setFromDim(priceListDetail.getFromDim());
-                        termsOfServices.setToDimension(priceListDetail.getToDimension());
+                            termsOfServices.setFromDim(priceListDetail.getFromDim());
+                            termsOfServices.setToDimension(priceListDetail.getToDimension());
 
-                        termsOfServices.setFromValue(priceListDetail.getFromValue());
-                        termsOfServices.setToValue(priceListDetail.getToValue());
+                            termsOfServices.setFromValue(priceListDetail.getFromValue());
+                            termsOfServices.setToValue(priceListDetail.getToValue());
 
-                        termsOfServices.setFromNumber(priceListDetail.getFromNumber());
-                        termsOfServices.setToNumber(priceListDetail.getToNumber());
+                            termsOfServices.setFromNumber(priceListDetail.getFromNumber());
+                            termsOfServices.setToNumber(priceListDetail.getToNumber());
 
-                        if (priceListDetail.getCustomCountryDevision() != null) {
-                            CustomCountryDevision customCountryDevision = customCountryDevisionRepository.findById(priceListDetail.getCustomCountryDevision().getId()).orElseThrow();
-                            for (CustomDevisionDetail customDevisionDetail : customCountryDevision.getCustomDevisionDetails()) {
-                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-                                terms.setService(services);
-                                terms.setFromCity(customDevisionDetail.getFromCountryDevision());
-                                terms.setToCity(customDevisionDetail.getToCountryDevision());
-                                terms.setId(null);
-                                terms.setIsActive(true);
-                                terms.setServiceDescription(services.getDescription());
-                                if(!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
-                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
-                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
-                                ))
-                                termsOfServicesRepository.save(terms);
+                            if (priceListDetail.getCustomCountryDevision() != null) {
+                                CustomCountryDevision customCountryDevision = customCountryDevisionRepository.findById(priceListDetail.getCustomCountryDevision().getId()).orElseThrow();
+                                for (CustomDevisionDetail customDevisionDetail : priceListDetail.getCustomCountryDevision().getCustomDevisionDetails()) {
+
+                                    termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                    TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+                                    TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+                                    terms.setService(services);
+
+                                    if(customDevisionDetail.getFromCountryDevision().getId() == 24 && customDevisionDetail.getToCountryDevision().getId()==24)
+                                        log.warn("injam ");
+
+                                    terms.setFromCity(customDevisionDetail.getFromCountryDevision());
+                                    terms.setToCity(customDevisionDetail.getToCountryDevision());
+                                    terms.setId(null);
+                                    terms.setIsActive(true);
+                                    terms.setServiceDescription(services.getDescription());
+                                    if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                            services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
+                                            terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
+                                    ))
+                                        termsOfServicesRepository.save(terms);
+
+                                }
+                            }
+                            if (priceListDetail.getPriceDetailDevisions() != null) {
+
+                                for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
+                                    termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                    Object clone = SerializationUtils.clone(termsOfServices);
+                                    TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+                                    TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+                                    terms.setService(services);
+
+                                    if(priceDetailDevision.getFromCountryDevision().getId() == 24 && priceDetailDevision.getToCountryDevision().getId()==24)
+                                        log.warn("injam 2 ");
+                                    terms.setFromCity(priceDetailDevision.getFromCountryDevision());
+                                    terms.setToCity(priceDetailDevision.getToCountryDevision());
+                                    terms.setId(null);
+                                    terms.setIsActive(true);
+                                    terms.setServiceDescription(services.getDescription());
+                                    if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                            services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
+                                            terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
+                                    ))
+                                        termsOfServicesRepository.save(terms);
+                                }
 
                             }
-                        }
-                        if (priceListDetail.getPriceDetailDevisions() != null) {
-
-                            for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
-                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                Object clone = SerializationUtils.clone(termsOfServices);
-                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-                                terms.setService(services);
-                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
-                                terms.setToCity(priceDetailDevision.getToCountryDevision());
-                                terms.setId(null);
-                                terms.setIsActive(true);
-                                terms.setServiceDescription(services.getDescription());
-                                if(! termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
-                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
-                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
-                                ))
-                                termsOfServicesRepository.save(terms);
-                            }
-
-                        }
-                        if (productAttributes.getProductAttributeDevisions() != null) {
-                            for (ProductAttributeDevision priceDetailDevision :   productAttributes.getProductAttributeDevisions()) {
-                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                Object clone = SerializationUtils.clone(termsOfServices);
-                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-                                terms.setService(services);
-                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
-                                terms.setToCity(priceDetailDevision.getToCountryDevision());
-                                terms.setId(null);
-                                terms.setIsActive(true);
-                                terms.setServiceDescription(services.getDescription());
-                                if(! termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
-                                        services,terms.getFromCity(),terms.getToCity(),terms.getFromValue(),terms.getToValue(),terms.getFromWeight(),terms.getToWeight(),terms.getFromDim(),terms.getToDimension(),
-                                        terms.getTimeCommitmentFrom(),terms.getTimeCommitmentTo(),terms.getTimeCommitmentTimeUnit(),terms.getFromNumber(),terms.getToNumber()
-                                ))
-                                termsOfServicesRepository.save(terms);
-                            }
-
-                        }
+//                        if (productAttributes.getProductAttributeDevisions() != null) {
+//                            for (ProductAttributeDevision priceDetailDevision : productAttributes.getProductAttributeDevisions()) {
+//                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+//                                Object clone = SerializationUtils.clone(termsOfServices);
+//                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+//                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+//                                terms.setService(services);
+//                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
+//                                terms.setToCity(priceDetailDevision.getToCountryDevision());
+//                                terms.setId(null);
+//                                terms.setIsActive(true);
+//                                terms.setServiceDescription(services.getDescription());
+//                                if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+//                                        services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
+//                                        terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
+//                                ))
+//                                    termsOfServicesRepository.save(terms);
+//                            }
+//
+//                        }
 //                        else {
 //                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
 //                            termsOfServices.setId(null);
@@ -259,6 +272,7 @@ public class ServiceServiceImpl implements ServiceService {
 //                            termsOfServicesRepository.save(termsOfServices);
 //                        }
 
+                        }
                     }
                 }
             }
