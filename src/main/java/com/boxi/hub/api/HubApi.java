@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class HubApi {
     }
     //    @PreAuthorize("hasPermission('hasAccess','10010101')")
     @PostMapping
-    public Response createHub(@RequestBody HubDto request) {
+    public Response createHub(@Valid  @RequestBody HubDto request) {
         log.warn(request.toJson());
         HubDto response = hubService.createHub(request);
         return Response.ok().setPayload(response);

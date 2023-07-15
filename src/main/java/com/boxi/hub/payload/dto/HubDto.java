@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -25,9 +26,10 @@ public class HubDto extends JsonBase {
     private String code;
 
     @NotBlank
+    @Size(min = 0,max = 254)
     private String name;
 
-    @NotBlank
+    @NotNull
     private SelectResponse selectHubType;
     private SelectResponse selectParentHub; //can be  null TODO has error
 
