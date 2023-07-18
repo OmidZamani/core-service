@@ -229,14 +229,13 @@ public class BagServiceImpl implements BagService {
 
     private BagDto saveData(Bag bag) {
         if (!StringUtils.hasText(bag.getBagNumber())) {
-            String BagNumbers = "";
-            Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
-            if (topByCurrentHubOrderByIdDesc == null) {
-                BagNumbers = "000001";
-//                BagNumbers=BagNumbers.substring()
-//                bag.getCurrentHub().getId().toString().length()
+
+            if(bag.getCurrentHub()!=null) {
+                Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
+                if (topByCurrentHubOrderByIdDesc == null) {
+
+                }
             }
-//            bag.setBagNumber("1" + bag.getCurrentHub().getId().toString() +)
         }
         Bag saved = bagRepository.save(bag);
         return bagConverter.fromModelToDto(saved);
