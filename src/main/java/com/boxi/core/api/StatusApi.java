@@ -5,9 +5,12 @@ import com.boxi.core.response.Response;
 import com.boxi.utils.UserSecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/core-api/status")
@@ -17,10 +20,11 @@ import javax.annotation.security.RolesAllowed;
 public class StatusApi {
 
 
+
     @GetMapping()
-    public Response createWorkContent() {
-        String user = UserSecurityUtil.getAuthName();
-        return Response.ok().setPayload("working .."+user);
+    public Response stats(@AuthenticationPrincipal Jwt jwt ) {
+        System.out.println("status");
+        return Response.ok().setPayload("service is working .. principal user name is :"+  UserSecurityUtil.getAuthName() +" and extracted jwt data is :"+ Collections.singletonMap("data", jwt.getClaims()));
     }
 
     @RequestMapping(value = "/anonymous", method = RequestMethod.GET)
