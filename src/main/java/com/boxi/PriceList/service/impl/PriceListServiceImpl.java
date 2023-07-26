@@ -561,5 +561,10 @@ public class PriceListServiceImpl implements PriceListService {
 
     }
 
+    @Override
+    public Iterable<PriceList> findAll() {
+        return priceListRepository.findAll();
+    }
+
 
 }

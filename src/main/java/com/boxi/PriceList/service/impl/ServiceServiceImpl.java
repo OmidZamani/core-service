@@ -8,6 +8,7 @@ import com.boxi.PriceList.payload.converter.ServiceConvertor;
 import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
 import com.boxi.PriceList.payload.dto.PriceListDto;
 import com.boxi.PriceList.payload.dto.ServiceDto;
+import com.boxi.PriceList.payload.dto.ServiceNameWithCodeDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.PriceList.payload.request.FilterService;
 import com.boxi.PriceList.repo.*;
@@ -560,6 +561,11 @@ public class ServiceServiceImpl implements ServiceService {
     public ServiceDto findById(Long id) {
 
         return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public List<ServiceNameWithCodeDto> serviceNameWithCode() {
+        return serviceRepository.findByIsDeletedFalseAndIsActiveIsTrue();
     }
 
 }

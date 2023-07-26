@@ -135,4 +135,11 @@ public class ServiceApi {
     }
 
 
+    @GetMapping("/available-service-list")
+    public Response serviceNameWithCode() {
+        return Response.ok().setPayload(serviceService.serviceNameWithCode());
+    }
+
+
+
 }

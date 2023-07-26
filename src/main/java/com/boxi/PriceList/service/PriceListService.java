@@ -1,5 +1,6 @@
 package com.boxi.PriceList.service;
 
+import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.payload.dto.*;
 import com.boxi.PriceList.payload.request.FilterPriceList;
 import com.boxi.core.response.SelectResponse;
@@ -40,4 +41,6 @@ public interface PriceListService {
     PriceListDto findByIdAndIsActiveTrue(Long id);
 
     List<PriceListDetailDto> findByIdAndIsActiveTrueByDetails(Long id, ConsignmentInfoDto dto);
+
+    Iterable<PriceList> findAll();
 }

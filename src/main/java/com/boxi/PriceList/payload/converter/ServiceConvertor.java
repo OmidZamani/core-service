@@ -4,6 +4,7 @@ package com.boxi.PriceList.payload.converter;
 import com.boxi.PriceList.Enum.ServiceType;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.payload.dto.ServiceDto;
+import com.boxi.PriceList.payload.dto.ServiceNameWithCodeDto;
 import com.boxi.core.request.DateDto;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.payload.CreateServiceExcelRequest;
@@ -27,6 +28,8 @@ public interface ServiceConvertor {
     @Mapping(target = "validDateTo", ignore = true)
     @Mapping(target = "type.id", source = "type")
     ServiceDto fromModelToDto(Services services);
+
+
 
     @Mapping(target = "validDateFrom", ignore = true)
     @Mapping(target = "validDateTo", ignore = true)

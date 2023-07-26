@@ -31,10 +31,10 @@ public class UserSecurityUtil {
 
     public static String getAuthName() {
         Authentication authentication = getContext().getAuthentication();
-        var jwt=(Jwt)authentication.getPrincipal();
-        return (String)jwt.getClaims().get("name");
 
-     //   return authentication.getName();
+        log.warn(">>>>>>>>>>>"+authentication.getName());
+        return authentication.getName();
+
     }
 
 
