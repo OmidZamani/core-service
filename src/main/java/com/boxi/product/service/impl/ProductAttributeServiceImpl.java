@@ -108,7 +108,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
 
     public List<ProductAttributeDto> create(List<ProductAttributeDto> request) {
-        ProductAttributeDto productAttributeDto1 ;
+        ProductAttributeDto productAttributeDto1;
         List<ProductAttributeDto> productAttributeList = new ArrayList<>();
 
 
@@ -152,7 +152,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
 
     public ProductAttributeDto SaveEdit(ProductAttributeDto request, ProductAttribute productAttribute) {
-        ProductAttributeDto productAttributeDto1 ;
+        ProductAttributeDto productAttributeDto1;
         List<ProductAttributeDto> productAttributeList = new ArrayList<>();
         productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
 
