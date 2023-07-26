@@ -4,17 +4,24 @@ import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.converter.TermsOfServicesConverter;
+import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.SuggestDetailServiceInfDto;
 import com.boxi.PriceList.payload.dto.SuggestionServiceDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import com.boxi.PriceList.repo.ServiceRepository;
 import com.boxi.PriceList.repo.TermsOfServicesRepository;
 import com.boxi.PriceList.service.TermsOfServicesService;
+import com.boxi.core.response.SelectResponse;
+import com.boxi.hub.entity.CountryDevision;
+import com.boxi.hub.repo.CountryDevisionRepository;
+import com.boxi.product.Enum.TimeUnit;
 import com.boxi.product.entity.Product;
+import com.boxi.product.entity.TimeCommitment;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.UsingProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -39,12 +46,16 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     private final ServiceRepository ServiceRepository;
     private final UsingProductRepository usingProductRepository;
 
+    private final CountryDevisionRepository countryDevisionRepository;
+
+
     public TermsOfServicesServiceImpl(TermsOfServicesRepository termsOfServicesRepository
-            , TermsOfServicesConverter termsOfServicesConverter, com.boxi.PriceList.repo.ServiceRepository serviceRepository, UsingProductRepository usingProductRepository) {
+            , TermsOfServicesConverter termsOfServicesConverter, com.boxi.PriceList.repo.ServiceRepository serviceRepository, UsingProductRepository usingProductRepository, CountryDevisionRepository countryDevisionRepository) {
         this.termsOfServicesRepository = termsOfServicesRepository;
         this.termsOfServicesConverter = termsOfServicesConverter;
         ServiceRepository = serviceRepository;
         this.usingProductRepository = usingProductRepository;
+        this.countryDevisionRepository = countryDevisionRepository;
     }
 
     @Override
@@ -102,18 +113,21 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromWeight"), filter.getFromWeight()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toWeight"), filter.getToWeight()));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromDim"), filter.getFromDim()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toDimension"), filter.getToDimension()));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromDim()), root.get("fromDim"), root.get("toDimension")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToDimension()), root.get("fromDim"), root.get("toDimension")));
+
+
             }
 
             if (filter.getFromValue() != null && filter.getToValue() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromValue"), filter.getFromValue()));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toValue"), filter.getToValue()));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")));
+
             }
 
             if (filter.getFromNumber() != null && filter.getToNumber() != null) {
@@ -134,11 +148,17 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timeCommitmentTimeUnit"), filter.getTimeCommitmentTimeUnit()));
             }
             if (filter.getSelectToCity() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("toCity"), filter.getSelectToCity().getId()));
+                predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getSelectToCity().getId()));
+            } else if (filter.getToRegionId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("toCity"), filter.getToRegionId()));
             }
+
             if (filter.getSelectFromCity() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromCity"), filter.getSelectFromCity().getId()));
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getSelectFromCity().getId()));
+            } else if (filter.getFromRegionId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("fromCity"), filter.getFromRegionId()));
             }
+
 
             if (filter.getSelectService() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("service"), filter.getSelectService().getId()));
@@ -147,6 +167,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("parentService"), filter.getSelectParentService().getId()));
             }
 
+            query.distinct(true);
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
@@ -154,6 +175,51 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         return termsOfServices.map(termsOfServicesConverter::fromModelToDto);
 
 
+    }
+
+    @Override
+    public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
+        TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
+        Pageable pageables = PageRequest.of(0, 100);
+        Page<TermsOfServicesDto> filter1 = filter(termsOfServicesDto, pageables);
+        if (filter1.getTotalElements() == 0) {
+            if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
+                termsOfServicesDto.setSelectFromCity(null);
+                termsOfServicesDto.setSelectToCity(null);
+                termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
+                termsOfServicesDto.setToRegionId(filter.getToRegionId());
+            }
+            filter1 = filter(termsOfServicesDto, pageables);
+
+        }
+
+        if (filter1.getTotalElements() == 0) {
+            termsOfServicesDto.setSelectFromCity(null);
+            termsOfServicesDto.setSelectToCity(null);
+            CountryDevision countryDevisionfrom = countryDevisionRepository.findById(filter.getFromCityId()).orElseThrow();
+            CountryDevision countryDevisionTo = countryDevisionRepository.findById(filter.getToCityId()).orElseThrow();
+            termsOfServicesDto.setFromRegionId(countryDevisionfrom.getParent().getId());
+            termsOfServicesDto.setToRegionId(countryDevisionTo.getParent().getId());
+            filter1 = filter(termsOfServicesDto, pageables);
+
+        }
+        List<SuggestionServiceDto> suggestionServiceDtos = new ArrayList<>();
+
+        for (TermsOfServicesDto ofServicesDto : filter1) {
+            SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
+            suggestionServiceDto.setName(ofServicesDto.getServiceName());
+            suggestionServiceDto.setId(ofServicesDto.getSelectService().getId());
+            suggestionServiceDto.setPrice(ofServicesDto.getPrice());
+            suggestionServiceDto.setServiceType(ofServicesDto.getServiceType().getId());
+            suggestionServiceDto.setTimeFrom(ofServicesDto.getTimeCommitmentFrom().toString());
+            suggestionServiceDto.setTimeTo(ofServicesDto.getTimeCommitmentTo().toString());
+            TimeUnit byValue = TimeUnit.findByValue(ofServicesDto.getTimeCommitmentTimeUnit());
+            suggestionServiceDto.setTimeType(new SelectResponse(byValue.getValue(), byValue.getType()));
+
+            suggestionServiceDtos.add(suggestionServiceDto);
+
+        }
+        return suggestionServiceDtos;
     }
 
     @Override

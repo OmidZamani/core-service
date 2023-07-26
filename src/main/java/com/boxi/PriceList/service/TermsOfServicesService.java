@@ -1,6 +1,7 @@
 package com.boxi.PriceList.service;
 
 import com.boxi.PriceList.entity.Services;
+import com.boxi.PriceList.payload.dto.ConsignmentInfoDto;
 import com.boxi.PriceList.payload.dto.SuggestionServiceDto;
 import com.boxi.PriceList.payload.dto.TermsOfServicesDto;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ public interface TermsOfServicesService {
     TermsOfServicesDto edit(TermsOfServicesDto dto);
 
     Page<TermsOfServicesDto> filter(TermsOfServicesDto filter, Pageable pageable);
+    List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable);
 
     List<SuggestionServiceDto> detailsSuggestService(Long id );
 

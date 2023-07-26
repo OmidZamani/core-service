@@ -1,7 +1,11 @@
 package com.boxi.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.security.Principal;
 
@@ -19,6 +23,7 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 
 @Slf4j
 public class UserSecurityUtil {
+
     private static Authentication getCurrentContextAuthentication() {
         return getContext().getAuthentication();
 
@@ -26,11 +31,15 @@ public class UserSecurityUtil {
 
     public static String getAuthName() {
         Authentication authentication = getContext().getAuthentication();
+
         log.warn(">>>>>>>>>>>"+authentication.getName());
         return authentication.getName();
+
     }
 
-/*
+
+
+
 
     private UserSecurityUtil() {
     }
@@ -60,21 +69,9 @@ public class UserSecurityUtil {
         return null;
     }
 
-
-    public static UserDetails getAuthorizationInfo() {
-        if (getCurrentContextAuthentication() == null)
-            return null;
-        Object principal = getCurrentContextAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return (UserDetails) principal;
-        }
-        return null;
-    }
+/*
 
 
-    private static Authentication getCurrentContextAuthentication() {
-        return getContext().getAuthentication();
-    }
 
     public static Collection<SimpleGrantedAuthority> getCurrentUserRoles() {
         return (Collection<SimpleGrantedAuthority>) getContext().getAuthentication().getAuthorities();

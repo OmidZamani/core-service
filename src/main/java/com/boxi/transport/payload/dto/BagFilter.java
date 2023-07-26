@@ -14,6 +14,7 @@ import java.util.List;
 public class BagFilter extends JsonBase {
     private String bagNumber;
     private SelectResponse selectBagType;
+    private SelectResponse status;
     private String consignmentsDestinationHubName;
     private SelectResponse selectsourceHub;
     private SelectResponse selectdestinationHub;
@@ -24,6 +25,7 @@ public class BagFilter extends JsonBase {
     private String vehicleNumber3; //پلاک
     private List<HubPermissionDto> hublist;
     private Boolean isActive;
+
 
 
 

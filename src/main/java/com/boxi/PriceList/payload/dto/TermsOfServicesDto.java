@@ -37,4 +37,6 @@ public class TermsOfServicesDto {
     private SelectResponse selectFromCity;
     private SelectResponse selectService;
     private SelectResponse selectParentService;
+    private Long fromRegionId;
+    private Long toRegionId;
 }

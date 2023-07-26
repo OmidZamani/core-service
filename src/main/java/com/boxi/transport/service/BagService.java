@@ -39,4 +39,8 @@ public interface BagService {
     BagDto editStatus(BagDto dto);
 
     List<SelectResponse> reportTotal(Long hubId);
+
+    List<BagDto> bagList(String bagList);
+
+    List<BagDto> bagListofList(String[] bagList);
 }

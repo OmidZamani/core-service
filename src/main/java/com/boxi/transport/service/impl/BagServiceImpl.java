@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,7 +37,9 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -151,7 +154,10 @@ public class BagServiceImpl implements BagService {
                 if (StringUtils.hasText(filter.getVehicleNumber3())) {
                     predicates.add(criteriaBuilder.equal(root.get("carrier").get("vehicleNumber3"), filter.getVehicleNumber3()));
                 }
-                //TODO add status
+
+                if (filter.getStatus() != null)
+                    predicates.add(criteriaBuilder.equal(root.get("status"), BagStatus.findByValue(filter.getStatus().getId())));
+
                 if (filter.getHublist() != null && filter.getSelectsourceHub() == null) {
                     List<Long> ids = findAllhubid(filter.getHublist());
 
@@ -187,21 +193,31 @@ public class BagServiceImpl implements BagService {
 
         log.warn(request.toJson());
         request.setId(null);
-        if (StringUtils.hasText(request.getBagNumber())) {
-            if (isExist(request.getBagNumber())) {
-                throw BusinessException.valueException(EntityType.Bag, "bag.is.duplicate");
-            }
-        } else {
-            request.setBagNumber(uniqueBarCodeNum(request));
-        }
+        request.setBagNumber(AutoGenerateBarcode());
         Bag bag = bagConverter.fromDtoToModel(request);
         bag.setIsActive(request.getIsActive());
         bag.setIsDeleted(false);
         bag.setStatus(BagStatus.waitingForBagging);
         bag.setCurrentHub(new Hub().setId(request.getSelectSourceHub().getId()));
-//        bag.setSourceHub(new Hub().setId(request.getSelectCurrentHub().getId()));
         if (request.getIsActive() == null) bag.setIsActive(true);
         return saveData(bag);
+    }
+
+    private String AutoGenerateBarcode() {
+        String bag = bagRepository.findTopOrderByBagNumberDesc();
+        if (StringUtils.hasText(bag)) {
+            Long LastBagNumber = Long.valueOf(bag) + 1;
+            String s = String.valueOf(LastBagNumber);
+            if (!s.substring(0, 1).equals("1")) {
+                s = "1" + s;
+                return s;
+            } else {
+                return String.valueOf(LastBagNumber);
+            }
+        } else {
+            return "100000000";
+        }
+
     }
 
     @Override
@@ -213,14 +229,13 @@ public class BagServiceImpl implements BagService {
 
     private BagDto saveData(Bag bag) {
         if (!StringUtils.hasText(bag.getBagNumber())) {
-            String BagNumbers = "";
-            Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
-            if(topByCurrentHubOrderByIdDesc==null) {
-                BagNumbers ="000001";
-//                BagNumbers=BagNumbers.substring()
-//                bag.getCurrentHub().getId().toString().length()
+
+            if(bag.getCurrentHub()!=null) {
+                Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
+                if (topByCurrentHubOrderByIdDesc == null) {
+
+                }
             }
-//            bag.setBagNumber("1" + bag.getCurrentHub().getId().toString() +)
         }
         Bag saved = bagRepository.save(bag);
         return bagConverter.fromModelToDto(saved);
@@ -329,6 +344,34 @@ public class BagServiceImpl implements BagService {
 
 
         return list;
+    }
+
+    @Override
+    public List<BagDto> bagList(String bagList) {
+
+        List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String[] longs = bagList.split(",");
+
+            predicates.add(criteriaBuilder.and(root.get("id").in(longs)));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+        return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BagDto> bagListofList(String[] bagList) {
+
+        List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+
+
+            predicates.add(criteriaBuilder.and(root.get("id").in(bagList)));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+        return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
     }
 
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {

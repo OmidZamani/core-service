@@ -55,3 +55,20 @@ public class BagDto extends JsonBase {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
