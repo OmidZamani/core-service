@@ -199,7 +199,7 @@ public class AvailableServiceSuggestion {
                     suggestionServiceDto.setId(byPriceListAndProduct.getId());
                     suggestionServiceDto.setName(byPriceListAndProduct.getName());
                     suggestionServiceDto.setPrice(serviceInfDto.getPrice());
-                    suggestionServiceDto.setServiceType(0L);
+                    suggestionServiceDto.setServiceType(1L);
 
 
                     if (checkArrayList(services, suggestionServiceDto))
