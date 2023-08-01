@@ -102,6 +102,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("serviceValidDateFrom"), filter.getServiceValidDateFrom()));
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("serviceValidDateTo"), filter.getServiceValidDateTo()));
 
+
             }
 
             if (filter.getConsignmentType() != null) {
@@ -113,24 +114,25 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
-                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("fromWeight"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("toWeight"))));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
-                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromDim()), root.get("fromDim"), root.get("toDimension")));
+
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToDimension()), root.get("fromDim"), root.get("toDimension")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromDim()), root.get("fromDim"), root.get("toDimension")));
 
 
             }
 
             if (filter.getFromValue() != null && filter.getToValue() != null) {
-                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")));
-                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")));
-
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")),criteriaBuilder.isNull(root.get("fromValue"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")),criteriaBuilder.isNull(root.get("toValue"))));
             }
 
             if (filter.getFromNumber() != null && filter.getToNumber() != null) {
+
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("fromNumber"), filter.getFromNumber()));
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("toNumber"), filter.getToNumber()));
             }
