@@ -114,8 +114,8 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("fromWeight"))));
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("toWeight"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("fromWeight"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("toWeight"))));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
