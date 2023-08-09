@@ -105,7 +105,7 @@ public class ServiceServiceImpl implements ServiceService {
                 if (priceListDetail.getCustomCountryDevision() != null)
                     for (CustomDevisionDetail customDevisionDetailD : priceListDetail.getCustomCountryDevision().getCustomDevisionDetails()) {
 
-                        List<ProductAttribute> all = findAllProductAttributeByCountryDevision(priceListDetail, services,customDevisionDetailD);
+                        List<ProductAttribute> all = findAllProductAttributeByCountryDevision(priceListDetail, services, customDevisionDetailD);
                         if (all.size() != 0) {
                             for (ProductAttribute productAttributes : all) {
 
@@ -288,7 +288,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     }
 
-    private List<ProductAttribute> findAllProductAttributeByCountryDevision(PriceListDetail priceListDetail, Services services,CustomDevisionDetail customDevisionDetailD) {
+    private List<ProductAttribute> findAllProductAttributeByCountryDevision(PriceListDetail priceListDetail, Services services, CustomDevisionDetail customDevisionDetailD) {
         return productAttributeRepository.findAll((Specification<ProductAttribute>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("product"), services.getProduct()));
@@ -315,9 +315,9 @@ public class ServiceServiceImpl implements ServiceService {
             if (priceListDetail.getCustomCountryDevision() != null) {
                 Join<Object, Object> productAttributeDevisions = root.join("productAttributeDevisions", JoinType.INNER);
 
-                    Predicate fromCountryDevision = criteriaBuilder.equal(productAttributeDevisions.get("fromCountryDevision"), customDevisionDetailD.getFromCountryDevision());
-                    Predicate toCountryDevision = criteriaBuilder.equal(productAttributeDevisions.get("toCountryDevision"), customDevisionDetailD.getToCountryDevision());
-                    predicates.add(criteriaBuilder.and(fromCountryDevision, toCountryDevision));
+                Predicate fromCountryDevision = criteriaBuilder.equal(productAttributeDevisions.get("fromCountryDevision"), customDevisionDetailD.getFromCountryDevision());
+                Predicate toCountryDevision = criteriaBuilder.equal(productAttributeDevisions.get("toCountryDevision"), customDevisionDetailD.getToCountryDevision());
+                predicates.add(criteriaBuilder.and(fromCountryDevision, toCountryDevision));
 
             } else if (priceListDetail.getPriceDetailDevisions() != null) {
                 List<CountryDevision> To = priceListDetail.getPriceDetailDevisions().stream().map(PriceDetailDevision::getFromCountryDevision).collect(Collectors.toList());
@@ -342,6 +342,7 @@ public class ServiceServiceImpl implements ServiceService {
 
 
     public ServiceDto createService(ServiceDto request) {
+        request.setCode(genServiceCode());
         if (serviceRepository.existsByCode(request.getCode())) {
             throw BusinessException.valueException(EntityType.Service, "service.delivery.code.duplicate");
         }
@@ -384,6 +385,12 @@ public class ServiceServiceImpl implements ServiceService {
         return request;
     }
 
+    private String genServiceCode() {
+
+        Long aLong = serviceRepository.maxServiceId();
+        return "S00" + aLong.toString();
+    }
+
     @Override
     public ServiceDto create(ServiceDto request) {
         return createService(request);
@@ -416,7 +423,7 @@ public class ServiceServiceImpl implements ServiceService {
                 predicates.add(criteriaBuilder.equal(root.get("priceList"), filter.getPriceList().getId()));
 
 
-            if (filter.getDescription() != null)
+            if (StringUtils.isNotBlank(filter.getDescription()))
                 predicates.add(criteriaBuilder.like(root.get("description"), filter.getDescription()));
 
             query.orderBy(criteriaBuilder.desc(root.get("Id")));

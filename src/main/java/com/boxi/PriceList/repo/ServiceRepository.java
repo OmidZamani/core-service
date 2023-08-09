@@ -24,6 +24,8 @@ public interface ServiceRepository extends JpaRepository<Services, Long>, JpaSpe
 
     Services findByPriceList(PriceList priceList);
 
+    @Query(value = "select max(s.Id)+1 from Service s")
+    Long maxServiceId();
     List<Services> findByTypeAndIsActiveIsTrue(Long type);
 
     Services findTopByPriceListAndProductAndType(PriceList priceList, Product product, Long serviceType);
@@ -38,8 +40,8 @@ public interface ServiceRepository extends JpaRepository<Services, Long>, JpaSpe
             "          FROM TBL_USINGSPRODUCTS tu\n" +
             "         INNER JOIN TBL_PRODUCT tp\n" +
             "            ON TU.FK_CHILD_ID = tp.PK_PRODUCT_ID\n" +
-            "         WHERE tu.FK_CHILD_ID = ?1 AND ?2 BETWEEN otp.validdatefrom AND otp.validdateto)",nativeQuery = true)
-    List<SuggestDetailServiceInfDto> getsuggestDetails(Long productId , Date date);
+            "         WHERE tu.FK_CHILD_ID = ?1 AND ?2 BETWEEN otp.validdatefrom AND otp.validdateto)", nativeQuery = true)
+    List<SuggestDetailServiceInfDto> getsuggestDetails(Long productId, Date date);
 
     List<ServiceNameWithCodeDto> findByIsDeletedFalseAndIsActiveIsTrue();
 }

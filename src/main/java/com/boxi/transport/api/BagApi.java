@@ -54,6 +54,13 @@ public class BagApi {
         return Response.ok().setPayload(response);
     }
 
+    @PutMapping("/client")
+    public BagDto clientEdit(@Valid @RequestBody BagDto request) {//TODO Transactional
+        log.warn(request.toJson());
+        BagDto response = _service.edit(request);
+        return response;
+    }
+
     // @PreAuthorize("hasPermission('hasAccess','10080704')")
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {
