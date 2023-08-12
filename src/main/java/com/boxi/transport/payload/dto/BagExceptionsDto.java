@@ -8,7 +8,9 @@ import lombok.Data;
 public class BagExceptionsDto {
     private Long id;
     private String description;
-
     private SelectResponse selectException;
     private SelectResponse selectBag;
 }
+
+
+

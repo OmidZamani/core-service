@@ -36,6 +36,8 @@ public interface BagService {
 
     BagExceptionsDto createException(BagExceptionsDto dto);
 
+    List<BagExceptionsDto> listOfException(BagExceptionsDto dto);
+
     BagDto editStatus(BagDto dto);
 
     List<SelectResponse> reportTotal(Long hubId);

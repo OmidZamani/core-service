@@ -137,6 +137,11 @@ public class BagApi {
         return Response.ok().setPayload(_service.createException(dto));
     }
 
+    @PostMapping("/listOfBagException")
+    public Response listOfBagException(@RequestBody BagExceptionsDto dto) {
+        return Response.ok().setPayload(_service.listOfException(dto));
+    }
+
     @GetMapping("/reportTotal/{hubid}")
     public Response reportTotal(@PathVariable Long hubid) {
         return Response.ok().setPayload(_service.reportTotal(hubid));

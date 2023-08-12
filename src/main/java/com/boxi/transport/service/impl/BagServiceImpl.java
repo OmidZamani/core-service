@@ -230,7 +230,7 @@ public class BagServiceImpl implements BagService {
     private BagDto saveData(Bag bag) {
         if (!StringUtils.hasText(bag.getBagNumber())) {
 
-            if(bag.getCurrentHub()!=null) {
+            if (bag.getCurrentHub() != null) {
                 Bag topByCurrentHubOrderByIdDesc = bagRepository.findTopByCurrentHubOrderByIdDesc(bag.getCurrentHub());
                 if (topByCurrentHubOrderByIdDesc == null) {
 
@@ -313,6 +313,20 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
+    public List<BagExceptionsDto> listOfException(BagExceptionsDto dto) {
+        return bagExceptionsRepository.findAll((Specification<BagExceptions>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (dto.getSelectBag() != null)
+                predicates.add(criteriaBuilder.equal(root.get("bag").get("id"), dto.getSelectBag().getId()));
+            if (dto.getSelectException() != null)
+                predicates.add(criteriaBuilder.equal(root.get("exception").get("id"), dto.getSelectException().getId()));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }).stream().map(bagExceptionsConvertor::fromDtoToModel).collect(Collectors.toList());
+
+    }
+
+    @Override
     public BagDto editStatus(BagDto dto) {
 
         Bag byId = findById(dto.getId());
@@ -365,7 +379,6 @@ public class BagServiceImpl implements BagService {
 
         List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-
 
 
             predicates.add(criteriaBuilder.and(root.get("id").in(bagList)));
