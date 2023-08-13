@@ -1,6 +1,7 @@
 package com.boxi.product.service.impl;
 
 
+import com.boxi.PriceList.repo.PriceListRepository;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -45,7 +46,11 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductAttributeRepository productAttributeRepository;
     private final ProductAttributeConverter productAttributeConverter;
+    private final PriceListRepository priceListRepository;
 
+    private final ProductAttributeDevisionRepository productAttributeDevisionRepository;
+
+    private final UsingProductRepository usingProductRepository;
 
     public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConvert,
                               ProductGroupRepository productGroupRepository,
@@ -53,9 +58,9 @@ public class ProductServiceImpl implements ProductService {
                               TimeCommitmentRepository timeCommitmentRepository,
                               CountryDevisionRepository countryDevisionRepository,
                               ProductAttributeRepository productAttributeRepository,
-                              ProductAttributeConverter productAttributeConverter
+                              ProductAttributeConverter productAttributeConverter,
 
-    ) {
+                              PriceListRepository priceListRepository, ProductAttributeDevisionRepository productAttributeDevisionRepository, UsingProductRepository usingProductRepository) {
         this.productRepository = productRepository;
         this.productConvert = productConvert;
         this.productGroupRepository = productGroupRepository;
@@ -66,6 +71,9 @@ public class ProductServiceImpl implements ProductService {
         this.productAttributeConverter = productAttributeConverter;
 
 
+        this.priceListRepository = priceListRepository;
+        this.productAttributeDevisionRepository = productAttributeDevisionRepository;
+        this.usingProductRepository = usingProductRepository;
     }
 
     @Override
@@ -135,12 +143,26 @@ public class ProductServiceImpl implements ProductService {
         return res.map(productConvert::fromModelToDto);
     }
 
+    private Boolean existsByPriceListDetails_Product(Long productId) {
+        return priceListRepository.existsByPriceListDetails_Product(new Product().setId(productId));
+    }
+
     @Override
     public void delete(Long id) {
-        if (!productRepository.existsById(id))
-            throw BusinessException.valueException(EntityType.Product, "product.code.not.found");
+        if (existsByPriceListDetails_Product(id)) {
+            throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.priceList.is.exists");
+        } else {
+            if (!productRepository.existsById(id))
+                throw BusinessException.valueException(EntityType.Product, "product.code.not.found");
 
-        productRepository.logicalDelete(id);
+            List<ProductAttribute> allByProduct = productAttributeRepository.findAllByProduct(new Product().setId(id));
+            for (ProductAttribute productAttribute : allByProduct) {
+                productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
+                usingProductRepository.deleteAllByProductAttribute(productAttribute);
+            }
+            productAttributeRepository.deleteAllByProduct(new Product().setId(id));
+//            productRepository.logicalDelete(id);
+        }
     }
 
     @Override

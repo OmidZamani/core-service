@@ -1,5 +1,6 @@
 package com.boxi.product.service.impl;
 
+import com.boxi.PriceList.repo.PriceListRepository;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -57,6 +58,8 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     private final ProductService productService;
     private final ProductRepository productRepositorys;
 
+    private final PriceListRepository priceListRepository;
+
     public ProductAttributeServiceImpl(ProductAttributeRepository productAttributeRepository,
                                        ProductAttributeConverter productAttributeConverter,
                                        ProductAttributeDevisionRepository productAttributeDevisionRepository,
@@ -64,7 +67,8 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
                                        ProductAttributeDevisionService productAttributeDevisionService,
                                        UsingProductRepository productRepository,
                                        CountryDevisionService countryDevisionService,
-                                       ProductService productService, ProductRepository productRepositorys) {
+                                       ProductService productService, ProductRepository productRepositorys,
+                                       PriceListRepository priceListRepository) {
         this.productAttributeRepository = productAttributeRepository;
         this.productAttributeConverter = productAttributeConverter;
         this.productAttributeDevisionRepository = productAttributeDevisionRepository;
@@ -74,6 +78,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         this.countryDevisionService = countryDevisionService;
         this.productService = productService;
         this.productRepositorys = productRepositorys;
+        this.priceListRepository = priceListRepository;
     }
 
     @Override
@@ -108,11 +113,20 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
 
     public List<ProductAttributeDto> create(List<ProductAttributeDto> request) {
+
         ProductAttributeDto productAttributeDto1;
         List<ProductAttributeDto> productAttributeList = new ArrayList<>();
 
-
         for (ProductAttributeDto productAttributeDto : request) {
+            if (productAttributeDto.getFromWeight() < 0 || productAttributeDto.getFromWeight() < 0)
+                throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.attribute.weight.miss");
+
+            if (productAttributeDto.getFromDim() < 0 || productAttributeDto.getToDimension() < 0)
+                throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.attribute.dimension.miss");
+
+            if (productAttributeDto.getFromValue() < 0 || productAttributeDto.getToValue() < 0)
+                throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.attribute.value.miss");
+
             productAttributeDto.setId(null);
             ProductAttribute productAttribute = productAttributeConverter.fromDtoToModel(productAttributeDto);
             ProductAttribute save = productAttributeRepository.save(productAttribute);
@@ -336,16 +350,22 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     }
 
+    private Boolean existsByPriceListDetails_Product(Long productId) {
+        return priceListRepository.existsByPriceListDetails_Product(new Product().setId(productId));
+    }
 
     @Override
     public void delete(Long id) {
         ProductAttribute productAttribute = findTopById(id);
-        productRepository.deleteByProductAttribute(productAttribute);
-        if (productAttributeRepository.existsById(id)) {
-            productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
-            productAttributeRepository.deleteById(id);
+        if (existsByPriceListDetails_Product(productAttribute.getProduct().getId())) {
+            throw BusinessException.entityNotFoundException(EntityType.ProductAttribute, "product.priceList.is.exists");
+        } else {
+            productRepository.deleteByProductAttribute(productAttribute);
+            if (productAttributeRepository.existsById(id)) {
+                productAttributeDevisionRepository.deleteByProductAttribute(productAttribute);
+                productAttributeRepository.deleteById(id);
+            }
         }
-
     }
 
     @Override

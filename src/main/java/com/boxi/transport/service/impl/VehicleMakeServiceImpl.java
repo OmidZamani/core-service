@@ -161,6 +161,10 @@ public class VehicleMakeServiceImpl implements VehicleMakeService {
                 throw BusinessException.valueException(EntityType.VehicleMake,
                         "vehicle.make.is.duplicate",
                         vehicleMakeExcelDto.getCode() + "  ردیف " + i);
+            if(vehicleMakeExcelDto.getVolumeCapacity()<0 || vehicleMakeExcelDto.getWeightCapacity()<0)
+                throw BusinessException.valueException(EntityType.VehicleMake,
+                        "vehicle.make.is.not.mines.value",
+                        vehicleMakeExcelDto.getVolumeCapacity() + "  ردیف " + i);
             i++;
         }
 

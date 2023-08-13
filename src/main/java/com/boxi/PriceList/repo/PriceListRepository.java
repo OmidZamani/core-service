@@ -1,6 +1,7 @@
 package com.boxi.PriceList.repo;
 
 import com.boxi.PriceList.entity.PriceList;
+import com.boxi.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,6 +20,8 @@ public interface PriceListRepository  extends JpaRepository<PriceList,Long>, Jpa
     boolean existsByPriceListCode(String priceListCode);
 
     PriceList findByIdAndIsActiveIsTrueAndIsDeletedIsFalse(Long id);
+
+    Boolean existsByPriceListDetails_Product(Product product);
 
 
 }

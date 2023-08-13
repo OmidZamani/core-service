@@ -6,6 +6,7 @@ import com.boxi.product.entity.ProductAttribute;
 import com.boxi.product.entity.UsingProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,11 @@ public interface UsingProductRepository extends JpaRepository<UsingProduct, Long
             "    INNER JOIN TBL_PRICELISTDETAIL tp1 ON TP.PK_PRODUCT_ID = TP1.FK_PRODUCT_ID\n" +
             "    INNER JOIN TBL_PRICELIST otp ON TP1.FK_PRICELIST_ID = OTP.PK_PRICELIST_ID\n" +
             "    INNER JOIN TBL_SERVICE ts ON ts.FK_PRICELIST_ID= otp.PK_PRICELIST_ID\n" +
-            "                                  WHERE tu.FK_PARENT_ID=?1 AND otp.ISDELETED=0;" ,nativeQuery = true)
+            "                                  WHERE tu.FK_PARENT_ID=?1 AND otp.ISDELETED=0;", nativeQuery = true)
     List<SuggestionPriceDto> SuggestDetails(Long productId);
 
+    @Modifying
+    void deleteAllByProductAttribute(ProductAttribute productAttribute);
 
 
 }
