@@ -23,6 +23,12 @@ private final JwtAuthConverter jwtAuthConverter;
         http.authorizeRequests()
                 .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**","/exchange-api/**").permitAll()
                 .anyRequest().authenticated();
+
+        http.authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/core-api/**").hasAuthority("SCOPE_profile"))
+                .oauth2ResourceServer()
+                .jwt();
+
         http.oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(jwtAuthConverter);
@@ -32,40 +38,6 @@ private final JwtAuthConverter jwtAuthConverter;
     }
 
 
-
-
-/*    @Bean
-    public JwtDecoder jwtDecoder() {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri("http://boxi.local:8080/realms/hubRealm/protocol/openid-connect/certs").build();
-        jwtDecoder.setJwtValidator(JwtValidators.createDefaultWithIssuer("http://boxi.local:8080/realms/hubRealm"));
-        return jwtDecoder;
-    }
-
-
-    private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
-        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-        jwtConverter.setJwtGrantedAuthoritiesConverter(new RealmRoleConverter());
-        return jwtConverter;
-    }*/
-
-/*
-    private Converter<OAuth2ResourceServerProperties.Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
-        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-        jwtConverter.setJwtGrantedAuthoritiesConverter(new RealmRoleConverter());
-        return jwtConverter;
-    }
-*/
-
-/*    private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-        jwtConverter.setJwtGrantedAuthoritiesConverter(new RealmRoleConverter());
-        return jwtConverter;
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation(issuerUri);
-    }*/
 
 
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import java.util.List;
 
-@FeignClient(name = "permissionClient", url = "http://boxi.local:40000/resource-api")
+@FeignClient(name = "permissionClient", url = "http://boxi:40000/resource-api")
 public interface PermissionClient {
 
     @PostMapping(value = "/permission/fetchPermissionsByRoleName")
