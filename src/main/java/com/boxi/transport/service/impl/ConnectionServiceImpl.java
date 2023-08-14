@@ -28,6 +28,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -114,25 +115,25 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
     }
 
-    private List<Long> findchild(List<HubPermissionDto> hublist, Long parendId) {
+    private List<Long> findChild(List<HubPermissionDto> hubList, Long parentId) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
-            if (hubPermissionDto.getParent() == parendId) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
+            if (Objects.equals(hubPermissionDto.getParent(), parentId)) {
                 list.add(hubPermissionDto.getId());
                 if (hubPermissionDto.getChildren() != null)
-                    list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
-            }else
+                    list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+            } else
                 list.add(hubPermissionDto.getId());
         }
         return list;
     }
 
-    private List<Long> findAllhubid(List<HubPermissionDto> hublist) {
+    private List<Long> findAllHubId(List<HubPermissionDto> hubList) {
         List<Long> list = new ArrayList<>();
-        for (HubPermissionDto hubPermissionDto : hublist) {
+        for (HubPermissionDto hubPermissionDto : hubList) {
             list.add(hubPermissionDto.getId());
             if (hubPermissionDto.getChildren() != null)
-                list.addAll(findchild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
+                list.addAll(findChild(hubPermissionDto.getChildren(), hubPermissionDto.getId()));
         }
         return list;
     }
@@ -151,11 +152,12 @@ public class ConnectionServiceImpl implements ConnectionService {
                             predicates.add(criteriaBuilder.like(root.get("route").get("name"), "%" + filter.getRoute().trim() + "%"));
                         }
                         if (filter.getHublist() != null) {
-                            List<Long> ids = findAllhubid(filter.getHublist());
-                            Join<Object, Object> hubjoin = root.join("hub");
-                            predicates.add(criteriaBuilder.and(hubjoin.get("id").in(ids)));
+                            List<Long> ids = findAllHubId(filter.getHublist());
+                            Join<Object, Object> hubJoin = root.join("hub");
+                            predicates.add(criteriaBuilder.and(hubJoin.get("id").in(ids)));
                         }
-                        return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+                        query.orderBy(criteriaBuilder.asc(root.get("id")));
+                        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
                     }, pageable);
             return res.map(connectionConverter::fromModelToDto);

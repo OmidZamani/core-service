@@ -570,13 +570,17 @@ public class CalendarServiceImpl implements CalendarService {
         } else {
 
             Long finalMyDate = Long.valueOf(MyDate);
-            byCalendarDateAndHub=  dispatchShiftRepository.findAll((Specification<DispatchShift>) (root, query, criteriaBuilder)->{
-               List<Predicate> predicates = new ArrayList<>();
-               predicates.add(criteriaBuilder.equal(root.get("hub").get("id"),dto.getHubid()));
-               predicates.add(criteriaBuilder.equal(root.get("calendarDate").get("id"), finalMyDate));
-                Predicate dispatchShiftType = criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.findByValue(dto.getShiftType().getId()));
-                Predicate dispatchShiftType2 = criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.PICKUPDELIVERY);
-                predicates.add(criteriaBuilder.or(dispatchShiftType,dispatchShiftType2));
+            byCalendarDateAndHub = dispatchShiftRepository.findAll((Specification<DispatchShift>) (root, query, criteriaBuilder) -> {
+                List<Predicate> predicates = new ArrayList<>();
+                predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), dto.getHubid()));
+                predicates.add(criteriaBuilder.equal(root.get("calendarDate").get("id"), finalMyDate));
+                if (dto.getShiftType().getId() != 3) {
+                    Predicate dispatchShiftType = criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.findByValue(dto.getShiftType().getId()));
+                    Predicate dispatchShiftType2 = criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.PICKUPDELIVERY);
+                    predicates.add(criteriaBuilder.or(dispatchShiftType, dispatchShiftType2));
+                } else {
+                    predicates.add(criteriaBuilder.equal(root.get("dispatchShiftType"), DispatchShiftType.findByValue(dto.getShiftType().getId())));
+                }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 
             });

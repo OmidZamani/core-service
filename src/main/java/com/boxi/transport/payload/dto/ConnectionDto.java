@@ -24,4 +24,7 @@ public class ConnectionDto extends JsonBase {
 
     private SelectResponse selectRoute;
 
+    private Short priority;
+
+
 }
