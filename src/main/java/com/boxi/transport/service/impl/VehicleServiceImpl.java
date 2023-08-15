@@ -13,6 +13,7 @@ import com.boxi.transport.entity.Vendor;
 import com.boxi.transport.enums.FleetType;
 import com.boxi.transport.enums.VehicleStatus;
 import com.boxi.transport.enums.VehicleType;
+import com.boxi.transport.payload.converter.AdmVehicleConverter;
 import com.boxi.transport.payload.converter.VehicleConverter;
 import com.boxi.transport.payload.converter.VehicleExceptionsConverter;
 import com.boxi.transport.payload.converter.VehicleMakeConverter;
@@ -54,6 +55,8 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleExceptionsConverter vehicleExceptionsConverter;
     private final VehicleExceptionsRepository vehicleExceptionsRepository;
 
+    private final AdmVehicleConverter admVehicleConverter;
+
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
@@ -61,7 +64,7 @@ public class VehicleServiceImpl implements VehicleService {
                               HubRepository hubRepository,
                               VehicleMakeRepository vehicleMakeRepository,
                               VehicleMakeConverter vehicleMakeConverter, VehicleExceptionsConverter vehicleExceptionsConverter,
-                              VehicleExceptionsRepository vehicleExceptionsRepository) {
+                              VehicleExceptionsRepository vehicleExceptionsRepository, AdmVehicleConverter admVehicleConverter) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleConverter = vehicleConverter;
         this.hubRepository = hubRepository;
@@ -69,6 +72,7 @@ public class VehicleServiceImpl implements VehicleService {
         this.vehicleMakeConverter = vehicleMakeConverter;
         this.vehicleExceptionsConverter = vehicleExceptionsConverter;
         this.vehicleExceptionsRepository = vehicleExceptionsRepository;
+        this.admVehicleConverter = admVehicleConverter;
     }
 
     @Override
@@ -389,7 +393,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleExceptionsDto> findVehicleException(VehicleExceptionsDto dto) {
         Date date = DateUtil.convertDateToJalaliDateDto(dto.getDateDto());
-        List<VehicleExceptions> allByCreatedDateAndVehicle = vehicleExceptionsRepository.findAllByCreatedDateBetweenAndVehicle(date,date , new Vehicle().setId(dto.getSelectVehicle().getId()));
+        List<VehicleExceptions> allByCreatedDateAndVehicle = vehicleExceptionsRepository.findAllByCreatedDateBetweenAndVehicle(date, date, new Vehicle().setId(dto.getSelectVehicle().getId()));
         return allByCreatedDateAndVehicle.stream().map(vehicleExceptionsConverter::fromModelToDto).collect(Collectors.toList());
     }
 
@@ -452,6 +456,33 @@ public class VehicleServiceImpl implements VehicleService {
                 }, pageable);
         return res.map(vehicleConverter::fromModelToDto);
     }
+
+    @Override
+    public List<AdmVehicleDto> listOfAdmVehicleInHub(AdmVehicleDto dto) {
+
+        List<Vehicle> all = vehicleRepository
+                .findAll((Specification<Vehicle>) (root, query, criteriaBuilder) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    Predicate isDeleted = criteriaBuilder.equal(root.get("isDeleted"), false);
+                    predicates.add(isDeleted);
+                    predicates.add(criteriaBuilder.equal(root.get("isOwnerShip"), false));
+                    if (dto.getSelectHub() != null) {
+                        predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), dto.getSelectHub().getId()));
+                    }
+
+                    predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+
+                    if (dto.getDayToStartWork() != null) {
+                        Date date = DateUtil.convertDateToJalaliDateDto(dto.getDayToStartWork());
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(date), root.get("timeToStartWork"), root.get("timeToFinishWork")));
+                    }
+
+
+                    return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+                });
+        return all.stream().map(admVehicleConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
 
     private CarTagDto tocartagenumber(Vehicle vehicle) {
         CarTagDto dto = new CarTagDto();

@@ -201,6 +201,11 @@ public class VehicleApi {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return _service.listOfVehicleInHub(request, pageable).stream().collect(Collectors.toList());
     }
+    @PostMapping("/listOfAdmVehicleInHub")
+    public List<AdmVehicleDto> listOfAdmVehicleInHub(@RequestBody AdmVehicleDto dto) {
+        return _service.listOfAdmVehicleInHub(dto);
+
+    }
 
 
 }

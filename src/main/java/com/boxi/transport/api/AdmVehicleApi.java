@@ -5,6 +5,7 @@ import com.boxi.core.response.Response;
 import com.boxi.transport.enums.FleetType;
 import com.boxi.transport.payload.dto.FilterVehicle;
 import com.boxi.transport.payload.dto.AdmVehicleDto;
+import com.boxi.transport.payload.dto.VehicleDto;
 import com.boxi.transport.service.AdmVehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/core-api/admVehicle")
@@ -23,7 +26,7 @@ public class AdmVehicleApi {
     private final AdmVehicleService _service;
 
 
-//    @PreAuthorize("hasPermission('hasAccess','100901')")
+    //    @PreAuthorize("hasPermission('hasAccess','100901')")
     @PostMapping
     public Response create(@RequestBody AdmVehicleDto request) {
         log.warn(request.toJson());
@@ -57,7 +60,7 @@ public class AdmVehicleApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter" ) String filter) {
+    public Response select(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.select(filter));
     }
 
@@ -70,5 +73,11 @@ public class AdmVehicleApi {
     @GetMapping("/selectFleetTypes")
     public Response selectFleetTypes() {
         return Response.ok().setPayload(FleetType.select());
+    }
+
+    @PostMapping("/listOfAdmVehicleInHub")
+    public List<AdmVehicleDto> listOfAdmVehicleInHub(@RequestBody AdmVehicleDto dto) {
+        return _service.listOfAdmVehicleInHub(dto);
+
     }
 }
