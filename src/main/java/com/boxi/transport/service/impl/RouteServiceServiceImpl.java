@@ -32,6 +32,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -208,6 +209,7 @@ public class RouteServiceServiceImpl implements RouteService {
     @Override
     public RouteDto get(Long id) {
         Route o = findById(id);
+
         return routeConverter.fromModelToDto(o);
     }
 

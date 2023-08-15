@@ -531,6 +531,25 @@ public class HubServiceImpl implements HubService {
         return allByCityAndIsActiveIsTrueAndIsDeletedIsFalse.stream().map(this::toSelect).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SelectResponse> listOfParentHubList(List<Long> listOfHub) {
+        List<Hub> byIdIn = hubRepository.findByIdIn(listOfHub);
+        List<SelectResponse> selectResponses = new ArrayList<>();
+        for (Hub hub : byIdIn) {
+            if (hub.getParentHub() != null)
+                selectResponses.add(new SelectResponse(hub.getParentHub().getId(), hub.getParentHub().getName()));
+        }
+        return selectResponses;
+    }
+
+    private SelectResponse listOfParentSelectResponse(Hub hub) {
+        if (hub.getParentHub() != null)
+            return new SelectResponse(hub.getParentHub().getId(), hub.getParentHub().getName());
+        else
+            return null;
+
+    }
+
 
     @Override
     public HubDto findHubById(Long id) {
