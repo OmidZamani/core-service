@@ -27,11 +27,10 @@ private final JwtAuthConverter jwtAuthConverter;
         http.authorizeHttpRequests(authorize -> authorize
                         .antMatchers("/core-api/**").hasAuthority("SCOPE_profile"))
                 .oauth2ResourceServer()
-                .jwt();
-
-        http.oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(jwtAuthConverter);
+
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors().and().csrf().disable();
         return http.build();
