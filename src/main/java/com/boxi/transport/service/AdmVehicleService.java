@@ -7,6 +7,8 @@ import com.boxi.transport.payload.dto.AdmVehicleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface AdmVehicleService {
     Page<SelectResponse> select(String filter);
     Page<AdmVehicleDto> filter(FilterVehicle request, Pageable pageable);
@@ -15,4 +17,6 @@ public interface AdmVehicleService {
     Vehicle findById(Long id);
     void delete(Long id);
     AdmVehicleDto get(Long id);
+
+    List<AdmVehicleDto> listOfAdmVehicleInHub(AdmVehicleDto dto);
 }

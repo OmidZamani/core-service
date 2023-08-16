@@ -34,6 +34,8 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     List<Hub> findByCodeIn(List<String> codes);
 
+    List<Hub> findByIdIn(List<Long> ids);
+
 
     @Query("select h from Hub h where  h.code like ?1")
     List<Hub> findByCodeLike(String Code);

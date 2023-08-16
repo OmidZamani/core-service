@@ -206,6 +206,10 @@ public class HubApi {
         return hubService.getHubsByCodes(hubCodes);
     }
 
+    @PostMapping("/enterChange/listOfParentHubList")
+    public List<SelectResponse> listOfParentHubList(@RequestBody List<Long> listOfHub){
+        return hubService.listOfParentHubList(listOfHub);
+    }
     @PutMapping("/update")
     public Response updateHub(@RequestBody HubDto hubDto) {
         return Response.ok().setPayload(hubService.updateHubZone(hubDto));
@@ -216,8 +220,6 @@ public class HubApi {
         return Response.ok().setPayload(hubService.hubLocation(hubName, cityId));
     }
 
-    //      PROVINCE("استان",0), CITY("شهر",1),  hubRegion(" هاب", 2), pickupRegion(" جمع آوری", 3),
-//        deliveryRegion(" توزیع", 4), pickupDeliveryRegion(" جمع آوری /توزیع", 5);
     @PostMapping("/findRegionInZone")
     public ZoneDto findRegionInZone(@RequestBody FindRegionInZoneDto dto) {
         return hubService.findRegionInZone(dto);
@@ -243,5 +245,6 @@ public class HubApi {
     public Response findByCityInHub(@PathVariable Long id ){
         return Response.ok().setPayload(hubService.findByCityInHub(id));
     }
+
 
 }

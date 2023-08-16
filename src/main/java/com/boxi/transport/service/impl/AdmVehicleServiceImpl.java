@@ -9,6 +9,7 @@ import com.boxi.transport.payload.dto.FilterVehicle;
 import com.boxi.transport.payload.dto.AdmVehicleDto;
 import com.boxi.transport.repo.VehicleRepository;
 import com.boxi.transport.service.AdmVehicleService;
+import com.boxi.utils.DateUtil;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -150,6 +153,33 @@ public class AdmVehicleServiceImpl implements AdmVehicleService {
     public AdmVehicleDto get(Long id) {
         Vehicle o = findById(id);
         return admVehicleConverter.fromModelToDto(o);
+    }
+
+    @Override
+    public List<AdmVehicleDto> listOfAdmVehicleInHub(AdmVehicleDto dto) {
+
+        log.warn(">>>>>>>>>>>>>>>" + dto.toJson());
+        List<Vehicle> all = vehicleRepository
+                .findAll((Specification<Vehicle>) (root, query, criteriaBuilder) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    Predicate isDeleted = criteriaBuilder.equal(root.get("isDeleted"), false);
+                    predicates.add(isDeleted);
+                    predicates.add(criteriaBuilder.equal(root.get("isOwnerShip"), false));
+                    if (dto.getSelectHub() != null) {
+                        predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), dto.getSelectHub().getId()));
+                    }
+
+                    predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+
+                    if (dto.getDayToStartWork() != null) {
+                        Date date = DateUtil.convertDateToJalaliDateDto(dto.getDayToStartWork());
+                        predicates.add(criteriaBuilder.between(criteriaBuilder.literal(date), root.get("timeToStartWork"), root.get("timeToFinishWork")));
+                    }
+
+
+                    return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+                });
+        return all.stream().map(admVehicleConverter::fromModelToDto).collect(Collectors.toList());
     }
 
 }

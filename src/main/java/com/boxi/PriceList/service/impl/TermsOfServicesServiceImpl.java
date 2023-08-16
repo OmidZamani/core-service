@@ -175,8 +175,6 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         }, pageable);
 
         return termsOfServices.map(termsOfServicesConverter::fromModelToDto);
-
-
     }
 
     @Override
@@ -192,7 +190,6 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
                 termsOfServicesDto.setToRegionId(filter.getToRegionId());
             }
             filter1 = filter(termsOfServicesDto, pageables);
-
         }
 
         if (filter1.getTotalElements() == 0) {

@@ -63,6 +63,10 @@ public class Connection extends BaseEntity implements java.io.Serializable {
    @JoinColumn(name="FK_HUB_ID", referencedColumnName="PK_HUB_ID", nullable=true)
    private Hub hub;
 
+   @Basic(optional=true)
+   @Column(name="PRIORITY", insertable=true, updatable=true)
+   private Short priority; // node numbers
+
    public String selectToString() {
       return id+"";
    }

@@ -104,4 +104,6 @@ public interface HubService {
 
 
     List<SelectResponse> findByCityInHub(Long id);
+
+    List<SelectResponse> listOfParentHubList(List<Long> listOfHub);
 }
