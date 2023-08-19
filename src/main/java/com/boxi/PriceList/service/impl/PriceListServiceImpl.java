@@ -24,6 +24,8 @@ import com.boxi.hub.payload.converter.CustomCountryDevisionConverter;
 import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.hub.repo.CustomCountryDevisionRepository;
 import com.boxi.product.entity.Product;
+import com.boxi.product.entity.ProductAttribute;
+import com.boxi.product.repo.ProductAttributeRepository;
 import com.boxi.product.repo.ProductRepository;
 import com.boxi.product.response.ContryDevistionSelect;
 import com.boxi.utils.DateUtil;
@@ -38,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +70,7 @@ public class PriceListServiceImpl implements PriceListService {
 
     private final ServiceRepository serviceRepository;
 
+    private ProductAttributeRepository productAttributeRepository;
 
     private final ServiceService serviceService;
 
@@ -82,7 +86,7 @@ public class PriceListServiceImpl implements PriceListService {
                                 CountryDevisionRepository countryDevisionRepository,
                                 ProductRepository productRepository,
                                 ServiceRepository serviceRepository,
-                                ServiceService serviceService) {
+                                ProductAttributeRepository productAttributeRepository, ServiceService serviceService) {
         this.priceListRepository = priceListRepository;
         this.priceListConverter = priceListConverter;
         this.priceListDetailRepository = priceListDetailRepository;
@@ -94,54 +98,76 @@ public class PriceListServiceImpl implements PriceListService {
         this.countryDevisionRepository = countryDevisionRepository;
         this.productRepository = productRepository;
         this.serviceRepository = serviceRepository;
+        this.productAttributeRepository = productAttributeRepository;
         this.serviceService = serviceService;
 
     }
 
+    private Boolean checkProductAttribute(List<PriceListDetailDto> request) {
+
+        for (PriceListDetailDto priceListDetailDto : request) {
+            List<ProductAttribute> all = productAttributeRepository.findAll((Specification<ProductAttribute>) (root, query, criteriaBuilder) -> {
+                List<Predicate> predicates = new ArrayList<>();
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
+
+
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getFromValue()), root.get("fromValue"), root.get("toValue")));
+                predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getToValue()), root.get("fromValue"), root.get("toValue")));
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            });
+            if(all.size()==0)
+                return false;
+        }
+
+        return true;
+    }
 
     public PriceListDto createPriceList(PriceListDto request) {
         if (priceListRepository.existsByPriceListCode(request.getPriceListCode()))
             throw BusinessException.valueException(EntityType.PriceList,
                     "code.exist",
                     request.getPriceListCode());
+        if (checkProductAttribute(request.getPriceListDetails())) {
+            PriceList priceList = priceListConverter.fromDtoToModel(request);
+            priceList.setPriceListDetails(null);
+            PriceList save = priceListRepository.save(priceList);
+            List<PriceListDetailDto> priceListDetails = new ArrayList<>();
+            if (request.getPriceListDetails() != null) {
+                for (PriceListDetailDto priceListDetailBase : request.getPriceListDetails()) {
+                    PriceListDetail priceListDetail = priceListDetailConverter.fromDtoToModel(priceListDetailBase);
+                    priceListDetail.setIsDeleted(false);
+                    priceListDetail.setPriceList(save);
+                    PriceListDetail detail = priceListDetailRepository.save(priceListDetail);
 
-        PriceList priceList = priceListConverter.fromDtoToModel(request);
-        priceList.setPriceListDetails(null);
-        PriceList save = priceListRepository.save(priceList);
-        List<PriceListDetailDto> priceListDetails = new ArrayList<>();
-        if (request.getPriceListDetails() != null) {
-            for (PriceListDetailDto priceListDetailBase : request.getPriceListDetails()) {
-                PriceListDetail priceListDetail = priceListDetailConverter.fromDtoToModel(priceListDetailBase);
-                priceListDetail.setIsDeleted(false);
-                priceListDetail.setPriceList(save);
-                PriceListDetail detail = priceListDetailRepository.save(priceListDetail);
+                    PriceListDetailDto priceListDetailDto = priceListDetailConverter.fromModelToDto(detail);
 
-                PriceListDetailDto priceListDetailDto = priceListDetailConverter.fromModelToDto(detail);
+                    priceListDetail.setCustomCountryDevision(priceListDetail.getCustomCountryDevision());
+                    List<PriceDetailDevisionDto> priceDetailDivisions = new ArrayList<>();
+                    if (priceListDetail.getPriceDetailDevisions() != null) {
+                        for (PriceDetailDevision priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
 
-                priceListDetail.setCustomCountryDevision(priceListDetail.getCustomCountryDevision());
-                List<PriceDetailDevisionDto> priceDetailDivisions = new ArrayList<>();
-                if (priceListDetail.getPriceDetailDevisions() != null) {
-                    for (PriceDetailDevision priceDetailDevision : priceListDetail.getPriceDetailDevisions()) {
+                            priceDetailDevision.setIsDeleted(false);
 
-                        priceDetailDevision.setIsDeleted(false);
+                            priceDetailDevision.setIsActive(true);
 
-                        priceDetailDevision.setIsActive(true);
+                            priceDetailDevision.setPriceListDetail(priceListDetailConverter.fromDtoToModel(priceListDetailDto));
 
-                        priceDetailDevision.setPriceListDetail(priceListDetailConverter.fromDtoToModel(priceListDetailDto));
+                            PriceDetailDevision save1 = priceDetailDevisionRepository.save(priceDetailDevision);
 
-                        PriceDetailDevision save1 = priceDetailDevisionRepository.save(priceDetailDevision);
-
-                        priceDetailDivisions.add(priceDetailDevisionConverter.fromModelToDto(save1));
+                            priceDetailDivisions.add(priceDetailDevisionConverter.fromModelToDto(save1));
+                        }
                     }
+                    priceListDetailDto.setPriceDetailDevisions(priceDetailDivisions);
+                    priceListDetails.add(priceListDetailDto);
                 }
-                priceListDetailDto.setPriceDetailDevisions(priceDetailDivisions);
-                priceListDetails.add(priceListDetailDto);
             }
-        }
-        PriceListDto priceListDto = priceListConverter.fromModelToDto(save);
-        priceListDto.setPriceListDetails(priceListDetails);
-
-        return priceListDto;
+            PriceListDto priceListDto = priceListConverter.fromModelToDto(save);
+            priceListDto.setPriceListDetails(priceListDetails);
+            return priceListDto;
+        } else
+            throw BusinessException.entityNotFoundException(EntityType.PriceList, "pricelist.data.is.not.valid");
     }
 
 

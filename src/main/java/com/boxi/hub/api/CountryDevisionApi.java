@@ -48,29 +48,29 @@ public class CountryDevisionApi {
     }
 
     @GetMapping("/findbyhub")
-    public Response findByHubId(@RequestParam(name = "code" ) String code, @RequestParam(name = "hubid" ) String hubid) {
+    public Response findByHubId(@RequestParam(name = "code") String code, @RequestParam(name = "hubid") String hubid) {
 
-        return Response.ok().setPayload( _service.findByHubCode(code, hubid));
+        return Response.ok().setPayload(_service.findByHubCode(code, hubid));
     }
 
     @GetMapping("/findbyBaseHub")
-    public Response findbyBaseHub(@RequestParam(name = "hubid" ) String hubid) {
+    public Response findbyBaseHub(@RequestParam(name = "hubid") String hubid) {
 
         return Response.ok().setPayload(_service.findByBaseHub(hubid));
     }
 
     @GetMapping
-    public Response getProvince(@RequestParam(name = "filter" ) String filter) {
+    public Response getProvince(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.selectProvince(filter));
     }
 
     @GetMapping("/provincewithcode")
-    public Response getProvinceWithCode(@RequestParam(name = "filter" ) String filter) {
+    public Response getProvinceWithCode(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.provinceWithCode(filter));
     }
 
     @GetMapping("/province/{provinceId}/city")
-    public Response getCity(@PathVariable Long provinceId, @RequestParam(name = "filter" ) String filter) {
+    public Response getCity(@PathVariable Long provinceId, @RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.selectCity(provinceId, filter));
     }
 
@@ -80,7 +80,7 @@ public class CountryDevisionApi {
     }
 
     @GetMapping("/city/{cityId}/loc")
-    public Response getLoc(@PathVariable Long cityId, @RequestParam(name = "filter" ) String filter) {
+    public Response getLoc(@PathVariable Long cityId, @RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.selectLoc(cityId, filter));
     }
 
@@ -106,7 +106,7 @@ public class CountryDevisionApi {
     }
 
     @GetMapping("/findbytype")
-    public Response findByTypes(@RequestParam(name = "type" ) Long typeId) {
+    public Response findByTypes(@RequestParam(name = "type") Long typeId) {
         return Response.ok().setPayload(_service.findByTypes(typeId));
     }
 
@@ -124,9 +124,15 @@ public class CountryDevisionApi {
     public Response findByCityPickup(@RequestParam(name = "cityId") Long cityId) {
         return Response.ok().setPayload(_service.findByCityPickup(cityId));
     }
+
     @GetMapping("/findByCityDelivery")
     public Response findByCityDelivery(@RequestParam(name = "cityId") Long cityId) {
         return Response.ok().setPayload(_service.findByCityDelivery(cityId));
+    }
+
+    @PostMapping("/findByCityInHub")
+    public Response findByCityInHub(@RequestBody CountryDevisionDto dto) {
+        return Response.ok().setPayload(_service.findByCityInHub(dto));
     }
 
 }

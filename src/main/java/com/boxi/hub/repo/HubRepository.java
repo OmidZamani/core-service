@@ -36,6 +36,10 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     List<Hub> findByIdIn(List<Long> ids);
 
+    List<Hub> findAllByCity(CountryDevision countryDevision);
+
+
+
 
     @Query("select h from Hub h where  h.code like ?1")
     List<Hub> findByCodeLike(String Code);
@@ -168,5 +172,5 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     List<Hub> findByCityAndType(CountryDevision countryDevision, HubType type);
 
-    List<Hub> findByCityInAndType(List<CountryDevision> countryDevision, HubType type);
+    List<Hub> findByCityInAndTypeAndIsDeletedFalseAndIsActiveIsTrue(List<CountryDevision> countryDevision, HubType type);
 }

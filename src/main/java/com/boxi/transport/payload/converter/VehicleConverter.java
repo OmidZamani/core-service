@@ -112,6 +112,8 @@ public interface VehicleConverter {
         if (vehicle.getTimeToFinishWork() != null)
             dto.setTimeToFinishWork(vehicle.getTimeToFinishWork().toString().substring(11, 16));
 
+        if (vehicle.getFirstDriverId() != null)
+            dto.setFirstDriverId(vehicle.getFirstDriverId());
 
     }
 }

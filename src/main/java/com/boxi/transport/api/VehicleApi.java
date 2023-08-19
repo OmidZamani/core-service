@@ -125,6 +125,11 @@ public class VehicleApi {
         return _service.clientFindById(id);
     }
 
+    @GetMapping("/findById/{id}")
+    public Response getfindByIdehicleById(@PathVariable Long id) {
+        return Response.ok().setPayload(_service.clientFindById(id));
+    }{}
+
     @PostMapping("/updateAssignable")
     public VehicleDto updateAssignable(@RequestBody VehicleDto dto) {
         return _service.updateAssignable(dto);

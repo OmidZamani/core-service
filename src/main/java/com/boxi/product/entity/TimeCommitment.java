@@ -63,11 +63,10 @@ public class TimeCommitment
 
 
     public String selectToString() {
-        return (this.getName()) + (Constants.separator) +
-                (this.getFrom()         != null ? this.getFrom()        : "") +(Constants.separator) +
-                (this.getTo()           != null ? this.getTo()          : "") +(Constants.separator) +
-                (this.getTimeUnit()     != null ? this.getTimeUnit()    : "") +(Constants.separator) +
-                (this.getFrom()         != null ? this.getFrom()        : "") +(Constants.separator) +
-                (this.getDescription()  != null ? this.getDescription() : "");
+        return (this.getName()) + (Constants.separator) +"("+
+                (this.getFrom()         != null ? this.getFrom().intValue()        : "") +(Constants.separator) +" تا "+
+                (this.getTo()           != null ? this.getTo().intValue()          : "") +(Constants.separator) +" "+
+                (this.getTimeUnit()     != null ? this.getTimeUnit()               : "") +(Constants.separator) + ")"
+                ;
     }
 }

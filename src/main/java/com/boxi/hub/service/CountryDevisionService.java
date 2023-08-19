@@ -1,6 +1,7 @@
 package com.boxi.hub.service;
 
 
+import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.payload.dto.CountryDevisionPolygonDto;
@@ -63,4 +64,6 @@ public interface CountryDevisionService {
     List<SelectResponse> findByCityPickup(Long cityId);
 
     List<SelectResponse> findByCityDelivery(Long cityId);
+
+    List<SelectResponse> findByCityInHub(CountryDevisionDto dto);
 }

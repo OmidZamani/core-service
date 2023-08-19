@@ -214,9 +214,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             suggestionServiceDto.setTimeTo(ofServicesDto.getTimeCommitmentTo().toString());
             TimeUnit byValue = TimeUnit.findByValue(ofServicesDto.getTimeCommitmentTimeUnit());
             suggestionServiceDto.setTimeType(new SelectResponse(byValue.getValue(), byValue.getType()));
-
             suggestionServiceDtos.add(suggestionServiceDto);
-
         }
         return suggestionServiceDtos;
     }

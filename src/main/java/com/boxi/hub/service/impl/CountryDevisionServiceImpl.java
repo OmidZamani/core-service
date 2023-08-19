@@ -393,6 +393,27 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
         return all.stream().map(this::toSelectHub).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SelectResponse> findByCityInHub(CountryDevisionDto dto) {
+        List<CountryDevision> all = countryDevisionRepository.findAll((Specification<CountryDevision>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
+            List<Hub> allByCity = hubRepository.findAllByCity(hub.getCity());
+            predicates.add(criteriaBuilder.and(root.get("hubId").in(allByCity.stream().map(Hub::getId).collect(Collectors.toList()))));
+
+            if (dto.getCountryType() != null) {
+                Predicate countryType = criteriaBuilder.equal(root.get("countryType"), CountryType.pickupDeliveryRegion);
+                Predicate countryTypeByUser = criteriaBuilder.equal(root.get("countryType"), CountryType.findByValue(dto.getCountryType().getId()));
+                predicates.add(criteriaBuilder.or(countryType, countryTypeByUser));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        });
+        return all.stream().map(this::toSelect).collect(Collectors.toList());
+
+
+    }
+
     public SelectResponse toSelectHub(Hub hub) {
         return new SelectResponse(hub.getId(), hub.selectToString());
     }

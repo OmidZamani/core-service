@@ -317,7 +317,7 @@ public class HubServiceImpl implements HubService {
     public List<ZoneHubDto> findByCity(Long cityId, String hubName, Long type) {
 
         List<CountryDevision> allByParent = countryDevisionRepository.findAllByParent(new CountryDevision().setId(cityId));
-        List<Hub> byCity = hubRepository.findByCityInAndType(allByParent, HubType.findByValue(type));
+        List<Hub> byCity = hubRepository.findByCityInAndTypeAndIsDeletedFalseAndIsActiveIsTrue(allByParent, HubType.findByValue(type));
         List<ZoneHubDto> zoneHubList = new ArrayList<>();
         for (Hub hub : byCity) {
             ZoneHubDto zoneHubDto = hubConverter.fromHubToZone(hub);
