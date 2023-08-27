@@ -230,6 +230,11 @@ public class HubApi {
         return Response.ok().setPayload(hubService.findByZoneRegionPolyGone(id));
     }
 
+    @GetMapping("/zone/findByRegionPositionInHubId/{id}")
+    public Response findByRegionPositionInHubId(@PathVariable Long id) {
+        return Response.ok().setPayload(hubService.findByRegionPositionInHubId(id));
+    }
+
     @GetMapping("/zone/findByRegionCountryDevision/{id}")
     public Response findByRegionCountryDivision(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByRegionCountryDivision(id));
