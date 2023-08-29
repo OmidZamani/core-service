@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 @Service
 @Slf4j
 public class ConsignmentListener {
-    @KafkaListener(
+/*    @KafkaListener(
      id="bags-saga-core"    ,
      topics="bags-saga" ,
      containerGroup = "a",
@@ -19,6 +19,6 @@ public class ConsignmentListener {
     @Transactional
     public void listen(BagDto dto){
         log.info("{}",dto);
-    }
+    }*/
 
 }

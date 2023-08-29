@@ -7,6 +7,7 @@ import com.boxi.sms.payload.dto.SmsDto;
 import com.boxi.sms.service.SmsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,17 +21,29 @@ public class SmsServiceImpl implements SmsService {
         return sendSMS(dto);
     }
 
+    @Value("${app.sms.user.name}")
+    private String smsUserName;
+
+
+    @Value("${app.sms.user.password}")
+    private String smsPass;
+
+
+    @Value("${app.sms.user.from}")
+    private String smsFrom;
+
+    final static String resourceUrl = "https://media.sms24.ir/SMSInOutBox/Send";
 
     private SmsDto sendSMS(SendSmsDto dto) {
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "https://media.sms24.ir/SMSInOutBox/Send";
+
 //        SMSBody.setMessage("سرکار خانم دکتر حقیری، سرکار خانم خوشامن برای شما درخواست ویزیت آنلاین دارد");
 
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("UserName", "mt.09358050512");
-        jsonObject.put("Password", "oaa#636");
-        jsonObject.put("From", "10009611");
+        jsonObject.put("UserName", smsUserName);
+        jsonObject.put("Password", smsPass);
+        jsonObject.put("From", smsFrom);
         jsonObject.put("To", dto.getPhoneNumber());
         jsonObject.put("Message", dto.getMessage());
         ResponseEntity<String> response
