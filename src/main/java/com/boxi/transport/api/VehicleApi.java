@@ -4,7 +4,6 @@ package com.boxi.transport.api;
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
-
 import com.boxi.transport.enums.FleetType;
 import com.boxi.transport.payload.dto.*;
 import com.boxi.transport.payload.request.HubFilter;
@@ -87,6 +86,10 @@ public class VehicleApi {
         return Response.ok().setPayload(_service.select(filter, hubFilter));
     }
 
+    @PostMapping("/client/select/{hubId}")
+    public List<CarTagDto> clientSelect(@RequestBody CarTagDto dto,@PathVariable Long hubId) {
+        return _service.clientSelect(dto, hubId);
+    }
     // @PreAuthorize("hasPermission('hasAccess','10080304')")
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {

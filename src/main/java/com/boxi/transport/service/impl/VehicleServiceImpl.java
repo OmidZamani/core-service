@@ -24,7 +24,6 @@ import com.boxi.transport.repo.VehicleMakeRepository;
 import com.boxi.transport.repo.VehicleRepository;
 import com.boxi.transport.service.VehicleService;
 import com.boxi.utils.DateUtil;
-import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
@@ -481,6 +481,32 @@ public class VehicleServiceImpl implements VehicleService {
                     return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 });
         return all.stream().map(admVehicleConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarTagDto> clientSelect(CarTagDto dto, Long hubId) {
+        List<Vehicle> all = vehicleRepository
+                .findAll((Specification<Vehicle>) (root, query, criteriaBuilder) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+                    predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+                    predicates.add(criteriaBuilder.equal(root.get("hub").get("id"), hubId));
+                    if (StringUtils.hasText(dto.getVehicleNumber0()))
+                        predicates.add(criteriaBuilder.like(root.get("vehicleNumber0"), "%" + dto.getVehicleNumber0() + "%"));
+
+                    if (StringUtils.hasText(dto.getVehicleNumber1()))
+                        predicates.add(criteriaBuilder.like(root.get("vehicleNumber1"), "%" + dto.getVehicleNumber1() + "%"));
+
+                    if (StringUtils.hasText(dto.getVehicleNumber2()))
+                        predicates.add(criteriaBuilder.like(root.get("vehicleNumber2"), "%" + dto.getVehicleNumber2() + "%"));
+
+                    if (StringUtils.hasText(dto.getVehicleNumber3()))
+                        predicates.add(criteriaBuilder.like(root.get("vehicleNumber3"), "%" + dto.getVehicleNumber3() + "%"));
+
+
+                    return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+                });
+        return all.stream().map(this::tocartagenumber).collect(Collectors.toList());
     }
 
 

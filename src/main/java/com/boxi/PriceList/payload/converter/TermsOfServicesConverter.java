@@ -34,16 +34,20 @@ public interface TermsOfServicesConverter {
     @AfterMapping
     default void afterFromConsignmentInfoDtoToTermDto(ConsignmentInfoDto consignmentInfoDto, @MappingTarget TermsOfServicesDto termsOfServices) {
 
-        termsOfServices.setSelectToCity(new SelectResponse(consignmentInfoDto.getToCityId(),consignmentInfoDto.getToCityId().toString()));
-        termsOfServices.setSelectFromCity(new SelectResponse(consignmentInfoDto.getFromCityId(),consignmentInfoDto.getFromCityId().toString()));
+        if (consignmentInfoDto.getToCityId() != null)
+            termsOfServices.setSelectToCity(new SelectResponse(consignmentInfoDto.getToCityId(), consignmentInfoDto.getToCityId().toString()));
+        if (consignmentInfoDto.getFromCityId() != null)
+            termsOfServices.setSelectFromCity(new SelectResponse(consignmentInfoDto.getFromCityId(), consignmentInfoDto.getFromCityId().toString()));
 
-        termsOfServices.setFromWeight(consignmentInfoDto.getDeclarativeWeight());
-        termsOfServices.setToWeight(consignmentInfoDto.getDeclarativeWeight());
+        if (consignmentInfoDto.getDeclarativeWeight() != null) {
+            termsOfServices.setFromWeight(consignmentInfoDto.getDeclarativeWeight());
+            termsOfServices.setToWeight(consignmentInfoDto.getDeclarativeWeight());
+        }
 
-        termsOfServices.setFromValue(consignmentInfoDto.getDeclarativeValue());
-        termsOfServices.setToValue(consignmentInfoDto.getDeclarativeValue());
-
-
+        if (consignmentInfoDto.getDeclarativeValue() != null) {
+            termsOfServices.setFromValue(consignmentInfoDto.getDeclarativeValue());
+            termsOfServices.setToValue(consignmentInfoDto.getDeclarativeValue());
+        }
 
 
     }
@@ -71,8 +75,8 @@ public interface TermsOfServicesConverter {
         if (termsOfServices.getConsignmentType() != null)
             dto.setConsignmentType(new SelectResponse(termsOfServices.getConsignmentType().getValue(), termsOfServices.getConsignmentType().getType()));
 
-        if(termsOfServices.getService()!=null)
-            dto.setSelectService(new SelectResponse(termsOfServices.getService().getId(),termsOfServices.getService().getName()));
+        if (termsOfServices.getService() != null)
+            dto.setSelectService(new SelectResponse(termsOfServices.getService().getId(), termsOfServices.getService().getName()));
     }
 
 }

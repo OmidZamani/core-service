@@ -161,6 +161,7 @@ public class ProductServiceImpl implements ProductService {
                 usingProductRepository.deleteAllByProductAttribute(productAttribute);
             }
             productAttributeRepository.deleteAllByProduct(new Product().setId(id));
+            productRepository.deleteById(id);
 //            productRepository.logicalDelete(id);
         }
     }

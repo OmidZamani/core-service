@@ -542,6 +542,12 @@ public class HubServiceImpl implements HubService {
         return selectResponses;
     }
 
+    @Override
+    public List<SelectResponse> findByRegionPositionInHubId(Long id) {
+
+        return null;
+    }
+
     private SelectResponse listOfParentSelectResponse(Hub hub) {
         if (hub.getParentHub() != null)
             return new SelectResponse(hub.getParentHub().getId(), hub.getParentHub().getName());
