@@ -115,7 +115,7 @@ public class HubServiceImpl implements HubService {
 
 
     private List<HubPermissionDto> findByParents(String hubCode) {
-        List<Hub> topByParentHubCode = hubRepository.findAllByParentHubCode(hubCode);
+        List<Hub> topByParentHubCode = hubRepository.findAllByParentHubCodeAndIsActiveIsTrueAndIsDeletedIsFalse(hubCode);
         List<HubPermissionDto> list = new ArrayList<>();
         for (Hub parentCode : topByParentHubCode) {
             HubPermissionDto hubPermissionDto = new HubPermissionDto();
