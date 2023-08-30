@@ -7,6 +7,7 @@ import com.boxi.sms.payload.dto.SmsDto;
 import com.boxi.sms.service.SmsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
+import org.aspectj.bridge.IMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -46,10 +47,15 @@ public class SmsServiceImpl implements SmsService {
         jsonObject.put("From", smsFrom);
         jsonObject.put("To", dto.getPhoneNumber());
         jsonObject.put("Message", dto.getMessage());
+        System.out.println(">>>>>>>>>>>>"+ dto.getMessage());
         ResponseEntity<String> response
                 = restTemplate.postForEntity(resourceUrl, jsonObject, String.class);
         SmsDto smsDto = new SmsDto();
         smsDto.setBody(response.getBody());
+        //1 متن اشتباه
+        //0
+        //16 شماره موبایل اشتباه
+        System.out.println("sms"+smsDto);
         return smsDto;
     }
 }

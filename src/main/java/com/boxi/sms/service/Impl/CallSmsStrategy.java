@@ -29,6 +29,7 @@ public class CallSmsStrategy {
     public void executeStrategy(PluralMessage overallMessage) {
         switch (overallMessage.getMessageType()) {
             case LOGIN:
+                System.out.println(">>>>>>>>>>>>>>>>>>login");
                 loginMessageStrategy.execute(overallMessage);
                 break;
 

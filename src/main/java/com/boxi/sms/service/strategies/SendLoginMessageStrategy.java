@@ -2,7 +2,9 @@ package com.boxi.sms.service.strategies;
 
 import com.boxi.core.conf.PropConf;
 import com.boxi.bus.dto.PluralMessage;
+import com.boxi.sms.payload.dto.SendSmsDto;
 import com.boxi.sms.service.SendMessageStrategy;
+import com.boxi.sms.service.SmsService;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +16,12 @@ public class SendLoginMessageStrategy  implements SendMessageStrategy {
 
     private static PropConf propConfig;
     private final String KEY="loginSuccessSMS";
+    private final SmsService smsService;
 
     @Autowired
-    public SendLoginMessageStrategy(PropConf propConfig) {
+    public SendLoginMessageStrategy(PropConf propConfig, SmsService smsService) {
         SendLoginMessageStrategy.propConfig = propConfig;
+        this.smsService = smsService;
     }
 
     //NAME & DATE
@@ -34,7 +38,15 @@ public class SendLoginMessageStrategy  implements SendMessageStrategy {
 
     @Override
     public void execute(PluralMessage overallMessage) {
+        String to = overallMessage.getData().get("NAME");
         String message = getMessage(overallMessage);
         System.out.println(message);
+        to="0"+to;
+        System.out.println(to);
+        SendSmsDto dto=new SendSmsDto();
+        dto.setMessage(message);
+        dto.setPhoneNumber(to);
+        smsService.sendSms(dto);
+
     }
 }
