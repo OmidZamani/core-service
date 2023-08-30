@@ -53,7 +53,7 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     List<Hub> findTopByParentHubCode(String parentHub);
 
-    List<Hub> findAllByParentHubCode(String parentHub);
+    List<Hub> findAllByParentHubCodeAndIsActiveIsTrueAndIsDeletedIsFalse(String parentHub);
 
     Boolean existsByLocLateAndLocLong(Double loclat, Double loclong);
 
