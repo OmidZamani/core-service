@@ -5,7 +5,6 @@ import com.boxi.PriceList.Enum.CategoryType;
 import com.boxi.PriceList.Enum.ConsignmentType;
 import com.boxi.PriceList.entity.PriceDetailDevision;
 import com.boxi.PriceList.entity.PriceList;
-
 import com.boxi.PriceList.entity.PriceListDetail;
 import com.boxi.PriceList.entity.TermsOfServices;
 import com.boxi.PriceList.payload.dto.*;
@@ -229,9 +228,11 @@ abstract class PriceListConverters implements PriceListConverter {
                     List<ContryDevistionSelect> contryDevistionSelectsTo = countryDevisionService.SelectTreeToParent(priceDetailDevision.getToCountryDevision().getId());
                     priceDetailDevisionDto.setToCountryDevision(contryDevistionSelectsTo);
                 }
-                ConsignmentType byValue = ConsignmentType.findByValue(priceDetailDevision.getPriceListDetail().getConsignmentType());
-                priceDetailDevisionDto.setConsignmentType(new SelectResponse(byValue.getValue(), byValue.getType()));
-                priceListDetailFilterDto.setConsignmentType(new SelectResponse(byValue.getValue(), byValue.getType()));
+                if(priceDetailDevision.getPriceListDetail().getConsignmentType()!=null ) {
+                    ConsignmentType byValue = ConsignmentType.findByValue(priceDetailDevision.getPriceListDetail().getConsignmentType());
+                    priceDetailDevisionDto.setConsignmentType(new SelectResponse(byValue.getValue(), byValue.getType()));
+                    priceListDetailFilterDto.setConsignmentType(new SelectResponse(byValue.getValue(), byValue.getType()));
+                }
 
 
                 priceDetailDevisionDtos.add(priceDetailDevisionDto);
