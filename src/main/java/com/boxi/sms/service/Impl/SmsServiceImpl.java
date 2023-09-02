@@ -36,6 +36,7 @@ public class SmsServiceImpl implements SmsService {
     final static String resourceUrl = "https://media.sms24.ir/SMSInOutBox/Send";
 
     private SmsDto sendSMS(SendSmsDto dto) {
+        System.out.println("Start Send SMS");
         RestTemplate restTemplate = new RestTemplate();
 
 //        SMSBody.setMessage("سرکار خانم دکتر حقیری، سرکار خانم خوشامن برای شما درخواست ویزیت آنلاین دارد");
@@ -45,6 +46,8 @@ public class SmsServiceImpl implements SmsService {
         jsonObject.put("UserName", smsUserName);
         jsonObject.put("Password", smsPass);
         jsonObject.put("From", smsFrom);
+        if(dto.getPhoneNumber().substring(0,2).equals("00"))
+            dto.setPhoneNumber(dto.getPhoneNumber().substring(1,11));
         jsonObject.put("To", dto.getPhoneNumber());
         jsonObject.put("Message", dto.getMessage());
         System.out.println(">>>>>>>>>>>>"+ dto.getMessage());

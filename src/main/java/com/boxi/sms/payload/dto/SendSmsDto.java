@@ -11,7 +11,3 @@ public class SendSmsDto  extends JsonBase {
     private String[] userGroupID;
     private Long sendDateInTimeStamp;
 }
-
-
-
-

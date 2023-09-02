@@ -34,6 +34,7 @@ public class CallSmsStrategy {
                 break;
 
             case ONE_TIME_PASS_SEND:
+                System.out.println(">>>>>>>>>>>>>>>>>>Change Password");
                 passWordMessageStrategy.execute(overallMessage);
                 break;
 
