@@ -3,7 +3,6 @@ package com.boxi.hub.service.impl;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
-
 import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.entity.Hub;
 import com.boxi.hub.entity.HubCategory;
@@ -31,14 +30,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
 import java.io.IOException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -742,8 +746,8 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public Page<HubDto> filter(FilterHub filter, Pageable pageable) {
-        // hubRepository.findBy(nameLike())
+    public Page<HubDto> filter(FilterHub filter, Pageable pageable, Jwt jwt) {
+
         if (filter.getHublist() != null) {
             Page<Hub> res = hubRepository
                     .findAll((Specification<Hub>) (root, query, criteriaBuilder) -> {
@@ -808,7 +812,10 @@ public class HubServiceImpl implements HubService {
                         }
                         if (filter.getHublist() != null) {
                             List<Long> ids = findAllHubId(filter.getHublist());
-                            predicates.add(criteriaBuilder.and(root.get("id").in(ids)));
+                            Predicate id = criteriaBuilder.and(root.get("id").in(ids));
+                            String username = (String) jwt.getClaims().get("username");
+                            Predicate author = criteriaBuilder.equal(root.get("author"), username);
+                            predicates.add(criteriaBuilder.or(author, id));
                         }
 
                         query.distinct(true);

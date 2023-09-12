@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,10 +53,11 @@ public class HubApi {
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                            @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                           @RequestBody FilterHub request) {
+                           @RequestBody FilterHub request,
+                           @AuthenticationPrincipal Jwt jwt) {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<HubDto> response = hubService.filter(request, pageable);
+        Page<HubDto> response = hubService.filter(request, pageable, jwt);
         return Response.ok().setPayload(response);
     }
 

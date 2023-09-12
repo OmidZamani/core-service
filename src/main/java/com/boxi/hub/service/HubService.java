@@ -12,6 +12,7 @@ import com.boxi.hub.payload.response.CreateHubCategoryResponse;
 import com.boxi.transport.payload.request.HubFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public interface HubService {
 
     HubDto createHub(HubDto request);
 
-    Page<HubDto> filter(FilterHub filter, Pageable pageable);
+    Page<HubDto> filter(FilterHub filter, Pageable pageable, Jwt jwt);
 
     void createHubsByExcel(MultipartFile excel) throws IOException;
 
