@@ -66,6 +66,11 @@ public class DockApi {
         return _service.findByIdDto(id);
     }
 
+    @GetMapping("/external/{code}")
+    public DockDto findByCodeInClient(@PathVariable String code) {
+        return _service.findByCodeInClient(code);
+    }
+
 
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,

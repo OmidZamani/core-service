@@ -34,4 +34,6 @@ public interface DockService {
     List<DockDto> ImportExcel(List<DockExcelDto> dockExcelList);
 
     DockDto updateStatus(DockDto dto);
+
+    DockDto findByCodeInClient(String code);
 }

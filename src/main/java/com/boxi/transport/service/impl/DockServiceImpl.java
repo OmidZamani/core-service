@@ -230,5 +230,10 @@ public class DockServiceImpl implements DockService {
         return null;
     }
 
+    @Override
+    public DockDto findByCodeInClient(String code) {
+        return dockRepository.findByCodeAndIsDeletedFalse(code);
+    }
+
 
 }
