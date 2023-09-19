@@ -4,7 +4,9 @@ package com.boxi.transport.api;
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
-import com.boxi.transport.payload.dto.*;
+import com.boxi.transport.payload.dto.DockDto;
+import com.boxi.transport.payload.dto.DockExcelDto;
+import com.boxi.transport.payload.dto.DockFilter;
 import com.boxi.transport.payload.request.HubFilter;
 import com.boxi.transport.service.DockService;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -58,6 +61,11 @@ public class DockApi {
         return Response.ok().setPayload(_service.findByIdDto(id));
     }
 
+    @GetMapping("/external/{id}")
+    public DockDto findByIdInClient(@PathVariable Long id) {
+        return _service.findByIdDto(id);
+    }
+
 
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
@@ -71,7 +79,7 @@ public class DockApi {
 
 
     @PostMapping("/select")
-    public Response select(@RequestParam(name = "filter" ) String filter,
+    public Response select(@RequestParam(name = "filter") String filter,
                            @RequestBody HubFilter hubFilter) {
         Page<SelectResponse> response = _service.select(filter, hubFilter);
         return Response.ok().setPayload(response);
@@ -100,6 +108,6 @@ public class DockApi {
 
     @PostMapping("/update")
     public Response createByExcel(@RequestBody DockDto dto) {
-     return Response.ok().setPayload(_service.updateStatus(dto));
+        return Response.ok().setPayload(_service.updateStatus(dto));
     }
 }
