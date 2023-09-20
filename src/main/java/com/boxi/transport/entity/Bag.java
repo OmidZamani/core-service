@@ -97,6 +97,13 @@ public class Bag extends BaseEntity implements java.io.Serializable {
 //   @JoinColumn(name="FK_SHELF_ID", referencedColumnName="SHELFID", nullable=true)
 //   private Shelf shelf;
 
+    @Basic(optional=true)
+    @Column(name="EXTRALOAD", insertable=true, updatable=true)
+    private Boolean extraLoad;
+
+    @Basic(optional=true)
+    @Column(name="EXTRALOADINVEHICLEID", insertable=true, updatable=true)
+    private Long extraLoadInVehicleId;
 
     public void addBag(BagExceptions newBagExceptions) {
         if (newBagExceptions == null)

@@ -53,7 +53,9 @@ public class BagDto extends JsonBase {
 
     private BigDecimal allocatedVolume;
 
+    private Boolean extraLoad;
 
+    private Long extraLoadInVehicleId;
 }
 
 

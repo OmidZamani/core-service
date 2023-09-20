@@ -39,9 +39,6 @@ public class SmsServiceImpl implements SmsService {
         System.out.println("Start Send SMS");
         RestTemplate restTemplate = new RestTemplate();
 
-//        SMSBody.setMessage("سرکار خانم دکتر حقیری، سرکار خانم خوشامن برای شما درخواست ویزیت آنلاین دارد");
-
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("UserName", smsUserName);
         jsonObject.put("Password", smsPass);
