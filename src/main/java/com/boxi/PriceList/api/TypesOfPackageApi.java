@@ -1,11 +1,11 @@
 package com.boxi.PriceList.api;
 
 import com.boxi.PriceList.payload.dto.TypesOfPackageDto;
-import com.boxi.PriceList.payload.request.FilterServiceDelivery;
 import com.boxi.PriceList.service.TypesOfPackageService;
 import com.boxi.core.response.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +52,16 @@ public class TypesOfPackageApi {
         Pageable pageable
                 = PageRequest.of(pageNumber - 1, pageSize);
         return Response.ok().setPayload(typesOfPackageService.filter(request, pageable));
+
+    }
+
+    @PostMapping("/external/filter")
+    public Page<TypesOfPackageDto> filterList(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+                                              @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                              @RequestBody TypesOfPackageDto request) {
+        Pageable pageable
+                = PageRequest.of(pageNumber - 1, pageSize);
+        return typesOfPackageService.filter(request, pageable);
 
     }
 
