@@ -1,7 +1,9 @@
 package com.boxi.hub.service;
 
+import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.payload.dto.PudoStationDto;
 import jdk.dynalink.linker.LinkerServices;
+import org.h2.command.dml.Select;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +21,5 @@ public interface PudoStationService {
     Page<PudoStationDto> filter(PudoStationDto request, Pageable pageable);
 
 
+    List<SelectResponse> select(String filter);
 }

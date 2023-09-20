@@ -47,4 +47,9 @@ public class PudoStationApi {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return Response.ok().setPayload(pudoStationService.filter(request, pageable));
     }
+
+    @GetMapping("/select")
+    public Response select(@RequestParam(name = "filter")String filter){
+        return Response.ok().setPayload(pudoStationService.select(filter));
+    }
 }

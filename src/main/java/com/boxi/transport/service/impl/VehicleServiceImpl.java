@@ -509,6 +509,12 @@ public class VehicleServiceImpl implements VehicleService {
         return all.stream().map(this::tocartagenumber).collect(Collectors.toList());
     }
 
+    @Override
+    public VehicleDto findByDriverId(Long driverId) {
+
+        return vehicleConverter.fromModelToDto(vehicleRepository.findTopByFirstDriverIdOrSecondDriverIdOrderByIdDesc(driverId, driverId));
+    }
+
 
     private CarTagDto tocartagenumber(Vehicle vehicle) {
         CarTagDto dto = new CarTagDto();

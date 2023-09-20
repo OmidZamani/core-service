@@ -2,6 +2,7 @@ package com.boxi.hub.service.impl;
 
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
+import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.PudoStation;
 import com.boxi.hub.payload.converter.PudoStationConverter;
 import com.boxi.hub.payload.dto.PudoStationDto;
@@ -12,10 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PudoStationServiceImpl implements PudoStationService {
@@ -107,5 +110,27 @@ public class PudoStationServiceImpl implements PudoStationService {
 
         }, pageable).map(pudoStationConverter::fromModelToDto);
 
+    }
+
+    @Override
+    public List<SelectResponse> select(String filter) {
+        return pudoStationRepository.findAll((Specification<PudoStation>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+            predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+
+
+            if (StringUtils.hasText(filter)) {
+                Predicate code = criteriaBuilder.like(root.get("code"), "%" + filter + "%");
+                Predicate name = criteriaBuilder.like(root.get("name"), "%" + filter + "%");
+                predicates.add(criteriaBuilder.or(code, name));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+
+        }).stream().map(this::toSelect).collect(Collectors.toList());
+    }
+
+    private SelectResponse toSelect(PudoStation pudoStation) {
+        return new SelectResponse(pudoStation.getId(), pudoStation.getName());
     }
 }

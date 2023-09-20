@@ -215,5 +215,10 @@ public class VehicleApi {
 
     }
 
+    @GetMapping("/external/{driverId}")
+    public VehicleDto findByDriverId(@PathVariable Long driverId){
+        return _service.findByDriverId(driverId);
+    }
+
 
 }

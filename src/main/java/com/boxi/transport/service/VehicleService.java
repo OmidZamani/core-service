@@ -55,4 +55,6 @@ public interface VehicleService {
     List<AdmVehicleDto> listOfAdmVehicleInHub(AdmVehicleDto dto);
 
     List<CarTagDto> clientSelect(CarTagDto dto, Long hubId);
+
+    VehicleDto findByDriverId(Long driverId);
 }

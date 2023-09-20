@@ -5,6 +5,7 @@ import com.boxi.transport.entity.Vehicle;
 import com.boxi.transport.entity.VehicleMake;
 import com.boxi.transport.entity.Vendor;
 import com.boxi.transport.enums.VehicleType;
+import com.boxi.transport.payload.dto.VehicleDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,6 +33,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
     List<Vehicle> findAllByVehicleMakeAndHub(VehicleMake vehicleMake, Hub hub);
 
     List<Vehicle> findAllByVendorAndIsActiveIsTrueAndIsDeletedIsFalse(Vendor vendor);
+
+    Vehicle findTopByFirstDriverIdOrSecondDriverIdOrderByIdDesc(Long firstDriverId, Long secondDriverId);
 
 
 }
