@@ -19,7 +19,7 @@ public enum EntityType {
     TimeCommitment,
     ProductGroup,
     RULEMODEL,
-    ProductAttributeDevision, CustomCountryDevision, ServiceDelivery, EXCEPTION, Service, Excel, PriceList, CustomCountryDevisionDetails, PriceListDetails, CUSEOMERSEGMENT, CALENDAR, PersonalizationForm, TypesOfPackage, DiscountCode, PudoStation;;
+    ProductAttributeDevision, CustomCountryDevision, ServiceDelivery, EXCEPTION, Service, Excel, PriceList, CustomCountryDevisionDetails, PriceListDetails, CUSEOMERSEGMENT, CALENDAR, PersonalizationForm, TypesOfPackage, DiscountCode, PudoStation, BankAccount;;
 
 
 }

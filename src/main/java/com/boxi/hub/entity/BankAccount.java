@@ -1,6 +1,7 @@
 package com.boxi.hub.entity;
 
 import com.boxi.core.entity.BaseEntity;
+import com.boxi.hub.enums.BankType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -37,7 +38,7 @@ public class BankAccount
 
    @Basic(optional=true)
    @Column(name="BANK", insertable=true, updatable=true)
-   private Long bank;
+   private BankType bank;
    
 
    public BankAccount() {
@@ -45,31 +46,3 @@ public class BankAccount
    }
 
 }
-//ENUM
-//meli	 ملی
-//sepah	 سپه
-//sanatMadan	 صنعت و معدن
-//keshavarzi	 کشاورزی
-//maskan	 مسکن
-//toseSaderat	 توسعه صادرات
-//toseTaavon	 توسعه تعاون
-//postBank	 پست بانک
-//eghtesadNovin	 اقتصاد نوین
-//parsian	 پارسیان
-//karafarin	 کشاورزی
-//saman	 سامان
-//sina	 سینا
-//khavarmianeh	 کشاورزی
-//shahr	 شهر
-//dey	 دی
-//saderat	 صادرات
-//melat	 ملت
-//tejarat	 تجارت
-//refah	 رفاه
-//gardeshgari	 گردشگری
-//iranzamin	 ایران زمین
-//sarmaye	 سرمایه
-//pasargad	 پاسارگاد
-//ayande	 آینده
-//mehrIran	 مهر ایران
-//resalat	 رسالت
