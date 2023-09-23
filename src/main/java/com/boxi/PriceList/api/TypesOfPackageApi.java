@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/core-api/typesOfPackage")
 @RestController
 @RequiredArgsConstructor
@@ -62,6 +64,12 @@ public class TypesOfPackageApi {
         Pageable pageable
                 = PageRequest.of(pageNumber - 1, pageSize);
         return typesOfPackageService.filter(request, pageable);
+
+    }
+    @PostMapping("/external/filterList")
+    public List<TypesOfPackageDto> externalFilterList() {
+
+        return typesOfPackageService.externalFilterList();
 
     }
 

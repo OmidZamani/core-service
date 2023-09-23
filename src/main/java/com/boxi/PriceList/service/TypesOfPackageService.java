@@ -19,4 +19,7 @@ public interface TypesOfPackageService {
     Page<TypesOfPackageDto> filter(TypesOfPackageDto filter, Pageable pageable);
 
     List<SelectResponse> select(String filter);
+
+    List<TypesOfPackageDto> externalFilterList();
+
 }

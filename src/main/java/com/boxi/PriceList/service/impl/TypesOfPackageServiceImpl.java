@@ -117,6 +117,22 @@ public class TypesOfPackageServiceImpl implements TypesOfPackageService {
         return all.stream().map(this::toSelect).collect(Collectors.toList());
     }
 
+    @Override
+    public List<TypesOfPackageDto> externalFilterList() {
+        return typesOfPackageRepository.findAll((Specification<TypesOfPackage>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+
+
+            predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }).stream().map(typesOfPackageConverter::fromModelToDto).collect(Collectors.toList());
+
+
+    }
+
     private SelectResponse toSelect(TypesOfPackage typesOfPackage) {
         return new SelectResponse(typesOfPackage.getId(), typesOfPackage.getName());
     }
