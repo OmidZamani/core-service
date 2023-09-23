@@ -4,15 +4,14 @@ import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.BankAccount;
 import com.boxi.hub.enums.BankType;
 import com.boxi.hub.payload.dto.BankAccountDto;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.CollectionMappingStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(collectionMappingStrategy = CollectionMappingStrategy.ACCESSOR_ONLY, componentModel = "spring")
 public interface BankAccountConverter {
+    @Mapping(ignore = true,target = "bank")
     BankAccountDto fromModelToDto(BankAccount bankAccount);
 
+    @Mapping(ignore = true,target = "bank")
     BankAccount fromDtoToModel(BankAccountDto dto);
 
     @AfterMapping
