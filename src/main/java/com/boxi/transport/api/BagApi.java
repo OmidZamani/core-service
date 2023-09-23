@@ -158,4 +158,10 @@ public class BagApi {
         return bagDtos;
     }
 
+    @PostMapping("/listOfBagInHub/{hubId}")
+    public List<BagDto> listOfBagInHub(@PathVariable Long hubId ) {
+        List<BagDto> bagDtos = _service.listOfBagInHub(hubId);
+        return bagDtos;
+    }
+
 }

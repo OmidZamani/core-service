@@ -21,14 +21,12 @@ import com.boxi.transport.payload.request.HubFilter;
 import com.boxi.transport.repo.BagExceptionsRepository;
 import com.boxi.transport.repo.BagRepository;
 import com.boxi.transport.service.BagService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,7 +35,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -385,6 +382,17 @@ public class BagServiceImpl implements BagService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
         return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BagDto> listOfBagInHub(Long hubId) {
+        List<Bag> all = bagRepository.findAll((Specification<Bag>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.and(root.get("currentHub").in(hubId)));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+        return all.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+
     }
 
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {

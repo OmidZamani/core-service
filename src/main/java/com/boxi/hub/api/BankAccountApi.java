@@ -1,12 +1,15 @@
 package com.boxi.hub.api;
 
 import com.boxi.core.response.Response;
+import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.enums.BankType;
 import com.boxi.hub.payload.dto.BankAccountDto;
 import com.boxi.hub.service.BankAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/core-api/bankAccount")
 @RestController
@@ -44,8 +47,18 @@ public class BankAccountApi {
     }
 
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter") String filter){
+    public Response select(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(bankAccountService.select(filter));
+    }
+
+    @GetMapping("/external/select")
+    public List<SelectResponse> externalSelect(@RequestParam(name = "filter") String filter) {
+        return bankAccountService.select(filter);
+    }
+
+    @GetMapping("/external/BankType")
+    public List<SelectResponse> externalBankType() {
+        return BankType.select();
     }
 
 }
