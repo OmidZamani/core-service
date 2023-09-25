@@ -164,4 +164,8 @@ public class BagApi {
         return bagDtos;
     }
 
+    @PostMapping("/listOfBagInBagList")
+    public List<BagDto> listOfBagInBagList(@RequestBody Long[] bagList){
+        return _service.listOfBagInBagList(bagList);
+    }
 }

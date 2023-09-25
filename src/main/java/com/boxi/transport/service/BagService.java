@@ -47,4 +47,6 @@ public interface BagService {
     List<BagDto> bagListofList(String[] bagList);
 
     List<BagDto> listOfBagInHub(Long hubId);
+
+    List<BagDto> listOfBagInBagList(Long[] bagList);
 }

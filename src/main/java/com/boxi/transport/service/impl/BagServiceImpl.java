@@ -395,6 +395,11 @@ public class BagServiceImpl implements BagService {
 
     }
 
+    @Override
+    public List<BagDto> listOfBagInBagList(Long[] bagList) {
+        return bagRepository.findAllByIdIn(bagList).stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {
         findById(dto.getSelectBag().getId());
         dto.setId(null);

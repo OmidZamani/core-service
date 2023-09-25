@@ -33,4 +33,5 @@ public interface BagRepository extends JpaRepository<Bag, Long>, JpaSpecificatio
     @Query(value = "select max(b.bagNumber) from Bag b  order by b.bagNumber desc")
     String findTopOrderByBagNumberDesc();
 
+    List<Bag> findAllByIdIn(Long... ids);
 }
