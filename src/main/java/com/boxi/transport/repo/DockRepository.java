@@ -20,7 +20,7 @@ public interface DockRepository extends JpaRepository<Dock, Long>, JpaSpecificat
     void logicalDelete(Long id);
 
     Boolean existsByCodeAndIsDeletedFalse(String code);
-    DockDto findByCodeAndIsDeletedFalse(String code);
+    Dock findByCodeAndIsDeletedFalse(String code);
 
     List<Dock> findAllByHubAndIsActiveIsTrueAndIsDeletedIsFalse(Hub hub);
 

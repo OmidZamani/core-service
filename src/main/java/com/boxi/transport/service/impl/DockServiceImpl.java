@@ -233,7 +233,7 @@ public class DockServiceImpl implements DockService {
 
     @Override
     public DockDto findByCodeInClient(String code) {
-        return dockRepository.findByCodeAndIsDeletedFalse(code);
+        return dockConverter.fromModelToDto(dockRepository.findByCodeAndIsDeletedFalse(code));
     }
 
     @Override

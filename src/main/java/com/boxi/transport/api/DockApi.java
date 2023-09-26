@@ -66,7 +66,7 @@ public class DockApi {
         return _service.findByIdDto(id);
     }
 
-    @GetMapping("/external/{code}")
+    @GetMapping("/external/findByCode/{code}")
     public DockDto findByCodeInClient(@PathVariable String code) {
         return _service.findByCodeInClient(code);
     }

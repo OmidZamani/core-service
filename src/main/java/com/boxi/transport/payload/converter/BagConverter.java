@@ -31,6 +31,7 @@ public interface BagConverter {
     @Mapping(source = "dto.selectCurrentHub", target = "currentHub")
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "tripId", ignore = true)
+    @Mapping(target = "mismatchStatus", ignore = true)
     void updateFromDto(BagDto dto, @MappingTarget Bag bag);
 
     @Mapping(source = "sourceHub", target = "selectSourceHub")
