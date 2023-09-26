@@ -56,6 +56,10 @@ public class BagDto extends JsonBase {
     private Boolean extraLoad;
 
     private Long extraLoadInVehicleId;
+
+    private Boolean lackOfLoad; //وضعیت حضور کیسه در هر تریپ
+
+    private SelectResponse mismatchStatus;
 }
 
 

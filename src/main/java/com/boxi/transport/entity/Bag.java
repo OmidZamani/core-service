@@ -4,6 +4,7 @@ import com.boxi.core.entity.BaseEntity;
 import com.boxi.hub.entity.Hub;
 import com.boxi.transport.enums.BagStatus;
 import com.boxi.transport.enums.BagType;
+import com.boxi.transport.enums.MisMatchStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -104,6 +105,14 @@ public class Bag extends BaseEntity implements java.io.Serializable {
     @Basic(optional=true)
     @Column(name="EXTRALOADINVEHICLEID", insertable=true, updatable=true)
     private Long extraLoadInVehicleId;
+
+    @Basic(optional=true)
+    @Column(name="MISMATCHSTATUS", insertable=true, updatable=true)
+    private MisMatchStatus mismatchStatus;
+
+    @Basic(optional=true)
+    @Column(name="LACKOFLOAD", insertable=true, updatable=true)
+    private Boolean lackOfLoad;
 
     public void addBag(BagExceptions newBagExceptions) {
         if (newBagExceptions == null)

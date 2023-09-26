@@ -4,6 +4,7 @@ import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.payload.converter.HubConverter;
 import com.boxi.transport.entity.Bag;
 import com.boxi.transport.enums.BagStatus;
+import com.boxi.transport.enums.MisMatchStatus;
 import com.boxi.transport.payload.dto.BagDto;
 import org.mapstruct.*;
 
@@ -18,6 +19,7 @@ public interface BagConverter {
     @Mapping(source = "dto.selectCarrier", target = "carrier")
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "tripId", ignore = true)
+    @Mapping(target = "mismatchStatus", ignore = true)
     Bag fromDtoToModel(BagDto dto);
 
     @Mapping(source = "dto.selectSourceHub", target = "sourceHub")
@@ -38,6 +40,7 @@ public interface BagConverter {
     @Mapping(source = "currentHub.", target = "selectCurrentHub")
     @Mapping(source = "bagType", target = "selectBagType")
     @Mapping(source = "carrier", target = "selectCarrier")
+    @Mapping(target = "mismatchStatus", ignore = true)
     BagDto fromModelToDto(Bag bag);
 
     @AfterMapping
@@ -49,6 +52,8 @@ public interface BagConverter {
         if (BagDto.getSelecttrip() != null) {
             bag.setTripId(BagDto.getSelecttrip().getId());
         }
+        if (BagDto.getMismatchStatus() != null)
+            bag.setMismatchStatus(MisMatchStatus.findByValue(BagDto.getMismatchStatus().getId()));
     }
 
     @AfterMapping
@@ -61,6 +66,9 @@ public interface BagConverter {
         if (bag.getTripId() != null) {
             BagDto.setSelecttrip(new SelectResponse(bag.getTripId(), ""));
         }
+
+        if (bag.getMismatchStatus() != null)
+            BagDto.setMismatchStatus(new SelectResponse(bag.getMismatchStatus().getValue(), bag.getMismatchStatus().getFa()));
     }
 
 }
