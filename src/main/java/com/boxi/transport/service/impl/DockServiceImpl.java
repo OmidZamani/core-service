@@ -28,6 +28,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -233,6 +234,13 @@ public class DockServiceImpl implements DockService {
     @Override
     public DockDto findByCodeInClient(String code) {
         return dockRepository.findByCodeAndIsDeletedFalse(code);
+    }
+
+    @Override
+    public List<DockDto> externalFindByHubId(Long hubId) {
+
+        List<Dock> allByHubAndIsActiveIsTrueAndIsDeletedIsFalse = dockRepository.findAllByHubAndIsActiveIsTrueAndIsDeletedIsFalse(new Hub().setId(hubId));
+        return allByHubAndIsActiveIsTrueAndIsDeletedIsFalse.stream().map(dockConverter::fromModelToDto).collect(Collectors.toList());
     }
 
 

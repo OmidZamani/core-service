@@ -36,4 +36,6 @@ public interface DockService {
     DockDto updateStatus(DockDto dto);
 
     DockDto findByCodeInClient(String code);
+
+    List<DockDto> externalFindByHubId(Long hubId);
 }

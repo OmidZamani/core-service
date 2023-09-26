@@ -71,6 +71,11 @@ public class DockApi {
         return _service.findByCodeInClient(code);
     }
 
+    @GetMapping("/external/findByHubId/{hubId}")
+    public List<DockDto> externalFindByHubId(@PathVariable Long hubId) {
+        return _service.externalFindByHubId(hubId);
+    }
+
 
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
