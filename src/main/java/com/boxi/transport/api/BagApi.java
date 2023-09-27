@@ -168,4 +168,9 @@ public class BagApi {
     public List<BagDto> listOfBagInBagList(@RequestBody Long[] bagList){
         return _service.listOfBagInBagList(bagList);
     }
+
+    @GetMapping("/bagContradictionList/{tripId}")
+    public List<BagDto> bagContradictionList(@PathVariable Long tripId){
+        return _service.bagContradictionList(tripId);
+    }
 }

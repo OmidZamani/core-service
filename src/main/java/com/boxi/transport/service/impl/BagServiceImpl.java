@@ -400,6 +400,14 @@ public class BagServiceImpl implements BagService {
         return bagRepository.findAllByIdIn(bagList).stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<BagDto> bagContradictionList(Long tripId) {
+        List<Bag> resultList = new ArrayList<>();
+        resultList.addAll(bagRepository.findAllByExtraLoadIsTrueAndExtraLoadInVehicleIdIsNotNullAndTripIdAndIsActiveIsTrueAndIsDeletedIsFalse(tripId));
+        resultList.addAll(bagRepository.findAllByLackOfLoadIsTrueAndTripIdAndIsActiveIsTrueAndIsDeletedIsFalse(tripId));
+        return resultList.stream().map(bagConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
     public BagExceptionsDto savecreateException(BagExceptionsDto dto) {
         findById(dto.getSelectBag().getId());
         dto.setId(null);

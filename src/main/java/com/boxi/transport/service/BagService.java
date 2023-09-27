@@ -49,4 +49,7 @@ public interface BagService {
     List<BagDto> listOfBagInHub(Long hubId);
 
     List<BagDto> listOfBagInBagList(Long[] bagList);
+
+    List<BagDto> bagContradictionList(Long tripId);
+
 }

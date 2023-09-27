@@ -34,4 +34,6 @@ public interface BagRepository extends JpaRepository<Bag, Long>, JpaSpecificatio
     String findTopOrderByBagNumberDesc();
 
     List<Bag> findAllByIdIn(Long... ids);
+    List<Bag> findAllByExtraLoadIsTrueAndExtraLoadInVehicleIdIsNotNullAndTripIdAndIsActiveIsTrueAndIsDeletedIsFalse(Long tripId);
+    List<Bag> findAllByLackOfLoadIsTrueAndTripIdAndIsActiveIsTrueAndIsDeletedIsFalse(Long tripId);
 }
