@@ -67,7 +67,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     private SelectResponse toSelect(BankAccount bankAccount) {
-        return new SelectResponse(bankAccount.getId(), bankAccount.getAccountNumber().toString());
+        return new SelectResponse(bankAccount.getId(), bankAccount.getAccountNumber().toString()+" - "+bankAccount.getBank().getFa());
     }
 
     private BankAccountDto saveEdit(BankAccountDto dto) {
