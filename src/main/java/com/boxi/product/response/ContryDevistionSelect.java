@@ -13,5 +13,8 @@ public class ContryDevistionSelect {
     private Long id;
     private String text;
     private SelectResponse countryType;
+    private String shahrCode;
+    private String shahrestanCode;
+    private String ostanCode;
 
 }

@@ -132,6 +132,9 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
             contryDevistionSelect.setText(countryDevisionInsDto.getname());
             CountryType byValue = CountryType.findByValue(countryDevisionInsDto.getcountryType());
             contryDevistionSelect.setCountryType(new SelectResponse(byValue.getValue(), byValue.getFa()));
+            contryDevistionSelect.setOstanCode(countryDevisionInsDto.getOstanCode());
+            contryDevistionSelect.setShahrCode(countryDevisionInsDto.getshahrCode());
+            contryDevistionSelect.setShahrestanCode(countryDevisionInsDto.getshahrestanCode());
             contryDevistionSelects.add(contryDevistionSelect);
         }
         return contryDevistionSelects;
@@ -166,6 +169,9 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
         ContryDevistionSelect contryDevistionSelect = new ContryDevistionSelect();
         contryDevistionSelect.setId(byCode.getId());
         contryDevistionSelect.setText(byCode.getName());
+        contryDevistionSelect.setOstanCode(byCode.getOstanCode());
+        contryDevistionSelect.setShahrCode(byCode.getShahrCode());
+        contryDevistionSelect.setShahrestanCode(byCode.getShahrestanCode());
         contryDevistionSelect.setCountryType(new SelectResponse(byCode.getCountryType().getValue(), byCode.getCountryType().getFa()));
         return contryDevistionSelect;
 
