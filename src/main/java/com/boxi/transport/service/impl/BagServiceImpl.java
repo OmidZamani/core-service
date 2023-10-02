@@ -190,6 +190,9 @@ public class BagServiceImpl implements BagService {
 
         log.warn(request.toJson());
         request.setId(null);
+        if (!StringUtils.hasText(request.getBagNumber())) {
+            throw BusinessException.entityNotFoundException(EntityType.Bag, "bag.code.not.add") ;
+        }
         request.setBagNumber(AutoGenerateBarcode());
         Bag bag = bagConverter.fromDtoToModel(request);
         bag.setIsActive(request.getIsActive());

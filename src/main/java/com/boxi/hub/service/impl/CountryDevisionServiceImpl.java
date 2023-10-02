@@ -354,6 +354,10 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
             countryDevisionDto.getParent().setChilds(null);
             CountryDevisionDto countryDevisionDto1 = new CountryDevisionDto();
             countryDevisionDto1.setId(countryDevisionDto.getParent().getId());
+            countryDevisionDto1.setOstanCode(countryDevisionDto.getOstanCode());
+            countryDevisionDto1.setShahrCode(countryDevisionDto.getShahrCode());
+            countryDevisionDto1.setShahrestanCode(countryDevisionDto.getShahrestanCode());
+
             countryDevisionDto1.setName(countryDevisionDto.getParent().getName());
             countryDevisionDto1.setCode(countryDevisionDto.getParent().getCode());
             if (countryDevisionDto.getLatitude() != null)
