@@ -55,7 +55,7 @@ public class SmsServiceImpl implements SmsService {
         //1 متن اشتباه
         //0
         //16 شماره موبایل اشتباه
-        System.out.println("sms"+smsDto);
+        System.out.println("sms:"+smsDto);
         return smsDto;
     }
 }

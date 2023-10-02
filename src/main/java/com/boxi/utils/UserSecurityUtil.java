@@ -31,9 +31,12 @@ public class UserSecurityUtil {
 
     public static String getAuthName() {
         Authentication authentication = getContext().getAuthentication();
-
-        log.warn(">>>>>>>>>>>"+authentication.getName());
-        return authentication.getName();
+        String username="unKnown";
+        if(authentication!=null && authentication.getName()!=null){
+            username=authentication.getName();
+        }
+        log.warn(">>>>>>>>>>>"+username);
+        return username;
 
     }
 
