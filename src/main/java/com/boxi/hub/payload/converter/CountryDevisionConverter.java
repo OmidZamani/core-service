@@ -24,7 +24,7 @@ public interface CountryDevisionConverter {
 
     CountryDevision fromSelectToModel(SelectResponse select);
 
-    @Mapping(target = "countryType",ignore = true)
+    @Mapping(target = "countryType", ignore = true)
     CountryDevision fromDtotoModel(CountryDevisionDto dto);
 
     CountryDevisionDto fromModeltoDto(CountryDevision countryDevision);
@@ -37,11 +37,15 @@ public interface CountryDevisionConverter {
             dto.setSelectHub(new SelectResponse(countryDevision.getHubId(), ""));
         if (countryDevision.getResponsiblePersonelId() != null)
             dto.setSelectResponsiblePersonel(new SelectResponse(countryDevision.getResponsiblePersonelId(), ""));
-        if(countryDevision.getCountryType()!=null)
-        {
+        if (countryDevision.getCountryType() != null) {
             CountryType byValue = CountryType.findByValue(countryDevision.getCountryType().getValue());
-            dto.setCountryType(new SelectResponse(byValue.getValue(),byValue.getFa()));
+            dto.setCountryType(new SelectResponse(byValue.getValue(), byValue.getFa()));
         }
+
+        dto.setOstanCode(countryDevision.getOstanCode());
+        dto.setShahrCode(countryDevision.getShahrCode());
+        dto.setShahrestanCode(countryDevision.getShahrestanCode());
+
 
     }
 
@@ -53,7 +57,7 @@ public interface CountryDevisionConverter {
         if (dto.getSelectResponsiblePersonel() != null)
             countryDevision.setResponsiblePersonelId(dto.getSelectResponsiblePersonel().getId());
 
-        if(dto.getCountryType()!=null){
+        if (dto.getCountryType() != null) {
             CountryType byValue = CountryType.findByValue(dto.getCountryType().getId());
             countryDevision.setCountryType(byValue);
         }
