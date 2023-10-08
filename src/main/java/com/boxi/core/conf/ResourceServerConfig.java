@@ -21,7 +21,7 @@ private final JwtAuthConverter jwtAuthConverter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**","/exchange-api/**").permitAll()
+                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**","/exchange-api/**","/exchange-api/route/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authorizeHttpRequests(authorize -> authorize

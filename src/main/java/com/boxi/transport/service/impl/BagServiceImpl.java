@@ -224,6 +224,8 @@ public class BagServiceImpl implements BagService {
     public BagDto edit(BagDto dto) {
         Bag bag = findById(dto.getId());
         bagConverter.updateFromDto(dto, bag);
+        if(dto.getSelecttrip()==null)
+            bag.setTripId(null);
         return saveData(bag);
     }
 
