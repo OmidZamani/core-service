@@ -6,10 +6,12 @@ import com.boxi.PriceList.entity.ServiceDelivery;
 import com.boxi.PriceList.entity.ServiceDeliveryCustomers;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.payload.converter.DeliveryDiscountConverter;
-
 import com.boxi.PriceList.payload.converter.ServiceDeliveryConverter;
 import com.boxi.PriceList.payload.converter.ServiceDeliveryCustomersConverter;
-import com.boxi.PriceList.payload.dto.*;
+import com.boxi.PriceList.payload.dto.DeliveryDiscountDto;
+import com.boxi.PriceList.payload.dto.ServiceDeliveryCustomersDto;
+import com.boxi.PriceList.payload.dto.ServiceDeliveryDto;
+import com.boxi.PriceList.payload.dto.ServiceDeliveryExcelDto;
 import com.boxi.PriceList.payload.request.DiscountRequest;
 import com.boxi.PriceList.payload.request.FilterServiceDelivery;
 import com.boxi.PriceList.repo.DeliveryDiscountRepository;
@@ -52,6 +54,7 @@ public class ServiceDeliveryServiceImpl implements ServiceDeliveryService {
     private final DeliveryDiscountRepository deliveryDiscountRepository;
     private final DeliveryDiscountConverter deliveryDiscountConverter;
     private final ServiceRepository service;
+
     public ServiceDeliveryServiceImpl(ServiceDeliveryRepository serviceDeliveryRepository,
                                       ServiceDeliveryConverter serviceDeliveryConverter,
                                       ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository,
@@ -176,6 +179,7 @@ public class ServiceDeliveryServiceImpl implements ServiceDeliveryService {
 
             if (filter.getService() != null)
                 predicates.add(criteriaBuilder.equal(root.get("service"), filter.getService().getId()));
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         }, pageable);
