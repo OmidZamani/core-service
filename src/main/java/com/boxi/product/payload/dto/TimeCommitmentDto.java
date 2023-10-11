@@ -18,6 +18,10 @@ public class TimeCommitmentDto extends JsonBase {
     private String description;
     private Boolean isActive;
     private Boolean isDeleted;
+    private String pickupFrom;
+    private String pickupTo;
+    private String deliveryFrom;
+    private String deliveryTo;
 }
 
 
