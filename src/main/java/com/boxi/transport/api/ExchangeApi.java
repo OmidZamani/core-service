@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/exchange-api/route")
+@RequestMapping("/core-api/externalRoute")
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -36,5 +36,10 @@ public class ExchangeApi {
     @GetMapping("/connection/{id}")
     public ConnectionDto findByid(@PathVariable Long id) {
         return connectionService.findByIdDto(id);
+    }
+
+    @GetMapping("/route/{id}")
+    public RouteDto getRouteByID(@PathVariable Long id){
+        return _service.get(id);
     }
 }
