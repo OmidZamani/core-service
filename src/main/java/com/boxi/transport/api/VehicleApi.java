@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -216,9 +217,10 @@ public class VehicleApi {
     }
 
     @GetMapping("/external/{driverId}")
-    public VehicleDto findByDriverId(@PathVariable Long driverId){
+    public VehicleDto findByDriverId(@RequestHeader Map<String, String> headers, @PathVariable Long driverId){
+        headers.forEach((key, value) -> {
+            log.info(String.format("Header '%s' = %s", key, value));
+        });
         return _service.findByDriverId(driverId);
     }
-
-
 }
