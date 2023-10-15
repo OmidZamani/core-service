@@ -314,7 +314,7 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
             predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("name"), "%" + filter + "%")));
 
             List<Long> ids = new ArrayList<>();
-            ids.add(0L);
+//            ids.add(0L);
             ids.add(1L);
             predicates.add(criteriaBuilder.and(root.get("countryType").in(ids)));
 
