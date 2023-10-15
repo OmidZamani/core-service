@@ -1,7 +1,7 @@
 package com.boxi.storage.api;
 
-import com.boxi.core.request.SimpleWrapper;
-import com.boxi.core.response.Response;
+
+import com.boxi.storage.dto.FileMeta;
 import com.boxi.storage.entity.Document;
 import com.boxi.storage.service.DocumentService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 @RestController
@@ -25,18 +27,15 @@ public class DocumentApi {
     @Autowired
     DocumentService documentService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<SimpleWrapper> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("folder") String folder,@RequestParam("fileName") String fileName) {
-        String message = "";
-        try {
-            String fName = fileName != null ? fileName : file.getOriginalFilename();
-            if(file==null)
-            return ResponseEntity.status(HttpStatus.OK).body((documentService.setContent(file.getBytes(), file.getContentType(), folder, fName)));
-            else  return ResponseEntity.badRequest().body(new SimpleWrapper().setIn("file is null"));
-        } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
-            return ResponseEntity.badRequest().body(new SimpleWrapper().setIn(message));
-        }
+
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
+                                      @RequestParam(value = "folderName", required = true) String folderName,
+                                      HttpServletResponse response) {
+        List<FileMeta> metas=documentService.setContents(request,folderName);
+
+        return new ResponseEntity(metas, HttpStatus.OK);
 
     }
 

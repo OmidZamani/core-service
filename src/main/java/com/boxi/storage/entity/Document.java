@@ -22,6 +22,10 @@ public class Document extends BaseEntity {
 
     private String mimeType;
 
+    private String fileSize;
+
+    private String extension;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="FK_FOLDER_ID", referencedColumnName="PK_FOLDER_ID", nullable=true)
     private Folder folder; //TYPES AS FOLDERS
