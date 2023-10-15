@@ -32,7 +32,9 @@
                 <activatedProperties>prod</activatedProperties>
             </properties>
         </profile>
-        <!-- use command  like: mvn install -P prod -->
+
+<!-- use command  like: mvn install -P prod -->
+
 
     </profiles>
 
