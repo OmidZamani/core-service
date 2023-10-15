@@ -69,6 +69,17 @@ public class CountryDevision extends BaseEntity implements java.io.Serializable 
    @JoinColumn(name="FK_PARENT_ID", referencedColumnName="PK_COUNTRYDEVISION_ID", nullable=false)
    private CountryDevision parent;
 
+   @Basic(optional=true)
+   @Column(name="SHAHRCODE", insertable=true, updatable=true, length=254)
+   private String shahrCode;
+
+   @Basic(optional=true)
+   @Column(name="SHAHRESTANCODE", insertable=true, updatable=true, length=254)
+   private String shahrestanCode;
+
+   @Basic(optional=true)
+   @Column(name="OSTANCODE", insertable=true, updatable=true, length=254)
+   private String ostanCode;
 
    public String selectToString() {
       return (this.getName()!=null ? this.getName():"" )+ (Constants.separator) +(this.getCode()!=null ?this.getCode():"");

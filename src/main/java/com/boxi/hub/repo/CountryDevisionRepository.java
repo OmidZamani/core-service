@@ -19,8 +19,7 @@ import java.util.List;
 public interface CountryDevisionRepository  extends JpaRepository<CountryDevision, Long>, JpaSpecificationExecutor<CountryDevision> {
     CountryDevision findTopByName(String name);
     CountryDevision findTopByNameAndParent(String name,CountryDevision parent);
-
-    @Query(value = "SELECT TC.NAME as name,TC.TYPE as countryType,TC.PK_COUNTRYDEVISION_ID as id  \n" +
+    @Query(value = "SELECT TC.NAME as name,TC.TYPE as countryType,TC.PK_COUNTRYDEVISION_ID as id , Tc.shahrCode as shahrCode ,TC.shahrestanCode as shahrestanCode , TC.ostanCode as OstanCode  \n" +
             "FROM TBL_COUNTRYDEVISION tc\n" +
             "START WITH TC.PK_COUNTRYDEVISION_ID = :Id\n" +
             "Connect By PK_COUNTRYDEVISION_ID IN (PRIOR TC.FK_PARENT_ID)" ,nativeQuery = true)

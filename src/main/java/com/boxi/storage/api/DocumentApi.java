@@ -40,7 +40,7 @@ public class DocumentApi {
     }
 
     @PostMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(String fileId) throws Exception
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filedId")  String fileId) throws Exception
     {
         try
         {

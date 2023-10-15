@@ -22,6 +22,10 @@ public class CountryDevisionDto {
     private List<CountryDevision> childs;
     private CountryDevisionDto parent;
     private List<LocationDto> polygone;
+
+    private String shahrCode;
+    private String shahrestanCode;
+    private String ostanCode;
 }
 
 

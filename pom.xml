@@ -32,7 +32,9 @@
                 <activatedProperties>prod</activatedProperties>
             </properties>
         </profile>
+
 <!-- use command  like: mvn install -P prod -->
+
 
     </profiles>
 
@@ -76,7 +78,7 @@
             <optional>true</optional>
         </dependency>
 
-       <!-- Actuator for API Health Check -->
+        <!-- Actuator for API Health Check -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -101,15 +103,15 @@
         </dependency>
 
         <!-- Auto Reload Tool -->
-<!--
-!!!!! bug in drools please dont use with drools , detected by Ali moj
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
--->
+        <!--
+        !!!!! bug in drools please dont use with drools , detected by Ali moj
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                    <optional>true</optional>
+                </dependency>
+        -->
 
         <!-- h2 Database -->
         <dependency>
@@ -341,8 +343,8 @@
                         </auth>
                     </from>
                     <to>
-                      <!--  <image>core-service:local</image>-->
-                       <image>registry.datsa.ir:5000/boxi-hub/boxi-core-service:latest</image>
+                        <!--  <image>core-service:local</image>-->
+                        <image>registry.datsa.ir:5000/boxi-hub/boxi-core-service:latest</image>
                         <auth>
                             <username>ali</username>
                             <password>qaz123WSX</password>
@@ -350,7 +352,7 @@
                     </to>
                     <container>
                         <jvmFlags>
-                            <jvmFlag>-Xms2024m</jvmFlag>             
+                            <jvmFlag>-Xms2024m</jvmFlag>
                             <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
                         </jvmFlags>
 
@@ -362,6 +364,12 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
     <repositories>
         <repository>

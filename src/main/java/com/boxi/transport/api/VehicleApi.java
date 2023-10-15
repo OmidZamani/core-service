@@ -223,6 +223,4 @@ public class VehicleApi {
         });
         return _service.findByDriverId(driverId);
     }
-
-
 }

@@ -39,6 +39,11 @@ public class PudoStationApi {
     public Response findById(@PathVariable Long id) {
         return Response.ok().setPayload(pudoStationService.findById(id));
     }
+
+    @GetMapping("/client/{id}")
+    public PudoStationDto clientFindById(@PathVariable Long id) {
+        return pudoStationService.findById(id);
+    }
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                            @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,

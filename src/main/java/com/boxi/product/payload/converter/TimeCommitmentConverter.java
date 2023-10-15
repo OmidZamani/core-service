@@ -8,9 +8,12 @@ import com.boxi.core.response.SelectResponse;
 import com.boxi.product.entity.TimeCommitment;
 import com.boxi.product.payload.dto.TimeCommitmentDto;
 import com.boxi.product.repo.TimeCommitmentRepository;
+import com.boxi.utils.DateUtil;
 import com.boxi.utils.SelectUtil;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.Timestamp;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface TimeCommitmentConverter {
@@ -21,6 +24,10 @@ public interface TimeCommitmentConverter {
     @Mapping(source = "dto.selecttedtimeUnit.text", target = "timeUnit")
     @Mapping(source = "dto.isActive", target = "isActive")
     @Mapping(source = "dto.description", target = "description")
+    @Mapping(ignore = true, target = "pickupFrom")
+    @Mapping(ignore = true, target = "pickupTo")
+    @Mapping(ignore = true, target = "deliveryFrom")
+    @Mapping(ignore = true, target = "deliveryTo")
     TimeCommitment fromDtoToModel(TimeCommitmentDto dto);
 
     @Mapping(source = "dto.id", target = "id")
@@ -30,7 +37,11 @@ public interface TimeCommitmentConverter {
     @Mapping(source = "dto.selecttedtimeUnit.text", target = "timeUnit")
     @Mapping(source = "dto.isActive", target = "isActive")
     @Mapping(source = "dto.description", target = "description")
-    void updateFromDto(TimeCommitmentDto dto,@MappingTarget TimeCommitment timeCommitment);
+    @Mapping(ignore = true, target = "pickupFrom")
+    @Mapping(ignore = true, target = "pickupTo")
+    @Mapping(ignore = true, target = "deliveryFrom")
+    @Mapping(ignore = true, target = "deliveryTo")
+    void updateFromDto(TimeCommitmentDto dto, @MappingTarget TimeCommitment timeCommitment);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
@@ -43,19 +54,52 @@ public interface TimeCommitmentConverter {
     TimeCommitmentDto fromModelToDto(TimeCommitment timeCommitment);
 
     TimeCommitment selectToTimeCommitment(SelectResponse select);
+
     SelectResponse TimeCommitmentToSelect(TimeCommitment h);
 
     @AfterMapping
-    default void validate(TimeCommitment timeCommitment,@MappingTarget TimeCommitmentDto dto) {
-        if (timeCommitment.getTimeUnit()!=null){
-            dto.setSelecttedtimeUnit( new SelectResponse(timeCommitment.getTimeUnit().getValue(), timeCommitment.getTimeUnit().getType()));
+    default void validate(TimeCommitment timeCommitment, @MappingTarget TimeCommitmentDto dto) {
+        if (timeCommitment.getTimeUnit() != null)
+            dto.setSelecttedtimeUnit(new SelectResponse(timeCommitment.getTimeUnit().getValue(), timeCommitment.getTimeUnit().getType()));
 
-        }
+        if (timeCommitment.getPickupFrom() != null)
+            dto.setPickupFrom(timeCommitment.getPickupFrom().toString().substring(11, 16));
+
+        if (timeCommitment.getPickupTo() != null)
+            dto.setPickupTo(timeCommitment.getPickupTo().toString().substring(11, 16));
+
+        if (timeCommitment.getDeliveryFrom() != null)
+            dto.setDeliveryFrom(timeCommitment.getDeliveryFrom().toString().substring(11, 16));
+
+        if (timeCommitment.getDeliveryTo() != null)
+            dto.setDeliveryTo(timeCommitment.getDeliveryTo().toString().substring(11, 16));
+
     }
 
     @AfterMapping
-    default void after(TimeCommitmentDto timeCommitmentDto) {
-        
+    default void after(TimeCommitmentDto dto, @MappingTarget TimeCommitment timeCommitment) {
+        if (dto.getPickupFrom() != null) {
+            String[] split = dto.getPickupFrom().split(":");
+            Timestamp timestamp = DateUtil.convertJalaliDayTimeToTimeStampWithTime(DateUtil.convertDateToJalaliDateDto(DateUtil.nowTimeStamp()), Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            timeCommitment.setPickupFrom(timestamp);
+        }
+        if (dto.getPickupTo() != null) {
+            String[] split = dto.getPickupTo().split(":");
+            Timestamp timestamp = DateUtil.convertJalaliDayTimeToTimeStampWithTime(DateUtil.convertDateToJalaliDateDto(DateUtil.nowTimeStamp()), Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            timeCommitment.setPickupTo(timestamp);
+        }
+        if (dto.getDeliveryFrom() != null) {
+            String[] split = dto.getDeliveryFrom().split(":");
+            Timestamp timestamp = DateUtil.convertJalaliDayTimeToTimeStampWithTime(DateUtil.convertDateToJalaliDateDto(DateUtil.nowTimeStamp()), Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            timeCommitment.setDeliveryFrom(timestamp);
+        }
+        if (dto.getDeliveryTo() != null) {
+            String[] split = dto.getDeliveryTo().split(":");
+            Timestamp timestamp = DateUtil.convertJalaliDayTimeToTimeStampWithTime(DateUtil.convertDateToJalaliDateDto(DateUtil.nowTimeStamp()), Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            timeCommitment.setDeliveryTo(timestamp);
+        }
+
+
     }
 
 
