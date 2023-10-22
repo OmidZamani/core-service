@@ -34,11 +34,11 @@ public class DocumentApi {
 
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
                                       @RequestBody MultiValueMap<String, String> formData,
-                                      @RequestParam(value = "folderName", required = true) String folderName,
                                       HttpServletResponse response) {
      // or   Map<String, String[]> parameterMap = request.getParameterMap();
 
         formData.forEach((key, value) -> System.out.println(key + " " + value));
+        String folderName="---";
 
         List<FileMeta> metas=documentService.setContents(request,folderName);
 
