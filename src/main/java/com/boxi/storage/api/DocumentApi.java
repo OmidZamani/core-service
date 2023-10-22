@@ -11,15 +11,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 
-@RestController
+@Controller
 @RequestMapping("/core-api/storage")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
@@ -30,34 +31,37 @@ public class DocumentApi {
     DocumentService documentService;
 
 
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
-    public @ResponseBody
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
-                                          @RequestBody MultiValueMap<String, String> formData,
-                                          HttpServletResponse response) {
-        // or   Map<String, String[]> parameterMap = request.getParameterMap();
+                                      HttpServletResponse response) {
+        Map<String, String[]> formData = request.getParameterMap();
 
-        formData.forEach((key, value) -> System.out.println(key + " " + value));
-        String folderName = "---";
-        if (request.getParameter("folderName") != null)
-            folderName = request.getParameter("folderName");
+         formData.forEach((key, value) -> System.out.println(key + " " + value));
+        String folderName="not_defined";
+        if(request.getParameter("folderName")!=null)
+            folderName=request.getParameter("folderName");
 
-        log.warn(">>>>>>>>>>>>" + folderName);
-        List<FileMeta> metas = documentService.setContents(request, folderName);
+         log.warn(">>>>>>>>>>>>"+folderName);
+        List<FileMeta> metas=documentService.setContents(request,folderName);
 
-        return new ResponseEntity(metas, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(metas);
 
     }
 
     @PostMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filedId") String fileId) throws Exception {
-        try {
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filedId")  String fileId) throws Exception
+    {
+        try
+        {
             Document document = documentService.getFile(fileId);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(document.getMimeType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getFileName() + "\"")
                     .body(new ByteArrayResource(document.getData()));
-        } catch (Exception e) {
+        }
+        catch(Exception e)
+        {
             throw new Exception("Error downloading file");
         }
     }
