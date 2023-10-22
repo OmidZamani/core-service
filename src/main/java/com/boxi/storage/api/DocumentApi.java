@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -29,36 +30,34 @@ public class DocumentApi {
     DocumentService documentService;
 
 
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public @ResponseBody
-
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
-                                      @RequestBody MultiValueMap<String, String> formData,
-                                      HttpServletResponse response) {
-     // or   Map<String, String[]> parameterMap = request.getParameterMap();
+                                          @RequestBody MultiValueMap<String, String> formData,
+                                          HttpServletResponse response) {
+        // or   Map<String, String[]> parameterMap = request.getParameterMap();
 
         formData.forEach((key, value) -> System.out.println(key + " " + value));
-        String folderName="---";
+        String folderName = "---";
+        if (request.getParameter("folderName") != null)
+            folderName = request.getParameter("folderName");
 
-        List<FileMeta> metas=documentService.setContents(request,folderName);
+        log.warn(">>>>>>>>>>>>" + folderName);
+        List<FileMeta> metas = documentService.setContents(request, folderName);
 
         return new ResponseEntity(metas, HttpStatus.OK);
 
     }
 
     @PostMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filedId")  String fileId) throws Exception
-    {
-        try
-        {
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filedId") String fileId) throws Exception {
+        try {
             Document document = documentService.getFile(fileId);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(document.getMimeType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getFileName() + "\"")
                     .body(new ByteArrayResource(document.getData()));
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             throw new Exception("Error downloading file");
         }
     }
