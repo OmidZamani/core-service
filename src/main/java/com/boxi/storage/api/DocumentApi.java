@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +29,14 @@ public class DocumentApi {
     DocumentService documentService;
 
 
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public @ResponseBody
+
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
+                                      @RequestBody MultiValueMap<String, String> formData,
                                       @RequestParam(value = "folderName", required = true) String folderName,
                                       HttpServletResponse response) {
+     // or   Map<String, String[]> parameterMap = request.getParameterMap();
         List<FileMeta> metas=documentService.setContents(request,folderName);
 
         return new ResponseEntity(metas, HttpStatus.OK);
