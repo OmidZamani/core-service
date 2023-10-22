@@ -30,7 +30,7 @@ public class DocumentApi {
     DocumentService documentService;
 
 
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
     public @ResponseBody
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
                                           @RequestBody MultiValueMap<String, String> formData,
