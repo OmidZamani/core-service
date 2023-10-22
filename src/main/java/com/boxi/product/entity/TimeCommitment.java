@@ -80,7 +80,11 @@ public class TimeCommitment
         return (this.getName()) + (Constants.separator) + "(" +
                 (this.getFrom() != null ? this.getFrom().intValue() : "") + (Constants.separator) + " تا " +
                 (this.getTo() != null ? this.getTo().intValue() : "") + (Constants.separator) + " " +
-                (this.getTimeUnit() != null ? this.getTimeUnit() : "") + (Constants.separator) + ")"
+                (this.getTimeUnit() != null ? this.getTimeUnit() : "") + (Constants.separator) + ")" + " زمان توزیع از " +
+                (this.getDeliveryFrom() != null ? this.getDeliveryFrom().toString().substring(11, 16) : "") + " تا " +
+                (this.getDeliveryTo() != null ? this.getDeliveryTo().toString().substring(11, 16) : "") + " زمان جمع آوری از  " +
+                (this.getPickupFrom() != null ? this.getPickupFrom().toString().substring(11, 16) : "") + " تا " +
+                (this.getPickupTo() != null ? this.getPickupTo().toString().substring(11, 16) : "")
                 ;
     }
 }
