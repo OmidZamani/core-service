@@ -37,6 +37,9 @@ public class DocumentApi {
                                       @RequestParam(value = "folderName", required = true) String folderName,
                                       HttpServletResponse response) {
      // or   Map<String, String[]> parameterMap = request.getParameterMap();
+
+        formData.forEach((key, value) -> System.out.println(key + " " + value));
+
         List<FileMeta> metas=documentService.setContents(request,folderName);
 
         return new ResponseEntity(metas, HttpStatus.OK);
