@@ -11,14 +11,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 
-@RestController
+@Controller
 @RequestMapping("/core-api/storage")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
@@ -29,20 +31,21 @@ public class DocumentApi {
     DocumentService documentService;
 
 
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public @ResponseBody
-
+    @RequestMapping(value = "/uploads", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public
     ResponseEntity<List<FileMeta>> upload(MultipartHttpServletRequest request,
-                                      @RequestBody MultiValueMap<String, String> formData,
-                                      @RequestParam(value = "folderName", required = true) String folderName,
                                       HttpServletResponse response) {
-     // or   Map<String, String[]> parameterMap = request.getParameterMap();
+        Map<String, String[]> formData = request.getParameterMap();
 
-        formData.forEach((key, value) -> System.out.println(key + " " + value));
+         formData.forEach((key, value) -> System.out.println(key + " " + value));
+        String folderName="not_defined";
+        if(request.getParameter("folderName")!=null)
+            folderName=request.getParameter("folderName");
 
+         log.warn(">>>>>>>>>>>>"+folderName);
         List<FileMeta> metas=documentService.setContents(request,folderName);
 
-        return new ResponseEntity(metas, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(metas);
 
     }
 

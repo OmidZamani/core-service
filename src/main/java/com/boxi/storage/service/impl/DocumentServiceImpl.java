@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Transactional
 public class DocumentServiceImpl implements DocumentService {
 
 
@@ -38,12 +39,12 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
 
-    @Transactional
+
     public FileMeta saveContent(byte[] bytes, String contentType, String folderName, String fileName,String extension,String fileSize) {
             Document document = new Document();
           //  Blob content = new SerialBlob(file.getBytes());
             document.setData(bytes);
-            Folder folder = folderRepo.findByFolderName(folderName);
+            Folder folder = createFolderIfNotExist(folderName);
             document.setFolder(folder);//Each folder represent diff action for example pickup,delivery
             document.setMimeType(contentType);
             document.setFileName(fileName);
@@ -102,12 +103,11 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElseThrow( ()-> { throw BusinessException.valueException(EntityType.EXCEPTION, "exception.not.found");});
     }
 
-    private Folder createFolderIfNotExist(String folderName){
+    public Folder createFolderIfNotExist(String folderName){
       Folder folder=folderRepo.findByFolderName(folderName);
       if(folder==null){
           Folder newFolder=new Folder();
           newFolder.setFolderName(folderName);
-          folderRepo.save(newFolder);
           return folderRepo.save(newFolder);
       }
       return folder;
