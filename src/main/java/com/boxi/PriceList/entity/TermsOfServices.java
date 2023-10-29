@@ -112,7 +112,11 @@ public class TermsOfServices
    @Basic(optional=false)
    @Column(name="TIMECOMMITMENTTIMEUNIT", nullable=false, insertable=true, updatable=true)
    private Long timeCommitmentTimeUnit;
-   
+
+   @Basic(optional=false)
+   @Column(name="TIMECOMMITMENTID",  insertable=true, updatable=true)
+   private Long timeCommitmentId;
+
    @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name="FK_TOCITY_ID", referencedColumnName="PK_COUNTRYDEVISION_ID", nullable=true)
    private CountryDevision toCity;

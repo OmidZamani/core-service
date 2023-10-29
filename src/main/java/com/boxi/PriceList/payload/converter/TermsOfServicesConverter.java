@@ -77,6 +77,8 @@ public interface TermsOfServicesConverter {
 
         if (termsOfServices.getService() != null)
             dto.setSelectService(new SelectResponse(termsOfServices.getService().getId(), termsOfServices.getService().getName()));
+        if (termsOfServices.getTimeCommitmentId() != null)
+            dto.setTimeCommitmentId(termsOfServices.getTimeCommitmentId());
     }
 
 }

@@ -219,6 +219,7 @@ public class ServiceServiceImpl implements ServiceService {
         termsOfServices.setTimeCommitmentFrom(productAttributes.getTimeCommitment().getFrom());
         termsOfServices.setTimeCommitmentTo(productAttributes.getTimeCommitment().getTo());
         termsOfServices.setTimeCommitmentTimeUnit(productAttributes.getTimeCommitment().getTimeUnit().getValue());
+        termsOfServices.setTimeCommitmentId(productAttributes.getTimeCommitment().getId());
 
         termsOfServices.setMinimumOrderQuantity(services.getMinimumOrderQuantity());
 

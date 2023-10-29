@@ -16,7 +16,6 @@ import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.product.Enum.TimeUnit;
 import com.boxi.product.entity.Product;
-import com.boxi.product.entity.TimeCommitment;
 import com.boxi.product.entity.UsingProduct;
 import com.boxi.product.repo.UsingProductRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -119,11 +118,8 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
-
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getToDimension()), root.get("fromDim"), root.get("toDimension")));
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromDim()), root.get("fromDim"), root.get("toDimension")));
-
-
             }
 
             if (filter.getFromValue() != null && filter.getToValue() != null) {
@@ -181,30 +177,30 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
         Pageable pageables = PageRequest.of(0, 100);
-        Page<TermsOfServicesDto> filter1 = filter(termsOfServicesDto, pageables);
-        if (filter1.getTotalElements() == 0) {
+        Page<TermsOfServicesDto> suggest = filter(termsOfServicesDto, pageables);
+        if (suggest.getTotalElements() == 0) {
             if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
                 termsOfServicesDto.setSelectFromCity(null);
                 termsOfServicesDto.setSelectToCity(null);
                 termsOfServicesDto.setFromRegionId(filter.getFromRegionId());
                 termsOfServicesDto.setToRegionId(filter.getToRegionId());
             }
-            filter1 = filter(termsOfServicesDto, pageables);
+            suggest = filter(termsOfServicesDto, pageables);
         }
 
-        if (filter1.getTotalElements() == 0) {
+        if (suggest.getTotalElements() == 0) {
             termsOfServicesDto.setSelectFromCity(null);
             termsOfServicesDto.setSelectToCity(null);
             CountryDevision countryDevisionfrom = countryDevisionRepository.findById(filter.getFromCityId()).orElseThrow();
             CountryDevision countryDevisionTo = countryDevisionRepository.findById(filter.getToCityId()).orElseThrow();
             termsOfServicesDto.setFromRegionId(countryDevisionfrom.getParent().getId());
             termsOfServicesDto.setToRegionId(countryDevisionTo.getParent().getId());
-            filter1 = filter(termsOfServicesDto, pageables);
+            suggest = filter(termsOfServicesDto, pageables);
 
         }
         List<SuggestionServiceDto> suggestionServiceDtos = new ArrayList<>();
 
-        for (TermsOfServicesDto ofServicesDto : filter1) {
+        for (TermsOfServicesDto ofServicesDto : suggest) {
             SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
             suggestionServiceDto.setName(ofServicesDto.getServiceName());
             suggestionServiceDto.setId(ofServicesDto.getSelectService().getId());

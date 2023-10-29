@@ -39,4 +39,5 @@ public class TermsOfServicesDto {
     private SelectResponse selectParentService;
     private Long fromRegionId;
     private Long toRegionId;
+    private Long timeCommitmentId;
 }
