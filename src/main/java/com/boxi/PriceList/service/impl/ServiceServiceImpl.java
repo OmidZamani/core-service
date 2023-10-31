@@ -570,10 +570,12 @@ public class ServiceServiceImpl implements ServiceService {
     public ServiceDto findById(Long id) {
 
         if (id == 823 || id == 825) {
-
-
             return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
-        } else
+        }
+        else if(id == 827){
+            return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
+        }
+        else
             return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
     }
 
