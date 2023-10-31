@@ -41,7 +41,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -570,7 +569,12 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public ServiceDto findById(Long id) {
 
-        return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
+        if (id == 823 || id == 825) {
+
+
+            return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
+        } else
+            return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
     }
 
     @Override
