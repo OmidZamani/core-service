@@ -37,9 +37,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -574,6 +576,13 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public List<ServiceNameWithCodeDto> serviceNameWithCode() {
         return serviceRepository.findByIsDeletedFalseAndIsActiveIsTrue();
+    }
+
+    @Override
+    public BigDecimal findByDefaultServicePrice(Long id) {
+
+        PriceListDetail listDetail = priceListDetailRepository.findById(id).orElseThrow();
+        return listDetail.getPrice();
     }
 
 }

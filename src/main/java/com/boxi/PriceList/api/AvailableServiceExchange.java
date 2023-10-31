@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -48,5 +49,10 @@ public class AvailableServiceExchange {
     @GetMapping("/exchange/findById/{id}")
     public ServiceDto serviceFindById(@PathVariable Long id) {
         return serviceService.findById(id);
+    }
+
+    @GetMapping("/findByDefaultServicePrice/{id}")
+    public BigDecimal findByDefaultServicePrice(@PathVariable Long id){
+        return serviceService.findByDefaultServicePrice(id);
     }
 }

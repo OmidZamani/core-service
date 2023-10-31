@@ -37,7 +37,7 @@ public class TypesOfPackageApi {
     }
 
     @GetMapping("/select")
-    public Response edit(@RequestParam(name = "filter")String filter) {
+    public Response edit(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(typesOfPackageService.select(filter));
     }
 
@@ -66,11 +66,17 @@ public class TypesOfPackageApi {
         return typesOfPackageService.filter(request, pageable);
 
     }
+
     @PostMapping("/external/filterList")
     public List<TypesOfPackageDto> externalFilterList() {
 
         return typesOfPackageService.externalFilterList();
 
+    }
+
+    @GetMapping("/external/findById/{id}")
+    public TypesOfPackageDto externalFindById(@PathVariable Long id) {
+        return typesOfPackageService.findById(id);
     }
 
 }
