@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequestMapping("/core-api/PudoStation")
+@RequestMapping("/core-api/pudoStation")
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PudoStationApi {
