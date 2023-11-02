@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ConsignmentType {
 
-    letter ("نامه", 0), jouf ("جوف", 1),newspapers ("مطبوعات", 2),bag ("کیسه", 3),postcard ("کارت پستال", 4);
+    letter ("نامه", 0), jouf ("جوف", 1),newspapers ("مطبوعات", 2),bag ("کیسه", 3),postcard ("کارت پستال", 4),PARCEL ("بسته", 4);
     private final long value;
     private final String Type;
 

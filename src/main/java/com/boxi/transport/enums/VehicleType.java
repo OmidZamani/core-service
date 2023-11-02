@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public enum VehicleType {
 
-    Motorcycles("موتور سیکلت",0),vans("وانت",1),Trucks("کامیونت",2);
+    Motorcycles("موتور سیکلت",0),vans("وانت",1),Trucks("کامیونت",2),SEDAN("سواری",3);
 
     private final long value;
     private final String fa;
