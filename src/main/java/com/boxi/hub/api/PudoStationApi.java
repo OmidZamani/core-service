@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RequestMapping("/core-api/pudoStation")
 @RestController
@@ -44,6 +46,7 @@ public class PudoStationApi {
     public PudoStationDto clientFindById(@PathVariable Long id) {
         return pudoStationService.findById(id);
     }
+
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                            @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -53,8 +56,13 @@ public class PudoStationApi {
         return Response.ok().setPayload(pudoStationService.filter(request, pageable));
     }
 
+    @GetMapping("/listOfStation")
+    public List<PudoStationDto> listOfStation() {
+        return pudoStationService.listOfStation();
+    }
+
     @GetMapping("/select")
-    public Response select(@RequestParam(name = "filter")String filter){
+    public Response select(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(pudoStationService.select(filter));
     }
 }

@@ -130,6 +130,12 @@ public class PudoStationServiceImpl implements PudoStationService {
         }).stream().map(this::toSelect).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PudoStationDto> listOfStation() {
+
+        return pudoStationRepository.findAll().stream().map(pudoStationConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
     private SelectResponse toSelect(PudoStation pudoStation) {
         return new SelectResponse(pudoStation.getId(), pudoStation.getName());
     }

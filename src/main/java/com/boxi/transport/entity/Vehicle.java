@@ -132,6 +132,10 @@ public class Vehicle extends BaseEntity implements java.io.Serializable {
     @Column(name="TYPE", insertable=true, updatable=true, table="TBL_VEHICLE")
     private VehicleType type;
 
+    @Basic(optional=true)
+    @Column(name="FIXEDDRIVERID", insertable=true, updatable=true)
+    private Long fixedDriverId;
+
     public String selectToString() {
         return "\u202B"+ this.vehicleNumber0+"-" +this.vehicleNumber1+ "-" + this.vehicleNumber2+"-" + this.vehicleNumber3;
     }
