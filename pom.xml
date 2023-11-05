@@ -32,6 +32,12 @@
                 <activatedProperties>prod</activatedProperties>
             </properties>
         </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <activatedProperties>test</activatedProperties>
+            </properties>
+        </profile>
 
 <!-- use command  like: mvn install -P prod -->
 
