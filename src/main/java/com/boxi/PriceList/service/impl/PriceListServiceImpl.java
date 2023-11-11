@@ -108,11 +108,16 @@ public class PriceListServiceImpl implements PriceListService {
         for (PriceListDetailDto priceListDetailDto : request) {
             List<ProductAttribute> all = productAttributeRepository.findAll((Specification<ProductAttribute>) (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
+                if(priceListDetailDto.getToWeight()!=null)
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getToWeight()), root.get("fromWeight"), root.get("toWeight")));
+                if(priceListDetailDto.getFromWeight()!=null)
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getFromWeight()), root.get("fromWeight"), root.get("toWeight")));
 
 
+                if(priceListDetailDto.getFromValue()!=null)
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getFromValue()), root.get("fromValue"), root.get("toValue")));
+
+                if(priceListDetailDto.getFromValue()!=null)
                 predicates.add(criteriaBuilder.between(criteriaBuilder.literal(priceListDetailDto.getToValue()), root.get("fromValue"), root.get("toValue")));
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
