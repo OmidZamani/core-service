@@ -496,15 +496,19 @@ public class HubServiceImpl implements HubService {
             if (bySubZoneId.getpolygon() != null)
                 zoneHubDto.setPolygon(convertClobToList(bySubZoneId.getpolygon()));
         zoneHubDto.setHubAdmin("-");
-        assert bySubZoneId != null;
-        Hub hub = hubRepository.findById(bySubZoneId.gethub()).orElseThrow();
-        zoneHubDto.setLocLate(hub.getLocLate());
-        zoneHubDto.setLocLong(hub.getLocLong());
-        zoneHubDto.setHubId(hubId);
-        zoneHubDto.setHubCode(hub.getCode());
+        if(bySubZoneId!=null) {
+            Hub hub = hubRepository.findById(bySubZoneId.gethub()).orElseThrow();
+            zoneHubDto.setLocLate(hub.getLocLate());
+            zoneHubDto.setLocLong(hub.getLocLong());
+            zoneHubDto.setHubId(hubId);
+            zoneHubDto.setHubCode(hub.getCode());
+            return zoneHubDto;
+        }
+        else
+            return null;
 
 
-        return zoneHubDto;
+
     }
 
     @Override

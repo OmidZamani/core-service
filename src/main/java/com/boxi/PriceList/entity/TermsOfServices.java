@@ -132,7 +132,11 @@ public class TermsOfServices
    @ManyToOne(fetch=FetchType.LAZY)
    @JoinColumn(name="FK_PARENTSERVICE_ID", referencedColumnName="PK_SERVICE_ID", nullable=true)
    private Services parentService;
-   
+
+   @ManyToOne(fetch=FetchType.LAZY)
+   @JoinColumn(name="FK_PRICELISTDETAIL_ID", referencedColumnName="PK_PRICELISTDETAIL_ID", nullable=true)
+   private PriceListDetail priceListDetail;
+
    public TermsOfServices() {
       // TODO Add your own initialization code here.
    }
