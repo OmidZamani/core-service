@@ -6,6 +6,8 @@ import com.boxi.core.response.SelectResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -64,4 +66,6 @@ public class VehicleDto extends JsonBase {
     private String timeToFinishWork;
     private Long firstDriverId;
     private Long secondDriverId;
+
+    private Long fixedDriverId;
 }
