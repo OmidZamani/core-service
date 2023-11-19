@@ -258,6 +258,8 @@ public class VehicleServiceImpl implements VehicleService {
                 }
         );
         VehicleDto vehicleDto = vehicleConverter.fromModelToDto(vehicle);
+        if (vehicle.getFixedDriverId() != null)
+            vehicleDto.setFixedDriverId(vehicle.getFixedDriverId());
 
         if (vehicle.getWeightCapacity() != null && vehicle.getAllocatedWeight() != null)
             vehicleDto.setAssignableWeight(vehicle.getWeightCapacity() - vehicle.getAllocatedWeight().doubleValue());
