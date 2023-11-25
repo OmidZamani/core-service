@@ -569,13 +569,11 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public ServiceDto findById(Long id) {
 
-        if (id == 823 || id == 825) {
-            return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
-        }
-        else if(id == 827){
-            return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
-        }
-        else
+        if (id == 22) {
+            return serviceConvertor.fromModelToDto(serviceRepository.findById(22L).orElseThrow());
+        } else if (id == 21) {
+            return serviceConvertor.fromModelToDto(serviceRepository.findById(21L).orElseThrow());
+        } else
             return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
     }
 
@@ -587,8 +585,12 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public BigDecimal findByDefaultServicePrice(Long id) {
 
-        PriceListDetail listDetail = priceListDetailRepository.findById(id).orElseThrow();
-        return listDetail.getPrice();
+        if (id == 21)
+            return priceListDetailRepository.findById(5L).orElseThrow().getPrice();
+        if (id == 22)
+            return priceListDetailRepository.findById(6L).orElseThrow().getPrice();
+        else
+            return priceListDetailRepository.findById(id).orElseThrow().getPrice();
     }
 
 }
