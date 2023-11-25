@@ -54,4 +54,6 @@ public class ConsignmentInfoDto {
     private SelectResponse selectContentType;
 
     private String content;
+
+    private SelectResponse consignmentType;
 }

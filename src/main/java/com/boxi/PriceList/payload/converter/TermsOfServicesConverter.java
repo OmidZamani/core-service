@@ -48,6 +48,8 @@ public interface TermsOfServicesConverter {
             termsOfServices.setFromValue(consignmentInfoDto.getDeclarativeValue());
             termsOfServices.setToValue(consignmentInfoDto.getDeclarativeValue());
         }
+        if (consignmentInfoDto.getConsignmentType() != null)
+            termsOfServices.setConsignmentType(consignmentInfoDto.getConsignmentType());
 
 
     }
