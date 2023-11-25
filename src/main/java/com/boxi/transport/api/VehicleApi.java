@@ -5,6 +5,7 @@ import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
 import com.boxi.transport.enums.FleetType;
+import com.boxi.transport.enums.VehicleStatus;
 import com.boxi.transport.payload.dto.*;
 import com.boxi.transport.payload.request.HubFilter;
 import com.boxi.transport.service.VehicleService;
@@ -88,9 +89,10 @@ public class VehicleApi {
     }
 
     @PostMapping("/client/select/{hubId}")
-    public List<CarTagDto> clientSelect(@RequestBody CarTagDto dto,@PathVariable Long hubId) {
+    public List<CarTagDto> clientSelect(@RequestBody CarTagDto dto, @PathVariable Long hubId) {
         return _service.clientSelect(dto, hubId);
     }
+
     // @PreAuthorize("hasPermission('hasAccess','10080304')")
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable Long id) {
@@ -132,7 +134,10 @@ public class VehicleApi {
     @GetMapping("/findById/{id}")
     public Response getfindByIdehicleById(@PathVariable Long id) {
         return Response.ok().setPayload(_service.clientFindById(id));
-    }{}
+    }
+
+    {
+    }
 
     @PostMapping("/updateAssignable")
     public VehicleDto updateAssignable(@RequestBody VehicleDto dto) {
@@ -210,6 +215,7 @@ public class VehicleApi {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return _service.listOfVehicleInHub(request, pageable).stream().collect(Collectors.toList());
     }
+
     @PostMapping("/listOfAdmVehicleInHub")
     public List<AdmVehicleDto> listOfAdmVehicleInHub(@RequestBody AdmVehicleDto dto) {
         return _service.listOfAdmVehicleInHub(dto);
@@ -217,10 +223,15 @@ public class VehicleApi {
     }
 
     @GetMapping("/external/{driverId}")
-    public VehicleDto findByDriverId(@RequestHeader Map<String, String> headers, @PathVariable Long driverId){
+    public VehicleDto findByDriverId(@RequestHeader Map<String, String> headers, @PathVariable Long driverId) {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
         return _service.findByDriverId(driverId);
+    }
+
+    @GetMapping("/vehicleStatus")
+    public Response<Object> vehicleStatus() {
+        return Response.ok().setPayload(VehicleStatus.select());
     }
 }
