@@ -71,6 +71,9 @@ public interface VehicleConverter {
         if (dto.getSelectStatus() != null)
             vehicle.setStatus(VehicleStatus.findByValue(dto.getSelectStatus().getId()));
 
+        if (dto.getFixedDriverId() != null)
+            vehicle.setFixedDriverId(dto.getFixedDriverId());
+
         if (dto.getSelecttype() != null)
             vehicle.setType(VehicleType.findByValue(dto.getSelecttype().getId()));
 
@@ -114,6 +117,9 @@ public interface VehicleConverter {
 
         if (vehicle.getFirstDriverId() != null)
             dto.setFirstDriverId(vehicle.getFirstDriverId());
+
+        if (vehicle.getFixedDriverId() != null)
+            dto.setFixedDriverId(vehicle.getFixedDriverId());
 
     }
 }
