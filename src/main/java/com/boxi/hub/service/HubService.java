@@ -69,6 +69,7 @@ public interface HubService {
     List<ZoneHubDto> listOfAllZone();
 
     ZoneDto createZone(ZoneDto dto);
+    ZoneDto createVehicleZone(ZoneDto dto);
 
     ZoneDto createSubZone(ZoneDto dto);
 

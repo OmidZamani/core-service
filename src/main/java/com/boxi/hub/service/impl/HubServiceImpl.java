@@ -3,6 +3,7 @@ package com.boxi.hub.service.impl;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
+import com.boxi.feign.PudoPlaningClient;
 import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.entity.Hub;
 import com.boxi.hub.entity.HubCategory;
@@ -56,6 +57,7 @@ public class HubServiceImpl implements HubService {
     private final HubConverter hubConverter;
     private final HubExcelConverter hubExcelConverter;
     private final CountryDevisionRepository countryDevisionRepository;
+    private final PudoPlaningClient pudoPlaningClient;
 
 
     @Autowired
@@ -64,8 +66,8 @@ public class HubServiceImpl implements HubService {
                           HubConverter hubConverter,
                           HubExcelConverter hubExcelConverter,
                           HubCategoryConverter hubCategoryConverter,
-                          CountryDevisionRepository countryDevisionRepository
-    ) {
+                          CountryDevisionRepository countryDevisionRepository,
+                          PudoPlaningClient pudoPlaningClient) {
         this.hubCategoryRepository = hubCategoryRepository;
         this.hubRepository = hubRepository;
         this.hubConverter = hubConverter;
@@ -75,6 +77,7 @@ public class HubServiceImpl implements HubService {
 
         this.countryDevisionRepository = countryDevisionRepository;
 
+        this.pudoPlaningClient = pudoPlaningClient;
     }
 
     @Override
@@ -251,6 +254,14 @@ public class HubServiceImpl implements HubService {
         hubRepository.save_hub_polygon(dto.getSelectHub().getId(), countryDev.getId(), dto.getSelectuser().getId(), dto.getPolygon());
         return dto;
 
+    }
+
+    @Override
+    public ZoneDto createVehicleZone(ZoneDto dto) {
+        Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
+        hubRepository.save_hub_polygon(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPolygon());
+        pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
+        return dto;
     }
 
     @Override
@@ -496,17 +507,15 @@ public class HubServiceImpl implements HubService {
             if (bySubZoneId.getpolygon() != null)
                 zoneHubDto.setPolygon(convertClobToList(bySubZoneId.getpolygon()));
         zoneHubDto.setHubAdmin("-");
-        if(bySubZoneId!=null) {
+        if (bySubZoneId != null) {
             Hub hub = hubRepository.findById(bySubZoneId.gethub()).orElseThrow();
             zoneHubDto.setLocLate(hub.getLocLate());
             zoneHubDto.setLocLong(hub.getLocLong());
             zoneHubDto.setHubId(hubId);
             zoneHubDto.setHubCode(hub.getCode());
             return zoneHubDto;
-        }
-        else
+        } else
             return null;
-
 
 
     }

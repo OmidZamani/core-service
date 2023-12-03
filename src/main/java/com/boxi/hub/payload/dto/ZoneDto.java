@@ -13,4 +13,9 @@ public class ZoneDto extends JsonBase {
     private SelectResponse countrydevision;
     private SelectResponse countrytype;
     private String polygon;
+    private List<SelectResponse> consignmentList;
+    private Long pudoExecutationId;
+    private Long pudoVehicleId;
+
+
 }

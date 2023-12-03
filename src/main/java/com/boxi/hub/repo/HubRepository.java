@@ -39,8 +39,6 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
     List<Hub> findAllByCity(CountryDevision countryDevision);
 
 
-
-
     @Query("select h from Hub h where  h.code like ?1")
     List<Hub> findByCodeLike(String Code);
 
@@ -153,6 +151,10 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
     @Modifying
     @Procedure("savepolygon")
     void save_hub_polygon(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, String p_polygon);
+
+    @Modifying
+    @Procedure("savepolygonVehicle")
+    void save_polygonVehicle(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, Long p_vehiclePlanId, Long p_vehicleId, String p_polygon);
 
     @Query(value = "SELECT  g.hub_id as hub,tc.PK_COUNTRYDEVISION_ID as countrydevision, tc.*\n" +
             "  FROM HUB_geo g\n" +

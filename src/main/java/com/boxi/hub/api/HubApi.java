@@ -37,13 +37,15 @@ public class HubApi {
         log.warn("genPinCode");
         return Response.ok().setPayload(UUID.randomUUID().toString());
     }
+
     @GetMapping("/findById/{id}")
     public HubDto findById(@PathVariable Long id) {
         return hubService.findHubById(id);
     }
+
     //    @PreAuthorize("hasPermission('hasAccess','10010101')")
     @PostMapping
-    public Response createHub(@Valid  @RequestBody HubDto request) {
+    public Response createHub(@Valid @RequestBody HubDto request) {
         log.warn(request.toJson());
         HubDto response = hubService.createHub(request);
         return Response.ok().setPayload(response);
@@ -175,6 +177,11 @@ public class HubApi {
         return Response.ok().setPayload(hubService.createSubZone(dto));
     }
 
+    @PostMapping("/zone/createVehiclePolygon")
+    public Response createVehiclePolygon(@RequestBody ZoneDto dto) {
+        return Response.ok().setPayload(hubService.createVehicleZone(dto));
+    }
+
     @PostMapping("/zone/position")
     public Response findByPosition(@RequestBody LocationDto dto) {
         return Response.ok().setPayload(hubService.findByPosition(dto.getLocLate(), dto.getLocLong()));
@@ -182,8 +189,8 @@ public class HubApi {
 
     @GetMapping("/zone/findbycity")
     public Response findByProvince(@RequestParam(name = "city") Long cityId,
-                                    @RequestParam(name = "hubname") String hubName,
-                                    @RequestParam(name = "type") Long type) {
+                                   @RequestParam(name = "hubname") String hubName,
+                                   @RequestParam(name = "type") Long type) {
         return Response.ok().setPayload(hubService.findByCity(cityId, hubName, type));
     }
 
@@ -210,9 +217,10 @@ public class HubApi {
     }
 
     @PostMapping("/enterChange/listOfParentHubList")
-    public List<SelectResponse> listOfParentHubList(@RequestBody List<Long> listOfHub){
+    public List<SelectResponse> listOfParentHubList(@RequestBody List<Long> listOfHub) {
         return hubService.listOfParentHubList(listOfHub);
     }
+
     @PutMapping("/update")
     public Response updateHub(@RequestBody HubDto hubDto) {
         return Response.ok().setPayload(hubService.updateHubZone(hubDto));
@@ -250,7 +258,7 @@ public class HubApi {
 
 
     @GetMapping("/findByCityinHub/{id}")
-    public Response findByCityInHub(@PathVariable Long id ){
+    public Response findByCityInHub(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByCityInHub(id));
     }
 
