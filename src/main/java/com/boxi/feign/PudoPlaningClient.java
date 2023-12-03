@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "core-service", url = "${feign.client.url}/consignment-api/pudoPlanning")
+@FeignClient(name = "consignment-pudo-service", url = "${feign.client.url}/consignment-api/pudoPlanning")
 public interface PudoPlaningClient {
     @PostMapping("/createConsignmentList/{pudoExecutation}/{pudoVehicle}")
      List<SelectResponse> createConsignmentList(@RequestBody List<SelectResponse> consignmentList, @PathVariable Long pudoExecutation, @PathVariable Long pudoVehicle);
