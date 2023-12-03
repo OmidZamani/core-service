@@ -154,7 +154,7 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     @Modifying
     @Procedure("savepolygonVehicle")
-    void save_polygonVehicle(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, Long p_vehiclePlanId, Long p_vehicleId, String p_polygon);
+    void save_polygonVehicle(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, Long p_vehiclePlanId, Long p_vehicleId,  String p_color,String p_polygon);
 
     @Query(value = "SELECT  g.hub_id as hub,tc.PK_COUNTRYDEVISION_ID as countrydevision, tc.*\n" +
             "  FROM HUB_geo g\n" +

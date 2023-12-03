@@ -259,7 +259,8 @@ public class HubServiceImpl implements HubService {
     @Override
     public ZoneDto createVehicleZone(ZoneDto dto) {
         Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
-        hubRepository.save_hub_polygon(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPolygon());
+        if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
+        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon());
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
     }
