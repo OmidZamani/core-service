@@ -260,9 +260,7 @@ public class HubServiceImpl implements HubService {
     public ZoneDto createVehicleZone(ZoneDto dto) {
         Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
         if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
-        Long RETURN_CODE= 1L;
-        String RETURN_MSG= "null";
-        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(),dto.getPolygon());
+        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(),dto.getPolygon(),dto.getPudoExecutationId());
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
     }
@@ -566,6 +564,18 @@ public class HubServiceImpl implements HubService {
     public List<SelectResponse> findByRegionPositionInHubId(Long id) {
 
         return null;
+    }
+
+    @Override
+    public List<ZoneHubDto> findByZoneInVehicle(Long id) {
+
+        List<ZoneVehicleInterfaceDto> zoneVehicleInterfaceDtos = hubRepository.listOfVehicleZone(id);
+        for (ZoneVehicleInterfaceDto zoneVehicleInterfaceDto : zoneVehicleInterfaceDtos) {
+
+        }
+
+        return null;
+
     }
 
     private SelectResponse listOfParentSelectResponse(Hub hub) {

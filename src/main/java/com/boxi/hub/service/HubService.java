@@ -110,4 +110,6 @@ public interface HubService {
     List<SelectResponse> listOfParentHubList(List<Long> listOfHub);
 
     List<SelectResponse> findByRegionPositionInHubId(Long id);
+
+    List<ZoneHubDto> findByZoneInVehicle(Long id);
 }
