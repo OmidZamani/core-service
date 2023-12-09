@@ -68,6 +68,9 @@ public class PudoStation
     @Column(name = "ISDELIVERYPOSSIBLE", insertable = true, updatable = true)
     private Boolean isDeliveryPossible;
 
+//    @ManyToOne(fetch=FetchType.LAZY)
+//    @Column(name = "FK_HUB", insertable = true, updatable = true)
+//    private Hub hub;
     public PudoStation() {
         // TODO Add your own initialization code here.
     }
