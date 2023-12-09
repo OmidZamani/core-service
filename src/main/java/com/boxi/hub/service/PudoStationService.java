@@ -22,6 +22,6 @@ public interface PudoStationService {
 
     List<PudoStationDto> listOfStation();
 
-    List<PudoStationDto> getUnusedPudoStations(List<Long> pudostationIds, Long hubId);
+    List<PudoStationDto> getUnusedPudoStations(List<Long> pudoStationIds, Long hubId);
 
 }
