@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import java.lang.Exception;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -569,12 +570,19 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public ServiceDto findById(Long id) {
 
-        if (id == 22) {
-            return serviceConvertor.fromModelToDto(serviceRepository.findById(22L).orElseThrow());
-        } else if (id == 21) {
-            return serviceConvertor.fromModelToDto(serviceRepository.findById(21L).orElseThrow());
-        } else
-            return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
+        try {
+            if (id == 22) {
+                return serviceConvertor.fromModelToDto(serviceRepository.findById(22L).orElseThrow());
+            } else if (id == 21) {
+                return serviceConvertor.fromModelToDto(serviceRepository.findById(21L).orElseThrow());
+            } else if (id == 823 || id == 825) {
+                return serviceConvertor.fromModelToDto(serviceRepository.findById(229L).orElseThrow());
+            } else
+                return serviceConvertor.fromModelToDto(serviceRepository.findById(id).orElseThrow());
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     @Override
