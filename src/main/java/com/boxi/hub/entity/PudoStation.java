@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,11 +15,10 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "TBL_PUDOSTATION")
-public class PudoStation    extends BaseEntity       implements Serializable {
-
+public class PudoStation extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1372074309902841173L;
 
@@ -76,8 +74,6 @@ public class PudoStation    extends BaseEntity       implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "HUBID", insertable = true, updatable = true)
-    private Boolean hubId;
-
-
+    private Long hubId;
 
 }

@@ -11,7 +11,6 @@ import java.util.List;
 @Repository
 public interface PudoStationRepository extends JpaRepository<PudoStation, Long>, JpaSpecificationExecutor<PudoStation> {
 
-//    @Query(value = "SELECT * FROM TBL_PUDOSTATION WHERE PK_PUDOSTATION_ID NOT IN (?1)", nativeQuery = true)
-//    List<PudoStation> findByPudoStationIdAndHubId(List<Long> pudostationIds);
 
+    List<PudoStation> findAllByIsDeletedFalseAndIsActiveTrueAndHubId(Long hubId);
 }

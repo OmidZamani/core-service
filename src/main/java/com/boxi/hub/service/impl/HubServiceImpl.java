@@ -568,13 +568,37 @@ public class HubServiceImpl implements HubService {
 
     @Override
     public List<ZoneHubDto> findByZoneInVehicle(Long id) {
-
+        List<ZoneHubDto> zoneHubList = new ArrayList<>();
         List<ZoneVehicleInterfaceDto> zoneVehicleInterfaceDtos = hubRepository.listOfVehicleZone(id);
         for (ZoneVehicleInterfaceDto zoneVehicleInterfaceDto : zoneVehicleInterfaceDtos) {
+            ZoneHubDto zoneHubDto = new ZoneHubDto();
+            zoneHubDto.setPolygon(convertClobToList(zoneVehicleInterfaceDto.getpolygon()));
+            Hub hub = hubRepository.findById(zoneVehicleInterfaceDto.gethub()).orElseThrow();
+
+            zoneHubDto.setHubId(hub.getId());
+            zoneHubDto.setHubCode(hub.getCode());
+            zoneHubDto.setName(hub.getName());
+            zoneHubDto.setLocLong(hub.getLocLong());
+            zoneHubDto.setLocLate(hub.getLocLate());
+            zoneHubDto.setIsActive(hub.getIsActive());
+            zoneHubDto.setTypes(new SelectResponse(hub.getType().getValue(), hub.getType().getFa()));
+            if (hub.getCity() != null) {
+                CountryDevisionSimpleDto countryDevisionSimpleDto = new CountryDevisionSimpleDto();
+                countryDevisionSimpleDto.setId(hub.getCity().getId());
+                countryDevisionSimpleDto.setText(hub.getCity().getName());
+                countryDevisionSimpleDto.setCode(hub.getCity().getCode());
+                zoneHubDto.setProvince(countryDevisionSimpleDto);
+            }
+            zoneHubDto.setHubAdmin("-");
+            zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getpudovehicle());
+            zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
+
+
+            zoneHubList.add(zoneHubDto);
 
         }
 
-        return null;
+        return zoneHubList;
 
     }
 
