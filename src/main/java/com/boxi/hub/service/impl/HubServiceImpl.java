@@ -589,7 +589,7 @@ public class HubServiceImpl implements HubService {
                 zoneHubDto.setProvince(countryDevisionSimpleDto);
             }
             zoneHubDto.setHubAdmin("-");
-            zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getpudovehicle());
+            zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getvehicleplanid());
             zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
             zoneHubDto.setColor(zoneVehicleInterfaceDto.getcolor());
             zoneHubList.add(zoneHubDto);
