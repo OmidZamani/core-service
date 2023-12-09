@@ -182,6 +182,11 @@ public class HubApi {
         return Response.ok().setPayload(hubService.createVehicleZone(dto));
     }
 
+    @GetMapping("/findByZoneInVehicle/{id}")
+    public List<ZoneHubDto> findByZoneInVehicle(@PathVariable Long id){
+        return hubService.findByZoneInVehicle(id);
+    }
+
     @PostMapping("/zone/position")
     public Response findByPosition(@RequestBody LocationDto dto) {
         return Response.ok().setPayload(hubService.findByPosition(dto.getLocLate(), dto.getLocLong()));

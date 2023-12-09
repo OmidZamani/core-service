@@ -17,6 +17,8 @@ public class ZoneHubDto {
     private List<LocationDto> polygon;
     private SelectResponse Types;
     private Boolean isActive;
+    private Long vehicleId;
+    private Long vehicleMdlId;
 }
 
 
