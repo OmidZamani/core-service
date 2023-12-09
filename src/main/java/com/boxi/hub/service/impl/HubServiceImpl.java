@@ -574,7 +574,6 @@ public class HubServiceImpl implements HubService {
             ZoneHubDto zoneHubDto = new ZoneHubDto();
             zoneHubDto.setPolygon(convertClobToList(zoneVehicleInterfaceDto.getpolygon()));
             Hub hub = hubRepository.findById(zoneVehicleInterfaceDto.gethub()).orElseThrow();
-
             zoneHubDto.setHubId(hub.getId());
             zoneHubDto.setHubCode(hub.getCode());
             zoneHubDto.setName(hub.getName());
@@ -592,8 +591,7 @@ public class HubServiceImpl implements HubService {
             zoneHubDto.setHubAdmin("-");
             zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getpudovehicle());
             zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
-
-
+            zoneHubDto.setColor(zoneVehicleInterfaceDto.getcolor());
             zoneHubList.add(zoneHubDto);
 
         }

@@ -8,5 +8,6 @@ public interface ZoneVehicleInterfaceDto {
     Long getcountrydevision();
     Long getpudovehicle();
     Long getmdlvehicle();
+    String getcolor();
 
 }
