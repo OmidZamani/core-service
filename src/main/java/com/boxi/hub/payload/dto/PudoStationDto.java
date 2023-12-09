@@ -17,4 +17,5 @@ public class PudoStationDto extends JsonBase {
     private String addressDetail;
     private Boolean isPickupPossible;
     private Boolean isDeliveryPossible;
+    private Long hubId;
 }

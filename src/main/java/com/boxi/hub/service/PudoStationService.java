@@ -23,4 +23,6 @@ public interface PudoStationService {
 
 
     List<PudoStationDto> listOfStation();
+    public List<PudoStationDto> listUnusedStation(List<Long> pudostationIds);
+
 }

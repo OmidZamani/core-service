@@ -65,4 +65,9 @@ public class PudoStationApi {
     public Response select(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(pudoStationService.select(filter));
     }
+//    listUnusedStation
+@GetMapping("/list-unused-stations")
+public List<PudoStationDto> listUnusedStation(List<Long> stationIds) {
+    return pudoStationService.listOfStation();
+}
 }

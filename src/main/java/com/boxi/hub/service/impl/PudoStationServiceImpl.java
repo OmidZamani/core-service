@@ -136,6 +136,15 @@ public class PudoStationServiceImpl implements PudoStationService {
         return pudoStationRepository.findAll().stream().map(pudoStationConverter::fromModelToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PudoStationDto> listUnusedStation(List<Long> pudostationIds) {
+        return pudoStationRepository.findAll()
+                .stream()
+                .filter(station -> !pudostationIds.contains(station.getId()))
+                .map(pudoStationConverter::fromModelToDto)
+                .collect(Collectors.toList());
+    }
+
     private SelectResponse toSelect(PudoStation pudoStation) {
         return new SelectResponse(pudoStation.getId(), pudoStation.getName());
     }
