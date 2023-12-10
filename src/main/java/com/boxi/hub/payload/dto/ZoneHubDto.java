@@ -20,6 +20,8 @@ public class ZoneHubDto {
     private Long vehicleId;
     private Long vehicleMdlId;
     private String color;
+    private  Long polygonId;
+
 }
 
 

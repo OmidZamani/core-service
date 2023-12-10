@@ -9,5 +9,6 @@ public interface ZoneVehicleInterfaceDto {
     Long getvehicleplanid();
     Long getmdlvehicle();
     String getcolor();
+    Long getpolygonid();
 
 }
