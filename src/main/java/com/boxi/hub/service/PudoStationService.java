@@ -14,13 +14,14 @@ public interface PudoStationService {
 
     PudoStationDto findById(Long id);
 
-    void delete(Long id );
+    void delete(Long id);
 
     Page<PudoStationDto> filter(PudoStationDto request, Pageable pageable);
 
-
     List<SelectResponse> select(String filter);
 
-
     List<PudoStationDto> listOfStation();
+
+    List<PudoStationDto> getUnusedPudoStations(List<Long> pudoStationIds, Long hubId);
+
 }

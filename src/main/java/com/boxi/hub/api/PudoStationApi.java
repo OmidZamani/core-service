@@ -2,6 +2,7 @@ package com.boxi.hub.api;
 
 import com.boxi.core.response.Response;
 import com.boxi.hub.payload.dto.PudoStationDto;
+import com.boxi.hub.payload.dto.PudoStationRequest;
 import com.boxi.hub.service.PudoStationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -64,5 +65,12 @@ public class PudoStationApi {
     @GetMapping("/select")
     public Response select(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(pudoStationService.select(filter));
+    }
+
+    @PostMapping("/list-unused-stations")
+    public List<PudoStationDto> getUnusedPudoStations(@RequestBody PudoStationRequest request) {
+        List<Long> pudostationIds = request.getPudostationIds();
+        Long hubId = request.getHubId();
+        return pudoStationService.getUnusedPudoStations(pudostationIds, hubId);
     }
 }

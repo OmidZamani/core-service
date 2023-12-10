@@ -9,6 +9,8 @@ import com.boxi.hub.payload.dto.PudoStationDto;
 import com.boxi.hub.repo.PudoStationRepository;
 import com.boxi.hub.service.PudoStationService;
 import com.boxi.utils.DateUtil;
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -134,6 +136,19 @@ public class PudoStationServiceImpl implements PudoStationService {
     public List<PudoStationDto> listOfStation() {
 
         return pudoStationRepository.findAll().stream().map(pudoStationConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PudoStationDto> getUnusedPudoStations(List<Long> pudostationIds, Long hubId) {
+        List<PudoStationDto> list = new ArrayList<>();
+        for (PudoStation station : pudoStationRepository.findAllByIsDeletedFalseAndIsActiveTrueAndHubId(hubId)) {
+            if (!pudostationIds.contains(station.getId())) {
+                PudoStationDto pudoStationDto = new PudoStationDto();
+                BeanUtils.copyProperties(station, pudoStationDto);
+                list.add(pudoStationDto);
+            }
+        }
+        return list;
     }
 
     private SelectResponse toSelect(PudoStation pudoStation) {

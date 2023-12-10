@@ -1,6 +1,5 @@
 package com.boxi.core.api;
 
-
 import com.boxi.core.response.Response;
 import com.boxi.utils.UserSecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.Collections;
 
 @RestController
@@ -19,37 +17,35 @@ import java.util.Collections;
 
 public class StatusApi {
 
-
-
     @GetMapping()
-    public Response stats(@AuthenticationPrincipal Jwt jwt ) {
-        System.out.println("status");
-        return Response.ok().setPayload("service is working .. principal user name is :"+  UserSecurityUtil.getAuthName() +" and extracted jwt data is :"+ Collections.singletonMap("data", jwt.getClaims()));
+    public Response<Object> stats(@AuthenticationPrincipal Jwt jwt) {
+
+        return Response.ok().setPayload("service is working .. principal user name is :" + UserSecurityUtil.getAuthName() + " and extracted jwt data is :" + Collections.singletonMap("data", jwt.getClaims()));
     }
 
-    @RequestMapping(value = "/anonymous", method = RequestMethod.GET)
+    @GetMapping("/anonymous")
     public ResponseEntity<String> getAnonymous() {
         return ResponseEntity.ok("Anonymous user role acl");
     }
 
-/*    @RolesAllowed("user")*/
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    /*    @RolesAllowed("user")*/
+    @GetMapping("/user")
     public ResponseEntity<String> getUser() {
         return ResponseEntity.ok("test normal user role acl");
     }
 
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    @GetMapping("/admin")
     public ResponseEntity<String> getAdmin() {
         return ResponseEntity.ok("test admin role acl");
     }
 
-/*    @RolesAllowed({ "admin", "user" })*/
-    @RequestMapping(value = "/all-user", method = RequestMethod.GET)
+    /*    @RolesAllowed({ "admin", "user" })*/
+    @GetMapping( "/all-user")
     public ResponseEntity<String> getAllUser() {
         return ResponseEntity.ok("All User acl test");
     }
 
-    @RequestMapping(value = "/version", method = RequestMethod.GET)
+    @GetMapping( "/version")
     public ResponseEntity<String> version() {
         return ResponseEntity.ok("31 October 13:45");
     }

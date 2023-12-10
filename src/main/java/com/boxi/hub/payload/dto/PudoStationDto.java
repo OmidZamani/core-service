@@ -2,9 +2,13 @@ package com.boxi.hub.payload.dto;
 
 import com.boxi.core.request.DateDto;
 import com.boxi.core.request.JsonBase;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PudoStationDto extends JsonBase {
     private Long id;
     private Boolean isActive;
@@ -17,4 +21,5 @@ public class PudoStationDto extends JsonBase {
     private String addressDetail;
     private Boolean isPickupPossible;
     private Boolean isDeliveryPossible;
+    private Long hubId;
 }

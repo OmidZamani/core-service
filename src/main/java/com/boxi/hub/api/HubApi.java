@@ -51,7 +51,6 @@ public class HubApi {
         return Response.ok().setPayload(response);
     }
 
-
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                            @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -104,7 +103,6 @@ public class HubApi {
         return Response.ok().setPayload(response);
     }
 
-
     //   @PreAuthorize("hasPermission('hasAccess','10010102')")
     @PostMapping("/createHubsByExcel")
     public Response createHubsByExcel(@RequestParam("file") MultipartFile excel) throws IOException {
@@ -132,12 +130,10 @@ public class HubApi {
         return Response.ok().setPayload(hubService.findHubById(id));
     }
 
-
     @GetMapping("/zone")
     public Response getZone() {
         return Response.ok().setPayload(hubService.listOfAllZone());
     }
-
 
     @GetMapping("/zone/{id}")
     public Response getZone(@PathVariable Long id) {
@@ -183,19 +179,19 @@ public class HubApi {
     }
 
     @GetMapping("/findByZoneInVehicle/{id}")
-    public List<ZoneHubDto> findByZoneInVehicle(@PathVariable Long id){
+    public List<ZoneHubDto> findByZoneInVehicle(@PathVariable Long id) {
         return hubService.findByZoneInVehicle(id);
     }
 
     @PostMapping("/zone/position")
-    public Response findByPosition(@RequestBody LocationDto dto) {
+    public Response<Object> findByPosition(@RequestBody LocationDto dto) {
         return Response.ok().setPayload(hubService.findByPosition(dto.getLocLate(), dto.getLocLong()));
     }
 
     @GetMapping("/zone/findbycity")
-    public Response findByProvince(@RequestParam(name = "city") Long cityId,
-                                   @RequestParam(name = "hubname") String hubName,
-                                   @RequestParam(name = "type") Long type) {
+    public Response<Object> findByProvince(@RequestParam(name = "city") Long cityId,
+                                           @RequestParam(name = "hubname") String hubName,
+                                           @RequestParam(name = "type") Long type) {
         return Response.ok().setPayload(hubService.findByCity(cityId, hubName, type));
     }
 
@@ -227,12 +223,12 @@ public class HubApi {
     }
 
     @PutMapping("/update")
-    public Response updateHub(@RequestBody HubDto hubDto) {
+    public Response<Object> updateHub(@RequestBody HubDto hubDto) {
         return Response.ok().setPayload(hubService.updateHubZone(hubDto));
     }
 
     @GetMapping("/hubLocation")
-    public Response hubLocation(@RequestParam(name = "filter") String hubName, @RequestParam(name = "cityid") String cityId) {
+    public Response<Object> hubLocation(@RequestParam(name = "filter") String hubName, @RequestParam(name = "cityid") String cityId) {
         return Response.ok().setPayload(hubService.hubLocation(hubName, cityId));
     }
 
@@ -242,30 +238,28 @@ public class HubApi {
     }
 
     @GetMapping("/zone/findByRegion/{id}")
-    public Response fidByRegion(@PathVariable Long id) {
+    public Response<Object> fidByRegion(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByZoneRegionPolyGone(id));
     }
 
     @GetMapping("/zone/findByRegionPositionInHubId/{id}")
-    public Response findByRegionPositionInHubId(@PathVariable Long id) {
+    public Response<Object> findByRegionPositionInHubId(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByRegionPositionInHubId(id));
     }
 
     @GetMapping("/zone/findByRegionCountryDevision/{id}")
-    public Response findByRegionCountryDivision(@PathVariable Long id) {
+    public Response<Object> findByRegionCountryDivision(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByRegionCountryDivision(id));
     }
 
     @PutMapping("/zone/updateCountryDevision")
-    public Response updateCountryDivision(@RequestBody SelectResponse dto) {
+    public Response<Object> updateCountryDivision(@RequestBody SelectResponse dto) {
         return Response.ok().setPayload(hubService.updateCountryDivision(dto));
     }
 
-
     @GetMapping("/findByCityinHub/{id}")
-    public Response findByCityInHub(@PathVariable Long id) {
+    public Response<Object> findByCityInHub(@PathVariable Long id) {
         return Response.ok().setPayload(hubService.findByCityInHub(id));
     }
-
 
 }

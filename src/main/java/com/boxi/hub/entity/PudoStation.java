@@ -1,8 +1,10 @@
 package com.boxi.hub.entity;
 
 import com.boxi.core.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -12,11 +14,13 @@ import java.util.Date;
 @Entity(name = "PudoStation")
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "TBL_PUDOSTATION")
-public class PudoStation
-        extends BaseEntity
-        implements Serializable {
+public class PudoStation extends BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = -1372074309902841173L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,11 +72,8 @@ public class PudoStation
     @Column(name = "ISDELIVERYPOSSIBLE", insertable = true, updatable = true)
     private Boolean isDeliveryPossible;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="FK_HUB_ID", referencedColumnName="PK_HUB_ID", nullable=true)
-    private Hub hub;
-    public PudoStation() {
-        // TODO Add your own initialization code here.
-    }
+    @Basic(optional = false)
+    @Column(name = "HUBID", insertable = true, updatable = true)
+    private Long hubId;
 
 }

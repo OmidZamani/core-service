@@ -1,8 +1,5 @@
 package com.boxi.core.errors;
 
-
-
-
 import com.boxi.core.conf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,9 +8,12 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 @Component
-public class BusinessException {
+public class BusinessException extends RuntimeException {
 
-    private static PropConf propConfig;
+
+    private static final long serialVersionUID = 2937969386484720825L;
+
+    private static  PropConf propConfig;
 
     @Autowired
     public BusinessException(PropConf propConfig) {
@@ -70,25 +70,31 @@ public class BusinessException {
 
     private static String format(String template, String... args) {
         Optional<String> templateContent = Optional.ofNullable(propConfig.getConfigValue(template));
-        if (templateContent.isPresent()) {
-            return MessageFormat.format(templateContent.get(), (Object[]) args);
-        }
-        return String.format(template, (Object[]) args);
+        return templateContent.map(s -> MessageFormat.format(s, (Object[]) args)).orElseGet(() -> String.format(template, (Object[]) args));
     }
 
     public static class EntityNotFoundException extends RuntimeException {
+
+        private static final long serialVersionUID = 8490379462774046464L;
+
         public EntityNotFoundException(String message) {
             super(message);
         }
     }
 
     public static class DuplicateEntityException extends RuntimeException {
+
+        private static final long serialVersionUID = 6097697152768645228L;
+
         public DuplicateEntityException(String message) {
             super(message);
         }
     }
 
     public static class CustomException extends RuntimeException {
+
+        private static final long serialVersionUID = -1584388453062884064L;
+
         public CustomException(String message) {
             super(message);
         }
