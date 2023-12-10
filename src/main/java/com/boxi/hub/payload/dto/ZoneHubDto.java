@@ -24,6 +24,11 @@ public class ZoneHubDto implements Serializable {
     private Boolean isActive;
     private Long vehicleId;
     private Long vehicleMdlId;
+
+    private String color;
+    private  Long polygonId;
+
+
 }
 
 

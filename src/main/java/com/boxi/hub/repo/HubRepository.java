@@ -86,7 +86,9 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
     List<ZonehubInterfaceDto> listofZone();
 
       @Query(value = "SELECT t.HUB_ID as HUB,SDO_UTIL.TO_WKTGEOMETRY(t.shape) POLYGON\n" +
-            "  ,t.VEHICLEID as VEHICLEID,t.VEHICLEPLANID as VEHICLEPLANID   from HUB_GEO_VEHICHLE  t\n" +
+
+            "  ,t.VEHICLEID as VEHICLEID,t.VEHICLEPLANID as VEHICLEPLANID , t.color as COLOR  ,t.U_VERSION as POLYGONID from HUB_GEO_VEHICHLE  t\n" +
+
             "     where t.is_active = 1 and t.PUDOEXECUTATION  = ?1", nativeQuery = true)
     List<ZoneVehicleInterfaceDto> listOfVehicleZone(Long pudoExecutation);
 

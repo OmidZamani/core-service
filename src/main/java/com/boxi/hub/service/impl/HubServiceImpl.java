@@ -260,7 +260,7 @@ public class HubServiceImpl implements HubService {
     public ZoneDto createVehicleZone(ZoneDto dto) {
         Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
         if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
-        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(),dto.getPolygon(),dto.getPudoExecutationId());
+        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon(), dto.getPudoExecutationId());
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
     }
@@ -590,7 +590,10 @@ public class HubServiceImpl implements HubService {
                 zoneHubDto.setProvince(countryDevisionSimpleDto);
             }
             zoneHubDto.setHubAdmin("-");
-            zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getpudovehicle());
+
+            zoneHubDto.setVehicleId(zoneVehicleInterfaceDto.getvehicleplanid());
+            zoneHubDto.setPolygonId(zoneVehicleInterfaceDto.getpolygonid());
+
             zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
 
 
