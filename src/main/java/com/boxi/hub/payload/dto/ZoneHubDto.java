@@ -3,7 +3,7 @@ package com.boxi.hub.payload.dto;
 import com.boxi.core.response.SelectResponse;
 import lombok.Data;
 
-import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.List;
 
