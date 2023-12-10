@@ -19,7 +19,6 @@ public class ZoneHubDto {
     private Boolean isActive;
     private Long vehicleId;
     private Long vehicleMdlId;
-    private String color;
 }
 
 

@@ -72,12 +72,8 @@ public class PudoStation extends BaseEntity implements Serializable {
     @Column(name = "ISDELIVERYPOSSIBLE", insertable = true, updatable = true)
     private Boolean isDeliveryPossible;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="FK_HUB_ID", referencedColumnName="PK_HUB_ID", nullable=true)
-    private Hub hub;
-    public PudoStation() {
-        // TODO Add your own initialization code here.
-    }
-
+    @Basic(optional = false)
+    @Column(name = "HUBID", insertable = true, updatable = true)
+    private Long hubId;
 
 }
