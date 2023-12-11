@@ -143,9 +143,9 @@ abstract class VehicleSelectConverter implements VehicleConverter {
         });
     }
 
-    @Override
-    public VehicleDto fromModelToDto(Vehicle vehicle) {
-        return null;
-    }
+//    @Override
+//    public VehicleDto fromModelToDto(Vehicle vehicle) {
+//        return null;
+//    }
 
 }
