@@ -30,11 +30,11 @@ public interface DispatchShiftRepository extends JpaRepository<DispatchShift, Lo
 
     Boolean existsByTimeFromBetweenAndHubAndCalendarDate(Timestamp startTime, Timestamp endTime, Hub hub, Calendar calendar);
 
-    @Query(value = "select d from DispatchShift d where ?1 between d.timeFrom  and d.timeTo and d.hub =?2  and d.calendarDate=?3 and d.calendarHub =?4")
-    List<DispatchShift> checkDispatcherfrom(Timestamp startTime, Hub hub, Calendar calendar, CalendarHub calendarHub);
+    @Query(value = "select d from DispatchShift d where ?1 between d.timeFrom  and d.timeTo and d.hub =?2  and d.calendarDate=?3 and d.calendarHub =?4 and d.dispatchShiftType =?5")
+    List<DispatchShift> checkDispatcherfrom(Timestamp startTime, Hub hub, Calendar calendar, CalendarHub calendarHub,DispatchShiftType dispatchShiftType);
 
-    @Query(value = "select d from DispatchShift d where ?1 between d.timeFrom  and d.timeTo  and d.hub =?2  and d.calendarDate=?3 and d.calendarHub =?4")
-    List<DispatchShift> checkDispatcherto(Timestamp endTime, Hub hub, Calendar calendar, CalendarHub calendarHub);
+    @Query(value = "select d from DispatchShift d where ?1 between d.timeFrom  and d.timeTo  and d.hub =?2  and d.calendarDate=?3 and d.calendarHub =?4 and d.dispatchShiftType =?5")
+    List<DispatchShift> checkDispatcherto(Timestamp endTime, Hub hub, Calendar calendar, CalendarHub calendarHub,DispatchShiftType dispatchShiftType);
 
 
     @Query(value = "SELECT  d from DispatchShift d where d.id>?2 and d.calendarDate =?3 and d.hub =?1     order by d.timeFrom asc  ")

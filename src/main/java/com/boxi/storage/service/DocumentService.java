@@ -1,7 +1,6 @@
 package com.boxi.storage.service;
 
 import com.boxi.core.request.SimpleWrapper;
-import com.boxi.crm.payload.converter.SalesChannelConverterImpl;
 import com.boxi.storage.dto.FileMeta;
 import com.boxi.storage.entity.Document;
 import org.springframework.web.multipart.MultipartFile;

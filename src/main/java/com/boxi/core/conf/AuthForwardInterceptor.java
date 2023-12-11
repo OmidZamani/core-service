@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthForwardInterceptor implements RequestInterceptor {
 
     @Override
-    public void apply(RequestTemplate template) {
+    public void apply(RequestTemplate template) throws NullPointerException {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         template.header(HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION));

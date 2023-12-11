@@ -126,6 +126,7 @@ public interface VehicleConverter {
 
 abstract class VehicleSelectConverter implements VehicleConverter {
 
+
     @Autowired
     private VehicleRepository repo;
 
@@ -141,4 +142,10 @@ abstract class VehicleSelectConverter implements VehicleConverter {
             throw BusinessException.throwException(EntityType.Vehicle, ExceptionType.ENTITY_NOT_FOUND);
         });
     }
+
+//    @Override
+//    public VehicleDto fromModelToDto(Vehicle vehicle) {
+//        return null;
+//    }
+
 }

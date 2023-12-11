@@ -6,9 +6,12 @@ public interface ZoneVehicleInterfaceDto {
     Clob getpolygon();
     Long gethub();
     Long getcountrydevision();
-    Long getvehicleplanid();
+    Long getpudovehicle();
     Long getmdlvehicle();
+
     String getcolor();
     Long getpolygonid();
+    Long getvehicleplanid();
+
 
 }
