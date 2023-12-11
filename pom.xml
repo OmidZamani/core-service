@@ -39,7 +39,15 @@
             </properties>
         </profile>
 
-<!-- use command  like: mvn install -P prod -->
+        <profile>
+            <id>boxit</id>
+            <properties>
+                <activatedProperties>boxit</activatedProperties>
+            </properties>
+        </profile>
+
+
+        <!-- use command  like: mvn install -P prod -->
 
 
     </profiles>
