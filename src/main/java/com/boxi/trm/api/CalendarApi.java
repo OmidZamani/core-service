@@ -45,7 +45,7 @@ public class CalendarApi {
         return Response.ok().setPayload(calendarService.editCalendarHub(dto));
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/deleteDispatcher")
     public Response delete(@RequestBody List<SelectResponse> ids) {
         calendarService.delete(ids);
         return Response.ok();
