@@ -186,7 +186,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
         Pageable pageables = PageRequest.of(0, 100);
         termsOfServicesDto.setContentTypeId(filter.getSelectContentType().getId());
-        termsOfServicesDto.setConsignmentType(filter.getConsignmentType());
+        termsOfServicesDto.setConsignmentType(filter.getSelectConsignmentType());
         Page<TermsOfServicesDto> suggest = filter(termsOfServicesDto, pageables);
         if (suggest.getTotalElements() == 0) {
             if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
