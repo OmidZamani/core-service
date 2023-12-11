@@ -214,12 +214,12 @@ public class CalendarServiceImpl implements CalendarService {
             List<DispatchShift> from = dispatchShiftRepository.checkDispatcherfrom(dispatchShift.getTimeFrom()
                     , dispatchShift.getHub()
                     , calendar
-                    , dispatchShift.getCalendarHub());
+                    , dispatchShift.getCalendarHub(), dispatchShift.getDispatchShiftType());
 
             List<DispatchShift> to = dispatchShiftRepository.checkDispatcherto(dispatchShift.getTimeTo()
                     , dispatchShift.getHub()
                     , calendar
-                    , dispatchShift.getCalendarHub());
+                    , dispatchShift.getCalendarHub(),dispatchShift.getDispatchShiftType() );
             if (from != null || to != null) {
 //                if (dispatchShiftRepository.existsByTimeFromBetweenAndHubAndCalendarDate(dispatchShift.getTimeFrom(), dispatchShift.getTimeTo(), dispatchShift.getHub(),
 //                        (calendar != null) ? calendar : dispatchShift.getCalendarDate())) {
@@ -474,12 +474,12 @@ public class CalendarServiceImpl implements CalendarService {
         List<DispatchShift> strings = dispatchShiftRepository.checkDispatcherfrom(from
                 , new Hub().setId(dto.getSelecthub().getId())
                 , new Calendar().setId(dto.getSelectcalendar().getId())
-                , new CalendarHub().setId(dto.getSelectcalendarhub().getId()));
+                , new CalendarHub().setId(dto.getSelectcalendarhub().getId()),DispatchShiftType.findByValue(dto.getDispatchShiftType().getId()));
 
         List<DispatchShift> strings2 = dispatchShiftRepository.checkDispatcherto(to
                 , new Hub().setId(dto.getSelecthub().getId())
                 , new Calendar().setId(dto.getSelectcalendar().getId())
-                , new CalendarHub().setId(dto.getSelectcalendarhub().getId()));
+                , new CalendarHub().setId(dto.getSelectcalendarhub().getId()), DispatchShiftType.findByValue(dto.getDispatchShiftType().getId()));
         if (strings.size() == 0 && strings2.size() == 0) {
             shift.setCalendarHub(new CalendarHub().setId(dto.getSelectcalendarhub().getId()));
             shift.setCalendarDate(new Calendar().setId(dto.getSelectcalendar().getId()));
