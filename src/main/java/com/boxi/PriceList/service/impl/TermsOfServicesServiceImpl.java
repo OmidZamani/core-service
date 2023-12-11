@@ -1,5 +1,6 @@
 package com.boxi.PriceList.service.impl;
 
+import com.boxi.PriceList.Enum.ConsignmentType;
 import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.entity.TermsOfServices;
@@ -89,6 +90,15 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
         Page<TermsOfServices> termsOfServices = termsOfServicesRepository.findAll((Specification<TermsOfServices>) (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
+
+            if(filter.getContentTypeId()!=null&&filter.getConsignmentType() != null) {
+                Long types = 0L ;
+                if(filter.getConsignmentType().getId()==0 && filter.getContentTypeId()==0) types= 0L;
+                if(filter.getConsignmentType().getId()==0 && filter.getContentTypeId()==1) types= 1L;
+                if(filter.getConsignmentType().getId()==1 && filter.getContentTypeId()==0) types= 5L;
+                if(filter.getConsignmentType().getId()==1 && filter.getContentTypeId()==1) types= 5L;
+                predicates.add(criteriaBuilder.equal(root.get("consignmentType"), ConsignmentType.findByValue(types)));
+            }
             if (filter.getId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("id"), filter.getId()));
             }
@@ -104,9 +114,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
 
             }
 
-            if (filter.getConsignmentType() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("consignmentType"), filter.getConsignmentType().getId()));
-            }
+
 
             if (filter.getPriceFormule() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("priceFormule"), filter.getPriceFormule()));
@@ -177,6 +185,7 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
         Pageable pageables = PageRequest.of(0, 100);
+        termsOfServicesDto.setContentTypeId(filter.getSelectContentType().getId());
         Page<TermsOfServicesDto> suggest = filter(termsOfServicesDto, pageables);
         if (suggest.getTotalElements() == 0) {
             if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {

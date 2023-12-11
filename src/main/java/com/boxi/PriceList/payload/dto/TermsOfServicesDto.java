@@ -40,4 +40,6 @@ public class TermsOfServicesDto {
     private Long fromRegionId;
     private Long toRegionId;
     private Long timeCommitmentId;
+    private Long contentTypeId;
+
 }
