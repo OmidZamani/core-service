@@ -5,6 +5,8 @@ import com.boxi.core.errors.EntityType;
 import com.boxi.core.errors.ExceptionType;
 import com.boxi.core.request.DateDto;
 import com.boxi.core.response.SelectResponse;
+import com.boxi.feign.DriverClient;
+import com.boxi.feign.dto.DriverDto;
 import com.boxi.hub.payload.converter.HubConverter;
 import com.boxi.transport.entity.Vehicle;
 import com.boxi.transport.enums.VehicleStatus;
@@ -130,6 +132,11 @@ abstract class VehicleSelectConverter implements VehicleConverter {
     @Autowired
     private VehicleRepository repo;
 
+    @Autowired
+    private VehicleConverter vehicleConverter;
+    @Autowired
+    private DriverClient driverClient;
+
     @Override
     public SelectResponse fromModelToSelect(Vehicle v) {
         return new SelectResponse(v.getId(), v.selectToString());
@@ -143,9 +150,20 @@ abstract class VehicleSelectConverter implements VehicleConverter {
         });
     }
 
-//    @Override
-//    public VehicleDto fromModelToDto(Vehicle vehicle) {
-//        return null;
-//    }
+    @Override
+    public VehicleDto fromModelToDto(Vehicle vehicle) {
+        VehicleDto vehicleDto = vehicleConverter.fromModelToDto(vehicle);
+        if (vehicleDto.getFixedDriverId() != null) {
+            DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFixedDriverId());
+            vehicleDto.setFixedDriverName(driverDto.getName());
+        }
+        if (vehicleDto.getFirstDriverId() != null) {
+            DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFirstDriverId());
+            vehicleDto.setFirstDriverName(driverDto.getName());
+        }
+
+
+        return vehicleDto;
+    }
 
 }

@@ -65,7 +65,9 @@ public class VehicleDto extends JsonBase {
 
     private String timeToFinishWork;
     private Long firstDriverId;
+    private String firstDriverName;
     private Long secondDriverId;
 
     private Long fixedDriverId;
+    private String fixedDriverName;
 }
