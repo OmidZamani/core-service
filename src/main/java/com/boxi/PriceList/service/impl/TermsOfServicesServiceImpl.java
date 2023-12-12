@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -91,12 +90,12 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if(filter.getContentTypeId()!=null&&filter.getConsignmentType() != null) {
-                Long types = 0L ;
-                if(filter.getConsignmentType().getId()==0 && filter.getContentTypeId()==0) types= 0L;
-                if(filter.getConsignmentType().getId()==0 && filter.getContentTypeId()==1) types= 1L;
-                if(filter.getConsignmentType().getId()==1 && filter.getContentTypeId()==0) types= 5L;
-                if(filter.getConsignmentType().getId()==1 && filter.getContentTypeId()==1) types= 5L;
+            if (filter.getContentTypeId() != null && filter.getConsignmentType() != null) {
+                Long types = 0L;
+                if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 0) types = 0L;
+                if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 1) types = 1L;
+                if (filter.getConsignmentType().getId() == 1 && filter.getContentTypeId() == 0) types = 5L;
+                if (filter.getConsignmentType().getId() == 1 && filter.getContentTypeId() == 1) types = 5L;
                 predicates.add(criteriaBuilder.equal(root.get("consignmentType"), ConsignmentType.findByValue(types)));
             }
             if (filter.getId() != null) {
@@ -115,14 +114,13 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
 
-
             if (filter.getPriceFormule() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("priceFormule"), filter.getPriceFormule()));
             }
 
             if (filter.getFromWeight() != null && filter.getToWeight() != null) {
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("fromWeight"))));
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")),criteriaBuilder.isNull(root.get("toWeight"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromWeight()), root.get("fromWeight"), root.get("toWeight")), criteriaBuilder.isNull(root.get("fromWeight"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToWeight()), root.get("fromWeight"), root.get("toWeight")), criteriaBuilder.isNull(root.get("toWeight"))));
             }
 
             if (filter.getFromDim() != null && filter.getToDimension() != null) {
@@ -131,8 +129,8 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             }
 
             if (filter.getFromValue() != null && filter.getToValue() != null) {
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")),criteriaBuilder.isNull(root.get("fromValue"))));
-                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")),criteriaBuilder.isNull(root.get("toValue"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getFromValue()), root.get("fromValue"), root.get("toValue")), criteriaBuilder.isNull(root.get("fromValue"))));
+                predicates.add(criteriaBuilder.or(criteriaBuilder.between(criteriaBuilder.literal(filter.getToValue()), root.get("fromValue"), root.get("toValue")), criteriaBuilder.isNull(root.get("toValue"))));
             }
 
             if (filter.getFromNumber() != null && filter.getToNumber() != null) {
@@ -185,8 +183,11 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
         Pageable pageables = PageRequest.of(0, 100);
-        termsOfServicesDto.setContentTypeId(filter.getSelectContentType().getId());
-        termsOfServicesDto.setConsignmentType(filter.getSelectConsignmentType());
+        if (filter.getSelectContentType() != null)
+            termsOfServicesDto.setContentTypeId(filter.getSelectContentType().getId());
+        if (filter.getSelectConsignmentType() != null)
+            termsOfServicesDto.setConsignmentType(filter.getSelectConsignmentType());
+
         Page<TermsOfServicesDto> suggest = filter(termsOfServicesDto, pageables);
         if (suggest.getTotalElements() == 0) {
             if (filter.getFromRegionId() != null && filter.getToRegionId() != null) {
