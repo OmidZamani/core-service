@@ -85,14 +85,12 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
             "     where t.is_active = 1", nativeQuery = true)
     List<ZonehubInterfaceDto> listofZone();
 
-      @Query(value = "SELECT t.HUB_ID as HUB,SDO_UTIL.TO_WKTGEOMETRY(t.shape) POLYGON\n" +
+    @Query(value = "SELECT t.HUB_ID as HUB,SDO_UTIL.TO_WKTGEOMETRY(t.shape) POLYGON\n" +
 
-            "  ,t.VEHICLEID as VEHICLEID,t.VEHICLEPLANID as VEHICLEPLANID , t.color as COLOR  ,t.U_VERSION as POLYGONID from HUB_GEO_VEHICHLE  t\n" +
+            "  ,t.VEHICLEID as VEHICLEID,t.VEHICLEPLANID as VEHICLEPLANID , t.color as COLOR  ,t.PK_HUBVGEOEHICLE_ID as POLYGONID from HUB_GEO_VEHICHLE  t\n" +
 
             "     where t.is_active = 1 and t.PUDOEXECUTATION  = ?1", nativeQuery = true)
     List<ZoneVehicleInterfaceDto> listOfVehicleZone(Long pudoExecutation);
-
-
 
 
     @Query(value = "SELECT t.HUB_ID as hub,SDO_UTIL.TO_WKTGEOMETRY(t.shape) as polygon\n" +
@@ -165,7 +163,11 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
     @Modifying
     @Procedure("savepolygonVehicle")
-    void save_polygonVehicle(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, Long p_vehiclePlanId, Long p_vehicleId,  String p_color,String p_polygon,Long p_pudoExecutation );
+    void save_polygonVehicle(Long p_hub_id, Long p_countrydevision_id, Long p_user_id, Long p_vehiclePlanId, Long p_vehicleId, String p_color, String p_polygon, Long p_pudoExecutation);
+
+    @Modifying
+    @Query(value = "delete from HUB_GEO_VEHICHLE where PK_HUBVGEOEHICLE_ID =?1", nativeQuery = true)
+    void deleteHubGetoVehicleById(Long id);
 
     @Query(value = "SELECT  g.hub_id as hub,tc.PK_COUNTRYDEVISION_ID as countrydevision, tc.*\n" +
             "  FROM HUB_geo g\n" +
