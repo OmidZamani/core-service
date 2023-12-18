@@ -24,4 +24,9 @@ public interface PudoStationService {
 
     List<PudoStationDto> getUnusedPudoStations(List<Long> pudoStationIds, Long hubId);
 
+    List<PudoStationDto> findByIdList(List<Long> list, Long hubId);
+
+    List<PudoStationDto> findByNotIdList(List<Long> list, Long hubId);
+
+    List<PudoStationDto> findStationByHubId(Long hubId);
 }

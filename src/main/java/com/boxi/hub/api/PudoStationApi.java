@@ -73,4 +73,20 @@ public class PudoStationApi {
         Long hubId = request.getHubId();
         return pudoStationService.getUnusedPudoStations(pudostationIds, hubId);
     }
+    @PostMapping("/findByIdList/{hubId}")
+    public List<PudoStationDto> findByIdList(@RequestBody List<Long> list, @PathVariable Long hubId){
+        return pudoStationService.findByIdList(list,hubId);
+    }
+
+    @PostMapping("/findByNotIdList/{hubId}")
+    public List<PudoStationDto> findByNotIdList(@RequestBody List<Long> list, @PathVariable Long hubId){
+        return pudoStationService.findByNotIdList(list,hubId);
+    }
+
+
+    @PostMapping("/findStationByHubId/{hubId}")
+    public List<PudoStationDto> findStationByHubId( @PathVariable Long hubId){
+        return pudoStationService.findStationByHubId(hubId);
+    }
+
 }

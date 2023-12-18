@@ -18,6 +18,7 @@ public class ZoneDto extends JsonBase {
     private Long pudoVehicleId;
     private Long pudoVehiclePlanId;
     private Long hubGeoId;
+    private Long id;
     private String color;
 
 

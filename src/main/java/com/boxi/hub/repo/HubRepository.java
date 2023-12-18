@@ -89,7 +89,7 @@ public interface HubRepository extends JpaRepository<Hub, Long>, JpaSpecificatio
 
             "  ,t.VEHICLEID as VEHICLEID,t.VEHICLEPLANID as VEHICLEPLANID , t.color as COLOR  ,t.PK_HUBVGEOEHICLE_ID as POLYGONID from HUB_GEO_VEHICHLE  t\n" +
 
-            "     where t.is_active = 1 and t.PUDOEXECUTATION  = ?1", nativeQuery = true)
+            "     where  t.PUDOEXECUTATION  = ?1", nativeQuery = true)
     List<ZoneVehicleInterfaceDto> listOfVehicleZone(Long pudoExecutation);
 
 
