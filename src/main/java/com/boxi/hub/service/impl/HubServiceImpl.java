@@ -608,6 +608,19 @@ public class HubServiceImpl implements HubService {
 
     }
 
+    @Override
+    public void deleteSubzone(ZoneDto dto) {
+        hubRepository.deleteHubGetoVehicleById(dto.getId());
+        pudoPlaningClient.updateConsignmentListInGeo(dto.getConsignmentList());
+
+    }
+
+    @Override
+    public void deleteSubzoneMdl(ZoneDto dto) {
+//        hubRepository.deleteHubGetoVehicleById(dto.getId());
+        pudoPlaningClient.updateConsignmentListInGeoMdl(dto.getConsignmentList());
+    }
+
     private SelectResponse listOfParentSelectResponse(Hub hub) {
         if (hub.getParentHub() != null)
             return new SelectResponse(hub.getParentHub().getId(), hub.getParentHub().getName());

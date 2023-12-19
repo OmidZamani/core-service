@@ -93,9 +93,10 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
             if (filter.getContentTypeId() != null && filter.getConsignmentType() != null) {
                 Long types = 0L;
                 if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 0) types = 0L;
-                if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 1) types = 1L;
+//                if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 1) types = 1L; //با توجه به اطلاعات وارد شده در نزخ نامه این خط کامنت شد
                 if (filter.getConsignmentType().getId() == 1 && filter.getContentTypeId() == 0) types = 5L;
                 if (filter.getConsignmentType().getId() == 1 && filter.getContentTypeId() == 1) types = 5L;
+                if (filter.getConsignmentType().getId() == 0 && filter.getContentTypeId() == 1) types = 5L;
                 predicates.add(criteriaBuilder.equal(root.get("consignmentType"), ConsignmentType.findByValue(types)));
             }
             if (filter.getId() != null) {
