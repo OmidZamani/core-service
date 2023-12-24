@@ -173,6 +173,18 @@ public class HubApi {
         return Response.ok().setPayload(hubService.createSubZone(dto));
     }
 
+    @PostMapping("/zone/deleteSubzone")
+    public Response deleteSubzone(@RequestBody ZoneDto dto) {
+        hubService.deleteSubzone(dto);
+        return Response.ok();
+    }
+
+    @PostMapping("/zone/deleteSubzoneMdl")
+    public Response deleteSubzoneMdl(@RequestBody ZoneDto dto) {
+        hubService.deleteSubzoneMdl(dto);
+        return Response.ok();
+    }
+
     @PostMapping("/zone/createVehiclePolygon")
     public Response createVehiclePolygon(@RequestBody ZoneDto dto) {
         return Response.ok().setPayload(hubService.createVehicleZone(dto));

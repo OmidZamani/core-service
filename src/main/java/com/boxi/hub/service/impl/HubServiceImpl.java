@@ -258,6 +258,8 @@ public class HubServiceImpl implements HubService {
 
     @Override
     public ZoneDto createVehicleZone(ZoneDto dto) {
+        if(dto.getId()==null &&  pudoPlaningClient.findByPolygonInVehicleId(dto.getPudoVehicleId(), dto.getPudoExecutationId()))
+            throw BusinessException.entityNotFoundException(EntityType.Hub,"vehicle.is.Exists");
         Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
         if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
         if (dto.getId() != null) hubRepository.deleteHubGetoVehicleById(dto.getId());
@@ -606,6 +608,20 @@ public class HubServiceImpl implements HubService {
 
         return zoneHubList;
 
+    }
+
+    @Override
+    public void deleteSubzone(ZoneDto dto) {
+        hubRepository.deleteHubGetoVehicleById(dto.getId());
+        pudoPlaningClient.updateConsignmentListInGeo(dto.getConsignmentList());
+        pudoPlaningClient.updateConsignmentListInGeoMdl(dto.getConsignmentList());
+
+    }
+
+    @Override
+    public void deleteSubzoneMdl(ZoneDto dto) {
+//        hubRepository.deleteHubGetoVehicleById(dto.getId());
+        pudoPlaningClient.updateConsignmentListInGeoMdl(dto.getConsignmentList());
     }
 
     private SelectResponse listOfParentSelectResponse(Hub hub) {

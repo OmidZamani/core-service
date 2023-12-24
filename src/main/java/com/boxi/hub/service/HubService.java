@@ -113,4 +113,8 @@ public interface HubService {
     List<SelectResponse> findByRegionPositionInHubId(Long id);
 
     List<ZoneHubDto> findByZoneInVehicle(Long id);
+
+    void deleteSubzone(ZoneDto dto);
+
+    void deleteSubzoneMdl(ZoneDto dto);
 }

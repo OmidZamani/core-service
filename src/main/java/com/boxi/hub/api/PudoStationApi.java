@@ -50,7 +50,7 @@ public class PudoStationApi {
 
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-                           @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                           @RequestParam(name = "pageSize", defaultValue = "30", required = false) Integer pageSize,
                            @RequestBody PudoStationDto request) {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
