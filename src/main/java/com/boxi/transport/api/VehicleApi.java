@@ -161,6 +161,11 @@ public class VehicleApi {
         return Response.ok().setPayload(_service.createException(dto));
     }
 
+    @PostMapping("/client/createException")
+    public VehicleExceptionsDto ClientCreateException(@RequestBody VehicleExceptionsDto dto) {
+        return _service.createException(dto);
+    }
+
     @PostMapping("/findVehicleException")
     public List<VehicleExceptionsDto> findVehicleException(@RequestBody VehicleExceptionsDto dto) {
         return _service.findVehicleException(dto);
