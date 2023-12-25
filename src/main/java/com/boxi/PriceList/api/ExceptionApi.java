@@ -5,6 +5,7 @@ import com.boxi.PriceList.payload.dto.*;
 import com.boxi.PriceList.payload.request.FilterException;
 import com.boxi.PriceList.service.ExceptionService;
 import com.boxi.core.response.Response;
+import com.boxi.core.response.SelectResponse;
 import com.boxi.excel.service.impl.ConvertExcelServiceImpl;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import lombok.RequiredArgsConstructor;
@@ -106,5 +107,9 @@ public class ExceptionApi {
     }
 
 
+    @GetMapping("/clientSelectByType")
+    public List<SelectResponse> clientSelectByType(@RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "type", required = false) Long type) {
+        return exceptionService.selectByType(filter,type);
+    }
 
 }
