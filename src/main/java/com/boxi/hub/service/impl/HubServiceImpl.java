@@ -518,6 +518,7 @@ public class HubServiceImpl implements HubService {
             zoneHubDto.setLocLong(hub.getLocLong());
             zoneHubDto.setHubId(hubId);
             zoneHubDto.setHubCode(hub.getCode());
+
             return zoneHubDto;
         } else
             return null;
@@ -600,6 +601,7 @@ public class HubServiceImpl implements HubService {
 
             zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
             zoneHubDto.setColor(zoneVehicleInterfaceDto.getcolor());
+            zoneHubDto.setPolygonIndex(zoneVehicleInterfaceDto.getpl());
 
 
             zoneHubList.add(zoneHubDto);
