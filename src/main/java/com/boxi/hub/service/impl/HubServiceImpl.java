@@ -264,6 +264,7 @@ public class HubServiceImpl implements HubService {
         if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
         if (dto.getId() != null) hubRepository.deleteHubGetoVehicleById(dto.getId());
 
+        if(dto.getPolygonIndex()==null) dto.setPolygonIndex(0L);
         hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon(), dto.getPudoExecutationId(), dto.getPolygonIndex());
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
