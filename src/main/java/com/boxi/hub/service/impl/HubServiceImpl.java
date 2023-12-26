@@ -258,13 +258,14 @@ public class HubServiceImpl implements HubService {
 
     @Override
     public ZoneDto createVehicleZone(ZoneDto dto) {
-        if(dto.getId()==null &&  pudoPlaningClient.findByPolygonInVehicleId(dto.getPudoVehicleId(), dto.getPudoExecutationId()))
-            throw BusinessException.entityNotFoundException(EntityType.Hub,"vehicle.is.Exists");
+        if (dto.getId() == null && pudoPlaningClient.findByPolygonInVehicleId(dto.getPudoVehicleId(), dto.getPudoExecutationId()))
+            throw BusinessException.entityNotFoundException(EntityType.Hub, "vehicle.is.Exists");
         Hub hub = hubRepository.findById(dto.getSelectHub().getId()).orElseThrow();
         if (dto.getPudoVehiclePlanId() == null) dto.setPudoVehiclePlanId(dto.getPudoVehicleId());
         if (dto.getId() != null) hubRepository.deleteHubGetoVehicleById(dto.getId());
 
-        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon(), dto.getPudoExecutationId());
+        if(dto.getPolygonIndex()==null) dto.setPolygonIndex(0L);
+        hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon(), dto.getPudoExecutationId(), dto.getPolygonIndex());
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
     }
@@ -518,6 +519,7 @@ public class HubServiceImpl implements HubService {
             zoneHubDto.setLocLong(hub.getLocLong());
             zoneHubDto.setHubId(hubId);
             zoneHubDto.setHubCode(hub.getCode());
+
             return zoneHubDto;
         } else
             return null;
@@ -600,6 +602,7 @@ public class HubServiceImpl implements HubService {
 
             zoneHubDto.setVehicleMdlId(zoneVehicleInterfaceDto.getmdlvehicle());
             zoneHubDto.setColor(zoneVehicleInterfaceDto.getcolor());
+            zoneHubDto.setPolygonIndex(zoneVehicleInterfaceDto.getpl());
 
 
             zoneHubList.add(zoneHubDto);
