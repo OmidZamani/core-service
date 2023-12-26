@@ -3,6 +3,7 @@ package com.boxi.sms.api;
 import com.boxi.core.response.Response;
 import com.boxi.bus.dto.PluralMessage;
 import com.boxi.sms.payload.dto.SendSmsDto;
+import com.boxi.sms.payload.dto.SmsDto;
 import com.boxi.sms.service.Impl.CallSmsStrategy;
 import com.boxi.sms.service.SmsService;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,10 @@ public class SmsApi {
     private Response test(@RequestBody PluralMessage overallMessage){
         callSmsStrategy.executeStrategy(overallMessage);
         return Response.ok().setPayload("ok");
+    }
+
+    @PostMapping("/clientSend")
+    private SmsDto clientSend(@RequestBody SendSmsDto smsDto){
+        return smsService.sendSms(smsDto);
     }
 }
