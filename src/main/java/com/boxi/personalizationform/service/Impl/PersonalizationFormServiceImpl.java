@@ -102,8 +102,8 @@ public class PersonalizationFormServiceImpl implements PersonalizationFormServic
 
         PermissionDto permissionDto = per.findbyCode(code);
         if (permissionDto == null)
-            throw BusinessException.valueException(EntityType.PersonalizationForm, "personalization.form.not.found");
-
+//            throw BusinessException.valueException(EntityType.PersonalizationForm, "personalization.form.not.found");
+            return null;
         PersonalizationForm byUserIdAndPermissionId = personalizationFormRepository.findByUserIdAndPermissionId(userId, permissionDto.getId());
         return personalizationFormConverter.fromModelToDto(byUserIdAndPermissionId);
 
