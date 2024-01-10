@@ -118,7 +118,7 @@ public class HubTest
         assertThat(tehran).isNotNull();
         //   then - verify the output
         String code=service.genCode(qazvin.getParentHub().getCode());
-        System.out.println(code);
+      //  System.out.println(code);
         assertThat(code).isEqualTo(qazvin.getCode());
     }
 
@@ -130,7 +130,6 @@ public class HubTest
         assertThat(zanjan).isNotNull();
         //  then - verify the output
         String code=service.genCode(abhar.getParentHub().getCode());
-        System.out.println(code);
         assertThat(code).isEqualTo(abhar.getCode());
     }
 

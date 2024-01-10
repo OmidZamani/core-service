@@ -150,11 +150,11 @@ public class RuleEngineTest {
         long startTime = System.currentTimeMillis();
         for(int i=0; i <100 ;i++){
                 RulePriceResponse response = ruleExecutionService.process(request);
-                System.out.println(response.getPrice());
+        //        System.out.println(response.getPrice());
             }
         long endTime = System.currentTimeMillis();
         Long t=(endTime - startTime);
-        System.out.println("executionTime:"+ t +"ms" );
+    //    System.out.println("executionTime:"+ t +"ms" );
         assertThat(t+"",endTime>startTime);
 
     }
@@ -169,7 +169,7 @@ public class RuleEngineTest {
         request.setServiceCode("s001");
         request.setCdt("OUTER").setWeight(1.2);
         RulePriceResponse response = ruleExecutionService.process(request);
-        System.out.println(">>>>>>>>>"+response.getPrice());
+    //    System.out.println(">>>>>>>>>"+response.getPrice());
         assertThat(response.getPrice(), Matchers.comparesEqualTo(new BigDecimal(43400)));
     }
 
@@ -181,7 +181,7 @@ public class RuleEngineTest {
         request=new ProductPriceRequest();
         request.setCdt("OUTER").setWeight(0.2).setServiceCode("m001");
         RulePriceResponse response = ruleExecutionService.process(request);
-        System.out.println(">>>>>>>>>"+response.getPrice());
+     //   System.out.println(">>>>>>>>>"+response.getPrice());
         assertThat(response.getPrice(), Matchers.comparesEqualTo(new BigDecimal(15180)));
     }
 
@@ -192,7 +192,7 @@ public class RuleEngineTest {
         request=new ProductPriceRequest();
         request.setCdt("INNER").setWeight(3.0).setServiceCode("a001");
         RulePriceResponse response = ruleExecutionService.process(request);
-        System.out.println(">>>>>>>>>"+response.getPrice());
+     //   System.out.println(">>>>>>>>>"+response.getPrice());
         assertThat(response.getPrice(), Matchers.comparesEqualTo(new BigDecimal(46800)));
     }
 

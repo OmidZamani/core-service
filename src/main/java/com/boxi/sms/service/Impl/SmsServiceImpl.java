@@ -47,7 +47,7 @@ public class SmsServiceImpl implements SmsService {
             dto.setPhoneNumber(dto.getPhoneNumber().substring(1,11));
         jsonObject.put("To", dto.getPhoneNumber());
         jsonObject.put("Message", dto.getMessage());
-        System.out.println(">>>>>>>>>>>>"+ dto.getMessage());
+       // System.out.println(">>>>>>>>>>>>"+ dto.getMessage());
         ResponseEntity<String> response
                 = restTemplate.postForEntity(resourceUrl, jsonObject, String.class);
         SmsDto smsDto = new SmsDto();

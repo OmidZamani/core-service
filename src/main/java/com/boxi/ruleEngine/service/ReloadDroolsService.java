@@ -36,7 +36,7 @@ public class ReloadDroolsService {
 
     private List<RuleModel> loadRules() {
         List<RuleModel> rules = ruleModelRepo.findAll();
-       System.out.println(rules.toString());
+  //     System.out.println(rules.toString());
         return rules;
     }
 
@@ -51,7 +51,7 @@ public class ReloadDroolsService {
         for (RuleModel rule : rules) {
             if(rule.getContent()!=null) {
                 String drl = rule.getContent();
-                System.out.println(">>"+drl);
+         //       System.out.println(">>"+drl);
                 kfs.write("src/main/resources/" + System.nanoTime() + ".drl", ks.getResources().newReaderResource(new StringReader(drl)).setResourceType(ResourceType.DRL));
             }
         }

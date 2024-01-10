@@ -29,12 +29,12 @@ public class CallSmsStrategy {
     public void executeStrategy(PluralMessage overallMessage) {
         switch (overallMessage.getMessageType()) {
             case LOGIN:
-                System.out.println(">>>>>>>>>>>>>>>>>>login");
+             //   System.out.println(">>>>>>>>>>>>>>>>>>login");
                 loginMessageStrategy.execute(overallMessage);
                 break;
 
             case ONE_TIME_PASS_SEND:
-                System.out.println(">>>>>>>>>>>>>>>>>>Change Password");
+             //   System.out.println(">>>>>>>>>>>>>>>>>>Change Password");
                 passWordMessageStrategy.execute(overallMessage);
                 break;
 

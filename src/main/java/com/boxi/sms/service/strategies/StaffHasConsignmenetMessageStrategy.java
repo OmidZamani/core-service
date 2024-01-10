@@ -36,6 +36,6 @@ public class StaffHasConsignmenetMessageStrategy implements SendMessageStrategy 
     @Override
     public void execute(PluralMessage overallMessage) {
         String message = getMessage(overallMessage);
-        System.out.println(message);
+      //  System.out.println(message);
     }
 }

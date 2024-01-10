@@ -13,7 +13,7 @@ public class RuleFactAction {
 
 
     public void setPrice(Double price) {
-        System.out.println("____________________");
+   //     System.out.println("____________________");
         this.price = getPrice();
         setPriceB(BigDecimal.valueOf(this.price).stripTrailingZeros());
     }

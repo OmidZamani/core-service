@@ -64,7 +64,7 @@ public interface ProductAttributeConverter {
             dto.setTimeCommitment(new SelectResponse(productAttribute.getTimeCommitment().getId(), productAttribute.getTimeCommitment().getName()));
         }
         if (productAttribute.getUsingProducts() != null) {
-            System.out.println("");
+       //     System.out.println("");
         }
     }
 

@@ -34,7 +34,7 @@ public class ExceptionApi {
 
     @GetMapping("/genPinCode")
     public Response genPinCode() {
-        System.out.println("genPinCode");
+   //     System.out.println("genPinCode");
         return  Response.ok().setPayload(UUID.randomUUID().toString());
     }
 
