@@ -8,6 +8,7 @@ import com.boxi.hub.payload.dto.CountryDevisionPolygonDto;
 import com.boxi.product.payload.dto.ContryDevistionCodeDto;
 import com.boxi.product.payload.dto.CountryDevisionDto;
 import com.boxi.product.response.ContryDevistionSelect;
+import org.h2.command.dml.Select;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -66,4 +67,8 @@ public interface CountryDevisionService {
     List<SelectResponse> findByCityDelivery(Long cityId);
 
     List<SelectResponse> findByCityInHub(CountryDevisionDto dto);
+
+    SelectResponse findByName(String filter);
+
+    SelectResponse findByRegionInCity(Long cityId);
 }
