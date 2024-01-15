@@ -42,7 +42,7 @@ public class HubDto extends JsonBase {
     @NotNull
     private SelectResponse selectCity;
     private SelectResponse selectState;
-    @NotNull
+
     private SelectResponse selectRegion;
     private Double locLate;
     private Double locLong;
