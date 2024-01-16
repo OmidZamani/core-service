@@ -97,6 +97,11 @@ public class PriceListApi {
         return Response.ok();
     }
 
+    @GetMapping("/{id}")
+    public Response getPriceList(@PathVariable Long id) {
+        return Response.ok().setPayload(priceListService.findById(id));
+    }
+
     @PutMapping
     public Response edit(@RequestBody PriceListDto request) {
         log.warn(request.toString());
