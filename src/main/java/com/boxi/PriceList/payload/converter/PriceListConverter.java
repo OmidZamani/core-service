@@ -13,10 +13,12 @@ import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.payload.converter.CustomDevisionDetailConverter;
 import com.boxi.hub.payload.dto.CustomCountryDevisionDto;
 import com.boxi.hub.service.CountryDevisionService;
+import com.boxi.product.entity.Product;
 import com.boxi.product.response.ContryDevistionSelect;
 import com.boxi.utils.DateUtil;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.Name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,12 @@ public interface PriceListConverter {
     @Mapping(target = "priceListDetails", ignore = true)
     @Mapping(source = "code", target = "priceListCode")
     PriceListDto fromExcelToDto(PriceListExcelDto excel);
+
+    @Mapping(target = "priceListDate", ignore = true)
+    @Mapping(target = "validDateFrom", ignore = true)
+    @Mapping(target = "validDateTo", ignore = true)
+    @Mapping(target = "priceListDetails", ignore = true)
+    PriceListFilterDto toPriceListFilterDto(PriceList priceList);
 
     @Mapping(target = "priceListDate", ignore = true)
     @Mapping(target = "validDateFrom", ignore = true)
