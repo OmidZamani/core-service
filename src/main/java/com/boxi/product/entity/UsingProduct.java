@@ -34,5 +34,9 @@ public class UsingProduct {
     @JoinColumn(name="FK_PRODUCTATTRIBUTE_ID", referencedColumnName="PK_PRODUCTATTRIBUTE_ID", nullable=true)
     private ProductAttribute productAttribute;
 
+    @Basic(optional=true)
+    @Column(name="ISMANDATORY", insertable=true, updatable=true)
+    private Boolean isMandatory;
+
 
 }

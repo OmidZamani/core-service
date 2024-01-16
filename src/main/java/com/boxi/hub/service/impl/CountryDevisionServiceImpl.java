@@ -424,6 +424,18 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
 
     }
 
+    @Override
+    public SelectResponse findByName(String filter) {
+        CountryDevision topByName = countryDevisionRepository.findTopByNameAndCountryType(filter, CountryType.CITY);
+        return new SelectResponse(topByName.getId(), topByName.getName());
+    }
+
+    @Override
+    public SelectResponse findByRegionInCity(Long cityId) {
+        CountryDevision countryDevision = countryDevisionRepository.findById(cityId).orElseThrow();
+        return new SelectResponse(countryDevision.getParent().getId(), "");
+    }
+
     public SelectResponse toSelectHub(Hub hub) {
         return new SelectResponse(hub.getId(), hub.selectToString());
     }

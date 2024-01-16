@@ -114,6 +114,10 @@ public class CountryDevisionApi {
     public Response selectByTypes(@RequestParam(name = "filter") String filter) {
         return Response.ok().setPayload(_service.selectByTypes(filter));
     }
+    @GetMapping("/findByName")
+    public SelectResponse findByName(@RequestParam(name = "filter") String filter) {
+        return _service.findByName(filter);
+    }
 
     @GetMapping("/findbyCity")
     public Response findByCity(@RequestParam(name = "filter") String filter) {
@@ -133,6 +137,11 @@ public class CountryDevisionApi {
     @PostMapping("/findByCityInHub")
     public Response findByCityInHub(@RequestBody CountryDevisionDto dto) {
         return Response.ok().setPayload(_service.findByCityInHub(dto));
+    }
+
+    @GetMapping("/findByRegionInCity/{cityId}")
+    public SelectResponse findByRegionInCity(@PathVariable Long cityId){
+        return _service.findByRegionInCity(cityId);
     }
 
 }
