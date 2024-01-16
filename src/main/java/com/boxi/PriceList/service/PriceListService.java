@@ -19,6 +19,8 @@ public interface PriceListService {
 
     Page<PriceListFilterDto> filter(FilterPriceList request, Pageable pageable);
 
+    Page<PriceListFilterDto> filter_enhanced(FilterPriceList filter, Pageable pageable);
+
     PriceListDetailDto SelectEdit(String filter);
 
     List<SelectResponse> consignmentType();

@@ -45,6 +45,7 @@ public class PriceListApi {
         return Response.ok().setPayload(priceListDto);
     }
 
+    @Deprecated
     @PostMapping("/filter")
     public Response filter(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
                            @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -52,6 +53,16 @@ public class PriceListApi {
         log.warn(request.toJson());
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<PriceListFilterDto> response = priceListService.filter(request, pageable);
+        return Response.ok().setPayload(response);
+    }
+
+    @PostMapping("/filter-enhanced")
+    public Response filter_enhanced(@RequestParam(name = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+                           @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                           @RequestBody FilterPriceList request) {
+        log.warn(request.toJson());
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<PriceListFilterDto> response = priceListService.filter_enhanced(request, pageable);
         return Response.ok().setPayload(response);
     }
 
