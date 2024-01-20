@@ -391,8 +391,8 @@ public class AvailableServiceSuggestion {
 
         List<SuggestionServiceDto> services = new ArrayList<>();
         for (Services re : res) {
-            PriceListDto byId = priceListService.findById(re.getPriceList().getId());
-            for (PriceListDetailDto priceListDetail : byId.getPriceListDetails()) {
+            PriceListFilterDto byId = priceListService.findById(re.getPriceList().getId());
+            for (PriceListDetailFilterDto priceListDetail : byId.getPriceListDetails()) {
                 SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
                 suggestionServiceDto.setSupplementary(true);
                 suggestionServiceDto.setId(re.getId());
