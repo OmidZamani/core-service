@@ -100,7 +100,7 @@ public class ServiceServiceImpl implements ServiceService {
 
 //        First Delete All service in termsOfServices then add service
         termsOfServicesRepository.deleteByService(services);
-        PriceList priceList = priceListRepository.findById(services.getPriceList().getId()).orElseThrow();
+        PriceList priceList = priceListRepository.findByIdAndIsActiveIsTrue(services.getPriceList().getId());
         for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
             if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
 //          Find TimeCommitment  as Product Attribute

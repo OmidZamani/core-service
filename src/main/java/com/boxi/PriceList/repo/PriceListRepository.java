@@ -16,6 +16,7 @@ public interface PriceListRepository  extends JpaRepository<PriceList,Long>, Jpa
     void DeleteLogic(Long Id);
 
     PriceList findByPriceListCode(String PriceListName);
+    PriceList findByIdAndIsActiveIsTrue(Long id);
 
     boolean existsByPriceListCode(String priceListCode);
 
