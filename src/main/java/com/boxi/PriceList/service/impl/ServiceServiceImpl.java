@@ -124,6 +124,7 @@ public class ServiceServiceImpl implements ServiceService {
                                             terms.setToCity(customDevisionDetailD.getToCountryDevision());
                                             terms.setId(null);
                                             terms.setIsActive(true);
+                                            terms.setPriceListDetail(priceListDetail);
                                             terms.setServiceDescription(services.getDescription());
                                             if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
                                                     services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
@@ -142,6 +143,7 @@ public class ServiceServiceImpl implements ServiceService {
                                                 terms.setToCity(priceDetailDevision.getToCountryDevision());
                                                 terms.setId(null);
                                                 terms.setIsActive(true);
+                                                terms.setPriceListDetail(priceListDetail);
                                                 terms.setServiceDescription(services.getDescription());
                                                 if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
                                                         services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
@@ -172,14 +174,12 @@ public class ServiceServiceImpl implements ServiceService {
                                 if (productAttributes.getProduct().getId() == services.getProduct().getId()) {
                                     TermsOfServices termsOfServices = mapServiceToTermOfService(services, priceListDetail, productAttributes);
                                     if (priceListDetail.getPriceDetailDevisions() != null) {
-
                                         for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
                                             termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                            Object clone = SerializationUtils.clone(termsOfServices);
                                             TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
                                             TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
                                             terms.setService(services);
-
+                                            terms.setPriceListDetail(priceListDetail);
                                             terms.setFromCity(priceDetailDevision.getFromCountryDevision());
                                             terms.setToCity(priceDetailDevision.getToCountryDevision());
                                             terms.setId(null);
