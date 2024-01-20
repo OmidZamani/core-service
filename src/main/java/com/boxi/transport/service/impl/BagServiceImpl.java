@@ -158,6 +158,10 @@ public class BagServiceImpl implements BagService {
                 if (filter.getHublist() != null && filter.getSelectsourceHub() == null) {
                     List<Long> ids = findAllhubid(filter.getHublist());
 
+                    if (filter.getSelectTrip() != null)
+                        predicates.add(criteriaBuilder.equal(root.get("tripId"), filter.getSelectTrip()));
+
+
                     Predicate source = criteriaBuilder.and(root.get("sourceHub").get("id").in(ids));
 
 
@@ -225,7 +229,7 @@ public class BagServiceImpl implements BagService {
     public BagDto edit(BagDto dto) {
         Bag bag = findById(dto.getId());
         bagConverter.updateFromDto(dto, bag);
-        if(dto.getSelecttrip()==null)
+        if (dto.getSelecttrip() == null)
             bag.setTripId(null);
         return saveData(bag);
     }

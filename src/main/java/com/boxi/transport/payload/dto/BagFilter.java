@@ -25,6 +25,7 @@ public class BagFilter extends JsonBase {
     private String vehicleNumber3; //پلاک
     private List<HubPermissionDto> hublist;
     private Boolean isActive;
+    private SelectResponse selectTrip;//check from trip numbers
 
 
 
