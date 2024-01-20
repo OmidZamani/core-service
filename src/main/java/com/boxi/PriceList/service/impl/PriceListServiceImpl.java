@@ -186,9 +186,9 @@ public class PriceListServiceImpl implements PriceListService {
     }
 
     @Override
-    public PriceListDto findById(Long id) {
+    public PriceListFilterDto findById(Long id) {
         PriceList priceList = priceListRepository.findById(id).orElseThrow();
-        return priceListConverter.fromModelToDto(priceList);
+        return priceListConverter.fromFilterMap(priceList);
     }
 
     @Override

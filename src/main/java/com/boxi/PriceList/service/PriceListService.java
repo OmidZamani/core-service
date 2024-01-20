@@ -15,7 +15,7 @@ public interface PriceListService {
 
     PriceListDto edit(PriceListDto request);
 
-    PriceListDto findById(Long id);
+    PriceListFilterDto findById(Long id);
 
     Page<PriceListFilterDto> filter(FilterPriceList request, Pageable pageable);
 
