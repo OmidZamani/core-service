@@ -19,4 +19,6 @@ public interface CustomCountryDevisionRepository extends JpaRepository<CustomCou
 
     CustomCountryDevision findByCode(String customDevision);
 
+
+
 }

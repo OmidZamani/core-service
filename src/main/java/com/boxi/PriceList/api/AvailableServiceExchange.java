@@ -41,6 +41,11 @@ public class AvailableServiceExchange {
         return availableServiceSuggestion.serviceDetails(id);
     }
 
+    @PostMapping("/exchange/details/{id}")
+    List<SuggestionServiceDto> getDetails(@PathVariable Long id,@RequestBody ConsignmentInfoDto dto) {
+        return availableServiceSuggestion.serviceDetailsByConsignment(id,dto);
+    }
+
     @GetMapping("/exchange/basetypeselect")
     public List<SelectResponse> exchangeBaseTypeSelect() {
         return serviceService.baseTypeSelect();

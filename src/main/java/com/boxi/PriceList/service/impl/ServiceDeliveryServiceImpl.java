@@ -114,6 +114,7 @@ public class ServiceDeliveryServiceImpl implements ServiceDeliveryService {
         }
 
         List<ServiceDeliveryCustomersDto> serviceDeliveryCustomersList = new ArrayList<>();
+        if(request.getServiceDeliveryCustomers()!=null)
         for (ServiceDeliveryCustomersDto serviceDeliveryCustomer : request.getServiceDeliveryCustomers()) {
             ServiceDeliveryCustomers serviceDeliveryCustomers = serviceDeliveryCustomersConverter.fromDtoToModel(serviceDeliveryCustomer);
             serviceDeliveryCustomers.setServiceDelivery(save);

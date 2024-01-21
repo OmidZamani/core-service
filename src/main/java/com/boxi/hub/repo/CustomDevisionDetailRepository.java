@@ -1,5 +1,6 @@
 package com.boxi.hub.repo;
 
+import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.entity.CustomCountryDevision;
 import com.boxi.hub.entity.CustomDevisionDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,8 @@ public interface CustomDevisionDetailRepository extends JpaRepository<CustomDevi
     List<CustomDevisionDetail> findByCustomCountryDevision(CustomCountryDevision customCountryDevision);
 
     void deleteByCustomCountryDevision(CustomCountryDevision customCountryDevision);
+
+    List<CustomDevisionDetail>findAllByFromCountryDevisionAndToCountryDevisionAndCustomCountryDevision(CountryDevision fromCountryDevision, CountryDevision toCountryDevision, CustomCountryDevision customCountryDevision);
 
 
 

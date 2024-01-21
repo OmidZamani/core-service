@@ -51,8 +51,8 @@ public class ConsignmentInfoDto {
 
     private String pickUpTimeTo;
 
-
     private SelectResponse selectContentType;
+
     private SelectResponse selectConsignmentType;
 
     private String content;
