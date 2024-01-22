@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/core-api/SharePercentage")
+import java.math.BigDecimal;
+import java.util.List;
+
+@RequestMapping("/core-api/sharePercentage")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +37,11 @@ public class SharePercentageApi {
     @GetMapping("/external/{id}")
     private Response<Object> externalFindById(@PathVariable Long id) {
         return Response.ok().setPayload(sharePercentageService.findById(id));
+    }
+
+    @GetMapping("/external/fetchListOfPercentageByPrice/{price}")
+    private List<SharePercentageDto> fetchListOfPercentageByPrice(@PathVariable BigDecimal price){
+        return sharePercentageService.fetchListOfPercentageByPrice(price);
     }
 
 }
