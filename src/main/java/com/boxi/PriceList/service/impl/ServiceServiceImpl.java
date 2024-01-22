@@ -109,8 +109,6 @@ public class ServiceServiceImpl implements ServiceService {
             for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
                     if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
 //          Find TimeCommitment  as Product Attribute
-                        if(priceListDetail.getConsignmentType()!=0)
-                            System.out.println("hi");
                     if (priceListDetail.getCustomCountryDevision() != null)
                         for (CustomDevisionDetail customDevisionDetailD : priceListDetail.getCustomCountryDevision().getCustomDevisionDetails()) {
 

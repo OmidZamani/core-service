@@ -133,7 +133,7 @@ public class HubServiceImpl implements HubService {
             if (parentCode.getParentHub() != null)
                 hubPermissionDto.setParent(parentCode.getParentHub().getId());
             if (parentCode.getParentHub() != null) {
-                hubPermissionDto.setChildren(findByParentsChiled(hubCode));
+                hubPermissionDto.setChildren(findByParentsChiled(parentCode.getCode()));
             }
             List<HubPermissionDto> collect = list.stream().filter(dto -> hubCode.equals(hubPermissionDto.getValue())).collect(Collectors.toList());
             if (collect.size() == 0)
