@@ -20,6 +20,7 @@ import com.boxi.excel.payload.CreateServiceExcelRequest;
 import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.entity.CustomDevisionDetail;
 import com.boxi.hub.repo.CustomCountryDevisionRepository;
+import com.boxi.hub.repo.CustomDevisionDetailRepository;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
 import com.boxi.product.repo.ProductAttributeRepository;
@@ -27,7 +28,6 @@ import com.boxi.product.repo.ProductRepository;
 import com.boxi.utils.DateUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.SerializationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -69,6 +69,7 @@ public class ServiceServiceImpl implements ServiceService {
     private final CustomCountryDevisionRepository customCountryDevisionRepository;
     private final PriceListDetailRepository priceListDetailRepository;
 
+    private final CustomDevisionDetailRepository customDevisionDetailRepository;
 
     public ServiceServiceImpl(ServiceRepository serviceRepository
             , ServiceConvertor serviceConvertor
@@ -79,7 +80,7 @@ public class ServiceServiceImpl implements ServiceService {
             , ServiceDeliveryCustomersRepository serviceDeliveryCustomersRepository
             , TermsOfServicesRepository termsOfServicesRepository
             , TermsOfServicesConverter termsOfServicesConverter
-            , PriceDetailDevisionRepository priceDetailDevisionRepository, CustomCountryDevisionRepository customCountryDevisionRepository, PriceListDetailRepository priceListDetailRepository) {
+            , PriceDetailDevisionRepository priceDetailDevisionRepository, CustomCountryDevisionRepository customCountryDevisionRepository, PriceListDetailRepository priceListDetailRepository, CustomDevisionDetailRepository customDevisionDetailRepository) {
         this.serviceRepository = serviceRepository;
         this.serviceConvertor = serviceConvertor;
         this.priceListRepository = priceListRepository;
@@ -94,49 +95,95 @@ public class ServiceServiceImpl implements ServiceService {
         this.priceDetailDevisionRepository = priceDetailDevisionRepository;
         this.customCountryDevisionRepository = customCountryDevisionRepository;
         this.priceListDetailRepository = priceListDetailRepository;
+        this.customDevisionDetailRepository = customDevisionDetailRepository;
     }
+
 
     public void createServiceInTermOfService(Services services) {
 
 //        First Delete All service in termsOfServices then add service
         termsOfServicesRepository.deleteByService(services);
-        PriceList priceList = priceListRepository.findById(services.getPriceList().getId()).orElseThrow();
-        for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
-            if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
-//          Find TimeCommitment  as Product Attribute
-                if (priceListDetail.getCustomCountryDevision() != null)
-                    for (CustomDevisionDetail customDevisionDetailD : priceListDetail.getCustomCountryDevision().getCustomDevisionDetails()) {
 
-                        List<ProductAttribute> all = findAllProductAttributeByCountryDevision(priceListDetail, services, customDevisionDetailD);
+        PriceList priceList = priceListRepository.findByIdAndIsActiveIsTrue(services.getPriceList().getId());
+        if (priceList != null) {
+            for (PriceListDetail priceListDetail : priceList.getPriceListDetails()) {
+                    if (services.getProduct().getId() == priceListDetail.getProduct().getId()) {
+//          Find TimeCommitment  as Product Attribute
+                    if (priceListDetail.getCustomCountryDevision() != null)
+                        for (CustomDevisionDetail customDevisionDetailD : priceListDetail.getCustomCountryDevision().getCustomDevisionDetails()) {
+
+                            List<ProductAttribute> all = findAllProductAttributeByCountryDevision(priceListDetail, services, customDevisionDetailD);
+                            if (all.size() != 0) {
+                                for (ProductAttribute productAttributes : all) {
+
+                                    if (productAttributes.getProduct().getId() == services.getProduct().getId()) {
+                                        TermsOfServices termsOfServices = mapServiceToTermOfService(services, priceListDetail, productAttributes);
+
+                                        if (customDevisionDetailD != null) {
+                                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                            TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+                                            TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+                                            terms.setService(services);
+                                            terms.setFromCity(customDevisionDetailD.getFromCountryDevision());
+                                            terms.setToCity(customDevisionDetailD.getToCountryDevision());
+                                            terms.setId(null);
+                                            terms.setIsActive(true);
+                                            terms.setPriceListDetail(priceListDetail);
+                                            terms.setServiceDescription(services.getDescription());
+//                                            if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+//                                                    services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
+//                                                    terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
+//                                            ))
+                                                termsOfServicesRepository.save(terms);
+                                        }
+                                        if (priceListDetail.getPriceDetailDevisions() != null) {
+
+                                            for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
+                                                termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+                                                TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
+                                                TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
+                                                terms.setService(services);
+                                                terms.setFromCity(priceDetailDevision.getFromCountryDevision());
+                                                terms.setToCity(priceDetailDevision.getToCountryDevision());
+                                                terms.setId(null);
+                                                terms.setIsActive(true);
+                                                terms.setPriceListDetail(priceListDetail);
+                                                terms.setServiceDescription(services.getDescription());
+                                                if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
+                                                        services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
+                                                        terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
+                                                ))
+                                                    termsOfServicesRepository.save(terms);
+                                            }
+
+                                        }
+
+//                        else {
+//                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
+//                            termsOfServices.setId(null);
+//                            termsOfServices.setIsActive(true);
+//                            termsOfServices.setServiceDescription(services.getDescription());
+//                            termsOfServicesRepository.save(termsOfServices);
+//                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    else {
+                        List<ProductAttribute> all = findAllProductAttribute(priceListDetail, services);
                         if (all.size() != 0) {
                             for (ProductAttribute productAttributes : all) {
 
                                 if (productAttributes.getProduct().getId() == services.getProduct().getId()) {
                                     TermsOfServices termsOfServices = mapServiceToTermOfService(services, priceListDetail, productAttributes);
-
-                                    if (customDevisionDetailD != null) {
-                                        termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                        TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-                                        TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-                                        terms.setService(services);
-                                        terms.setFromCity(customDevisionDetailD.getFromCountryDevision());
-                                        terms.setToCity(customDevisionDetailD.getToCountryDevision());
-                                        terms.setId(null);
-                                        terms.setIsActive(true);
-                                        terms.setServiceDescription(services.getDescription());
-                                        if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
-                                                services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
-                                                terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
-                                        ))
-                                            termsOfServicesRepository.save(terms);
-                                    }
                                     if (priceListDetail.getPriceDetailDevisions() != null) {
-
                                         for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
                                             termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
                                             TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
                                             TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
                                             terms.setService(services);
+                                            terms.setPriceListDetail(priceListDetail);
                                             terms.setFromCity(priceDetailDevision.getFromCountryDevision());
                                             terms.setToCity(priceDetailDevision.getToCountryDevision());
                                             terms.setId(null);
@@ -151,59 +198,29 @@ public class ServiceServiceImpl implements ServiceService {
 
                                     }
 
-//                        else {
-//                            termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-//                            termsOfServices.setId(null);
-//                            termsOfServices.setIsActive(true);
-//                            termsOfServices.setServiceDescription(services.getDescription());
-//                            termsOfServicesRepository.save(termsOfServices);
-//                        }
-
-                                }
-                            }
-                        }
-                    }
-                else {
-                    List<ProductAttribute> all = findAllProductAttribute(priceListDetail, services);
-                    if (all.size() != 0) {
-                        for (ProductAttribute productAttributes : all) {
-
-                            if (productAttributes.getProduct().getId() == services.getProduct().getId()) {
-                                TermsOfServices termsOfServices = mapServiceToTermOfService(services, priceListDetail, productAttributes);
-                                if (priceListDetail.getPriceDetailDevisions() != null) {
-
-                                    for (PriceDetailDevision priceDetailDevision : priceDetailDevisionRepository.findAllByPriceListDetail(priceListDetail)) {
-                                        termsOfServices.setServiceType(ServiceType.findByValue(services.getType()));
-                                        Object clone = SerializationUtils.clone(termsOfServices);
-                                        TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromModelToDto(termsOfServices);
-                                        TermsOfServices terms = termsOfServicesConverter.fromDtoToModel(termsOfServicesDto);
-                                        terms.setService(services);
-
-                                        terms.setFromCity(priceDetailDevision.getFromCountryDevision());
-                                        terms.setToCity(priceDetailDevision.getToCountryDevision());
-                                        terms.setId(null);
-                                        terms.setIsActive(true);
-                                        terms.setServiceDescription(services.getDescription());
-                                        if (!termsOfServicesRepository.existsTermsOfServicesByServiceAndFromCityAndToCityAndFromValueAndToValueAndFromWeightAndToWeightAndFromDimAndToDimensionAndTimeCommitmentFromAndTimeCommitmentToAndTimeCommitmentTimeUnitAndFromNumberAndToNumber(
-                                                services, terms.getFromCity(), terms.getToCity(), terms.getFromValue(), terms.getToValue(), terms.getFromWeight(), terms.getToWeight(), terms.getFromDim(), terms.getToDimension(),
-                                                terms.getTimeCommitmentFrom(), terms.getTimeCommitmentTo(), terms.getTimeCommitmentTimeUnit(), terms.getFromNumber(), terms.getToNumber()
-                                        ))
-                                            termsOfServicesRepository.save(terms);
-                                    }
-
                                 }
 
-                            }
 
+                            }
 
                         }
 
                     }
-
                 }
             }
         }
     }
+
+    private ProductAttribute findProductAttribute(CustomDevisionDetail customDevisionDetail, Services services, List<ProductAttribute> all) {
+
+
+//        for (ProductAttribute productAttribute : all) {
+//            if(customDevisionDetail.get)
+//        }
+
+        return null;
+    }
+
 
     private TermsOfServices mapServiceToTermOfService(Services services, PriceListDetail priceListDetail, ProductAttribute productAttributes) {
         TermsOfServices termsOfServices = new TermsOfServices();

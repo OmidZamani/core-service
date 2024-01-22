@@ -5,7 +5,6 @@ import com.boxi.PriceList.entity.PriceList;
 import com.boxi.PriceList.entity.PriceListDetail;
 import com.boxi.PriceList.entity.Services;
 import com.boxi.PriceList.payload.dto.*;
-
 import com.boxi.PriceList.repo.PriceListDetailRepository;
 import com.boxi.PriceList.repo.PriceListRepository;
 import com.boxi.PriceList.repo.ServiceRepository;
@@ -391,8 +390,8 @@ public class AvailableServiceSuggestion {
 
         List<SuggestionServiceDto> services = new ArrayList<>();
         for (Services re : res) {
-            PriceListDto byId = priceListService.findById(re.getPriceList().getId());
-            for (PriceListDetailDto priceListDetail : byId.getPriceListDetails()) {
+            PriceListFilterDto byId = priceListService.findById(re.getPriceList().getId());
+            for (PriceListDetailFilterDto priceListDetail : byId.getPriceListDetails()) {
                 SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
                 suggestionServiceDto.setSupplementary(true);
                 suggestionServiceDto.setId(re.getId());
@@ -463,4 +462,61 @@ public class AvailableServiceSuggestion {
         return productJoin;
     }
 
+    public List<SuggestionServiceDto> serviceDetailsByConsignment(Long id, ConsignmentInfoDto dto) {
+        Services getServiceProduct = ServiceRepository.findById(id).orElseThrow();
+        List<SuggestionServiceDto> services = new ArrayList<>();
+        List<UsingProduct> all1 = usingProductRepository.findAll((Specification<UsingProduct>) (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Join<Object, Object> product = root.join("parent");
+            predicates.add(cb.equal(product.get("id"), getServiceProduct.getProduct().getId()));
+            query.distinct(true);
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        });
+
+        for (UsingProduct usingProduct : all1) {
+            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getsuggestDetails(usingProduct.getChild().getId(), new Date());
+            for (SuggestDetailServiceInfDto serviceInfDto : serviceInfList) {
+                SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
+                suggestionServiceDto.setId(serviceInfDto.getId());
+
+
+                Services byPriceListAndProduct = ServiceRepository.findTopByPriceListAndProductAndType(new PriceList().setId(serviceInfDto.getPriceListId()), new Product().setId(serviceInfDto.getProductId()), 1L);
+
+
+                if (byPriceListAndProduct != null) {
+
+                    for (PriceListDetail priceListDetail : byPriceListAndProduct.getPriceList().getPriceListDetails()) {
+
+                        if ((priceListDetail.getFromWeight() >= dto.getWeight() && priceListDetail.getToWeight() <= dto.getWeight())
+                                &&
+                                (priceListDetail.getFromValue().doubleValue() >= dto.getDeclarativeValue().doubleValue() && priceListDetail.getToValue().doubleValue() <= dto.getDeclarativeValue().doubleValue())
+
+                        ) {
+                            suggestionServiceDto.setId(byPriceListAndProduct.getId());
+                            suggestionServiceDto.setName(byPriceListAndProduct.getName());
+                            suggestionServiceDto.setPrice(serviceInfDto.getPrice());
+                            suggestionServiceDto.setServiceType(1L);
+
+
+                            if (checkArrayList(services, suggestionServiceDto))
+                                services.add(suggestionServiceDto);
+                            else {
+                                for (SuggestionServiceDto service : services) {
+                                    if (!Objects.equals(service.getPrice(), serviceInfDto.getPrice()))
+                                        suggestionServiceDto.setPrice(serviceInfDto.getPrice());
+                                }
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+
+        return services;
+    }
 }

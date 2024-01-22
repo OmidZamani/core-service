@@ -183,6 +183,8 @@ public class TermsOfServicesServiceImpl implements TermsOfServicesService {
     @Override
     public List<SuggestionServiceDto> suggestionTermOfService(ConsignmentInfoDto filter, Pageable pageable) {
         TermsOfServicesDto termsOfServicesDto = termsOfServicesConverter.fromConsignmentInfoDtoToTermDto(filter);
+        if (filter.getSelectConsignmentType() != null)
+            termsOfServicesDto.setConsignmentType(filter.getSelectConsignmentType());
         Pageable pageables = PageRequest.of(0, 100);
         if (filter.getSelectContentType() != null)
             termsOfServicesDto.setContentTypeId(filter.getSelectContentType().getId());

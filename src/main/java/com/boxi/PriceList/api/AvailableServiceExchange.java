@@ -33,12 +33,17 @@ public class AvailableServiceExchange {
     @PostMapping("/suggestionService")
     List<SuggestionServiceDto> post(@RequestBody ConsignmentInfoDto request) {
 //        return availableServiceSuggestion.serviceSuggestionDetails(request);
-        return termsOfServicesService.suggestionTermOfService(request,null);
+        return termsOfServicesService.suggestionTermOfService(request, null);
     }
 
     @GetMapping("/{id}")
     List<SuggestionServiceDto> get(@PathVariable Long id) {
         return availableServiceSuggestion.serviceDetails(id);
+    }
+
+    @PostMapping("/exchange/details/{id}")
+    List<SuggestionServiceDto> getDetails(@PathVariable Long id, @RequestBody ConsignmentInfoDto dto) {
+        return availableServiceSuggestion.serviceDetailsByConsignment(id, dto);
     }
 
     @GetMapping("/exchange/basetypeselect")
@@ -52,7 +57,7 @@ public class AvailableServiceExchange {
     }
 
     @GetMapping("/findByDefaultServicePrice/{id}")
-    public BigDecimal findByDefaultServicePrice(@PathVariable Long id){
+    public BigDecimal findByDefaultServicePrice(@PathVariable Long id) {
         return serviceService.findByDefaultServicePrice(id);
     }
 }

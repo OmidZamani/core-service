@@ -23,6 +23,7 @@ import com.boxi.hub.entity.CustomCountryDevision;
 import com.boxi.hub.payload.converter.CustomCountryDevisionConverter;
 import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.hub.repo.CustomCountryDevisionRepository;
+import com.boxi.hub.service.CountryDevisionService;
 import com.boxi.product.entity.Product;
 import com.boxi.product.entity.ProductAttribute;
 import com.boxi.product.repo.ProductAttributeRepository;
@@ -30,6 +31,7 @@ import com.boxi.product.repo.ProductRepository;
 import com.boxi.product.response.ContryDevistionSelect;
 import com.boxi.utils.DateUtil;
 import io.micrometer.core.instrument.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,58 +51,23 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class PriceListServiceImpl implements PriceListService {
 
     private final PriceListRepository priceListRepository;
     private final PriceListConverter priceListConverter;
-
     private final PriceListDetailRepository priceListDetailRepository;
     private final PriceListDetailConverter priceListDetailConverter;
-
     private final PriceDetailDevisionConverter priceDetailDevisionConverter;
     private final PriceDetailDevisionRepository priceDetailDevisionRepository;
-
     private final CustomCountryDevisionRepository customCountryDevisionRepository;
     private final CustomCountryDevisionConverter customCountryDevisionConverter;
-
     private final CountryDevisionRepository countryDevisionRepository;
-
     private final ProductRepository productRepository;
-
     private final ServiceRepository serviceRepository;
-
-    private ProductAttributeRepository productAttributeRepository;
-
+    private final CountryDevisionService countryDevisionService;
+    private final ProductAttributeRepository productAttributeRepository;
     private final ServiceService serviceService;
-
-
-    public PriceListServiceImpl(PriceListRepository priceListRepository,
-                                PriceListConverter priceListConverter,
-                                PriceListDetailRepository priceListDetailRepository,
-                                PriceListDetailConverter priceListDetailConverter,
-                                PriceDetailDevisionConverter priceDetailDevisionConverter,
-                                PriceDetailDevisionRepository priceDetailDevisionRepository,
-                                CustomCountryDevisionRepository customCountryDevisionRepository,
-                                CustomCountryDevisionConverter customCountryDevisionConverter,
-                                CountryDevisionRepository countryDevisionRepository,
-                                ProductRepository productRepository,
-                                ServiceRepository serviceRepository,
-                                ProductAttributeRepository productAttributeRepository, ServiceService serviceService) {
-        this.priceListRepository = priceListRepository;
-        this.priceListConverter = priceListConverter;
-        this.priceListDetailRepository = priceListDetailRepository;
-        this.priceListDetailConverter = priceListDetailConverter;
-        this.priceDetailDevisionConverter = priceDetailDevisionConverter;
-        this.priceDetailDevisionRepository = priceDetailDevisionRepository;
-        this.customCountryDevisionRepository = customCountryDevisionRepository;
-        this.customCountryDevisionConverter = customCountryDevisionConverter;
-        this.countryDevisionRepository = countryDevisionRepository;
-        this.productRepository = productRepository;
-        this.serviceRepository = serviceRepository;
-        this.productAttributeRepository = productAttributeRepository;
-        this.serviceService = serviceService;
-
-    }
 
     private Boolean checkProductAttribute(List<PriceListDetailDto> request) {
 
@@ -220,13 +186,22 @@ public class PriceListServiceImpl implements PriceListService {
     }
 
     @Override
-    public PriceListDto findById(Long id) {
+    public PriceListFilterDto findById(Long id) {
         PriceList priceList = priceListRepository.findById(id).orElseThrow();
-        return priceListConverter.fromModelToDto(priceList);
+        return priceListConverter.fromFilterMap(priceList);
     }
 
     @Override
     public Page<PriceListFilterDto> filter(FilterPriceList filter, Pageable pageable) {
+        return this.filterPaged(filter, pageable).map(priceListConverter::fromFilterMap);
+    }
+
+    @Override
+    public Page<PriceListFilterDto> filter_enhanced(FilterPriceList filter, Pageable pageable) {
+        return this.filterPaged(filter, pageable).map(plc -> priceListConverter.toPriceListFilterDto(plc));
+    }
+
+    public Page<PriceList> filterPaged(FilterPriceList filter, Pageable pageable) {
 
         Page<PriceList> res = priceListRepository
                 .findAll((Specification<PriceList>) (root, query, criteriaBuilder) -> {
@@ -277,8 +252,7 @@ public class PriceListServiceImpl implements PriceListService {
 
                 }, pageable);
 
-        return res.map(priceListConverter::fromFilterMap);
-
+        return res;
     }
 
     @Override
