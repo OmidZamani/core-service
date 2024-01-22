@@ -132,8 +132,30 @@ public class HubServiceImpl implements HubService {
             log.warn(parentCode.getCode());
             if (parentCode.getParentHub() != null)
                 hubPermissionDto.setParent(parentCode.getParentHub().getId());
-            if (parentCode.getHubs() != null) {
-                hubPermissionDto.setChildren(findByParents(parentCode.getCode()));
+            if (parentCode.getParentHub() != null) {
+                hubPermissionDto.setChildren(findByParentsChiled(hubCode));
+            }
+            List<HubPermissionDto> collect = list.stream().filter(dto -> hubCode.equals(hubPermissionDto.getValue())).collect(Collectors.toList());
+            if (collect.size() == 0)
+                list.add(hubPermissionDto);
+
+        }
+        return list;
+    }
+
+    private List<HubPermissionDto> findByParentsChiled(String hubCode) {
+        List<Hub> topByParentHubCode = hubRepository.findAllByParentHubCodeAndIsActiveIsTrueAndIsDeletedIsFalse(hubCode);
+        List<HubPermissionDto> list = new ArrayList<>();
+        for (Hub parentCode : topByParentHubCode) {
+            HubPermissionDto hubPermissionDto = new HubPermissionDto();
+            hubPermissionDto.setId(parentCode.getId());
+            hubPermissionDto.setValue(parentCode.getCode());
+            hubPermissionDto.setLabel(parentCode.getName());
+            log.warn(parentCode.getCode());
+            if (parentCode.getParentHub() != null)
+                hubPermissionDto.setParent(parentCode.getParentHub().getId());
+            if (parentCode.getParentHub() != null) {
+                hubPermissionDto.setChildren(findByParentsChiled(parentCode.getCode()));
             }
             List<HubPermissionDto> collect = list.stream().filter(dto -> hubCode.equals(hubPermissionDto.getValue())).collect(Collectors.toList());
             if (collect.size() == 0)
