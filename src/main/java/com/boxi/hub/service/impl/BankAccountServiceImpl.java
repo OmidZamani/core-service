@@ -66,8 +66,18 @@ public class BankAccountServiceImpl implements BankAccountService {
         }).stream().map(this::toSelect).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SelectResponse> findAccountByCustomerId(Long customerId) {
+        List<BankAccount> allByCustomerId = bankAccountRepository.findAllByCustomerId(customerId);
+        return allByCustomerId.stream().map(this::toSelectBySheba).collect(Collectors.toList());
+    }
+
+    private SelectResponse toSelectBySheba(BankAccount bankAccount) {
+        return new SelectResponse(bankAccount.getId(), bankAccount.getAccountNumber().toString());
+    }
+
     private SelectResponse toSelect(BankAccount bankAccount) {
-        return new SelectResponse(bankAccount.getId(), bankAccount.getAccountNumber().toString()+" - "+bankAccount.getBank().getFa());
+        return new SelectResponse(bankAccount.getId(), bankAccount.getAccountNumber().toString() + " - " + bankAccount.getBank().getFa());
     }
 
     private BankAccountDto saveEdit(BankAccountDto dto) {

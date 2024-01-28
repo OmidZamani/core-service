@@ -15,4 +15,6 @@ public interface BankAccountService {
     BankAccountDto findById(Long id);
 
     List<SelectResponse> select(String filter);
+
+    List<SelectResponse> findAccountByCustomerId(Long customerId);
 }

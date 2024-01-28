@@ -61,4 +61,8 @@ public class BankAccountApi {
         return BankType.select();
     }
 
+    @GetMapping("/external/findAccountByCustomerId/{customerId}")
+    public List<SelectResponse> findAccountByCustomerId(@PathVariable Long customerId) {
+        return bankAccountService.findAccountByCustomerId(customerId);
+    }
 }

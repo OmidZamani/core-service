@@ -21,8 +21,10 @@ import com.boxi.hub.repo.CountryDevisionRepository;
 import com.boxi.hub.repo.HubCategoryRepository;
 import com.boxi.hub.repo.HubRepository;
 import com.boxi.hub.service.HubService;
+import com.boxi.transport.entity.Vehicle;
 import com.boxi.transport.payload.excel.CreateHubExcelRequest;
 import com.boxi.transport.payload.request.HubFilter;
+import com.boxi.transport.repo.VehicleRepository;
 import com.boxi.utils.ExcelToPojoUtils;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +60,7 @@ public class HubServiceImpl implements HubService {
     private final HubExcelConverter hubExcelConverter;
     private final CountryDevisionRepository countryDevisionRepository;
     private final PudoPlaningClient pudoPlaningClient;
+    private final VehicleRepository  vehicleRepository;
 
 
     @Autowired
@@ -67,7 +70,7 @@ public class HubServiceImpl implements HubService {
                           HubExcelConverter hubExcelConverter,
                           HubCategoryConverter hubCategoryConverter,
                           CountryDevisionRepository countryDevisionRepository,
-                          PudoPlaningClient pudoPlaningClient) {
+                          PudoPlaningClient pudoPlaningClient, VehicleRepository vehicleRepository) {
         this.hubCategoryRepository = hubCategoryRepository;
         this.hubRepository = hubRepository;
         this.hubConverter = hubConverter;
@@ -78,6 +81,7 @@ public class HubServiceImpl implements HubService {
         this.countryDevisionRepository = countryDevisionRepository;
 
         this.pudoPlaningClient = pudoPlaningClient;
+        this.vehicleRepository = vehicleRepository;
     }
 
     @Override
@@ -288,6 +292,7 @@ public class HubServiceImpl implements HubService {
 
         if(dto.getPolygonIndex()==null) dto.setPolygonIndex(0L);
         hubRepository.save_polygonVehicle(dto.getSelectHub().getId(), hub.getCity().getId(), dto.getSelectuser().getId(), dto.getPudoVehiclePlanId(), dto.getPudoVehicleId(), dto.getColor(), dto.getPolygon(), dto.getPudoExecutationId(), dto.getPolygonIndex());
+
         pudoPlaningClient.createConsignmentList(dto.getConsignmentList(), dto.getPudoExecutationId(), dto.getPudoVehicleId());
         return dto;
     }
