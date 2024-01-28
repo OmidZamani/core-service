@@ -496,15 +496,17 @@ public class AvailableServiceSuggestion {
                         ) {
                             suggestionServiceDto.setId(byPriceListAndProduct.getId());
                             suggestionServiceDto.setName(byPriceListAndProduct.getName());
-                            suggestionServiceDto.setPrice(serviceInfDto.getPrice());
+                            suggestionServiceDto.setPrice(priceListDetail.getPrice());
                             suggestionServiceDto.setServiceType(1L);
 
 
-                            if (checkArrayList(services, suggestionServiceDto))
+                            if (checkArrayList(services, suggestionServiceDto)) {
                                 services.add(suggestionServiceDto);
+
+                            }
                             else {
                                 for (SuggestionServiceDto service : services) {
-                                    if (!Objects.equals(service.getPrice(), serviceInfDto.getPrice()))
+                                    if (!Objects.equals(service.getPrice(), priceListDetail.getPrice()))
                                         suggestionServiceDto.setPrice(serviceInfDto.getPrice());
                                 }
 
