@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class AvailableServiceSuggestion {
 
     final ServiceRepository ServiceRepository;
@@ -488,9 +490,8 @@ public class AvailableServiceSuggestion {
 
                     for (PriceListDetail priceListDetail : byPriceListAndProduct.getPriceList().getPriceListDetails()) {
 
-                        if ((priceListDetail.getFromWeight() >= dto.getWeight() && priceListDetail.getToWeight() <= dto.getWeight())
-                                &&
-                                (priceListDetail.getFromValue().doubleValue() >= dto.getDeclarativeValue().doubleValue() && priceListDetail.getToValue().doubleValue() <= dto.getDeclarativeValue().doubleValue())
+                        if (
+                                (priceListDetail.getFromValue() != null && priceListDetail.getFromValue().doubleValue() <= dto.getDeclarativeValue().doubleValue() && priceListDetail.getToValue().doubleValue() >= dto.getDeclarativeValue().doubleValue())
 
                         ) {
                             suggestionServiceDto.setId(byPriceListAndProduct.getId());
