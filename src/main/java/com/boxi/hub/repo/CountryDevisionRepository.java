@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface CountryDevisionRepository extends JpaRepository<CountryDevision, Long>, JpaSpecificationExecutor<CountryDevision> {
     CountryDevision findTopByName(String name);
+    Boolean existsByName(String name);
 
     CountryDevision findTopByNameAndCountryType(String name, CountryType countryType);
 

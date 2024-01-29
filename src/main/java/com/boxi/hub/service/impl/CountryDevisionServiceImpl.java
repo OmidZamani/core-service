@@ -436,6 +436,12 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
         return new SelectResponse(countryDevision.getParent().getId(), "");
     }
 
+    @Override
+    public Boolean existsByName(String text) {
+
+        return countryDevisionRepository.existsByName(text);
+    }
+
     public SelectResponse toSelectHub(Hub hub) {
         return new SelectResponse(hub.getId(), hub.selectToString());
     }
