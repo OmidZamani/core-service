@@ -30,4 +30,6 @@ public interface CustomCountryDevisionService {
     boolean ExcelValidation(List<CustomCountryDevisionExcelDto> exceptionExcelList);
 
     List<CustomCountryDevisionDto> ImportExcel(List<CustomCountryDevisionExcelDto> customCountryDivisionList);
+
+    Boolean existsByName(String countryName);
 }

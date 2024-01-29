@@ -52,8 +52,8 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
 
     @Override
     public CustomCountryDevisionDto create(CustomCountryDevisionDto request) {
-        if(customCountryDevisionRepository.existsByCode(request.getCode()))
-            throw BusinessException.valueException(EntityType.CustomCountryDevision,"customCountryDevisionDetails.code.is.duplicate");
+        if (customCountryDevisionRepository.existsByCode(request.getCode()))
+            throw BusinessException.valueException(EntityType.CustomCountryDevision, "customCountryDevisionDetails.code.is.duplicate");
         request.setId(null);
         request.setIsDeleted(false);
         CustomCountryDevision customCountryDevision = customCountryDevisionConverter.fromDtoToModel(request);
@@ -88,12 +88,12 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
                 predicates.add(criteriaBuilder.like(root.get("name"), "%" + filter.getName() + "%"));
             }
             if (filter.getFromCountryDevision() != null && StringUtils.isNotBlank(filter.getFromCountryDevision())) {
-                Join<CustomCountryDevision,CustomDevisionDetail> fromCountryDevision = root.join("customDevisionDetails");
+                Join<CustomCountryDevision, CustomDevisionDetail> fromCountryDevision = root.join("customDevisionDetails");
                 predicates.add(criteriaBuilder.like(fromCountryDevision.get("fromCountryDevision").get("name"), "%" + filter.getFromCountryDevision() + "%"));
 
             }
             if (filter.getToCountryDevision() != null && StringUtils.isNotBlank(filter.getToCountryDevision())) {
-                Join<CustomCountryDevision,CustomDevisionDetail> toCountryDevision = root.join("customDevisionDetails");
+                Join<CustomCountryDevision, CustomDevisionDetail> toCountryDevision = root.join("customDevisionDetails");
                 predicates.add(criteriaBuilder.like(toCountryDevision.get("toCountryDevision").get("name"), "%" + filter.getToCountryDevision() + "%"));
 
             }
@@ -238,6 +238,11 @@ public class CustomCountryDevisionServiceImpl implements CustomCountryDevisionSe
 
         return customCountryDevisionDtos1;
 
+    }
+
+    @Override
+    public Boolean existsByName(String countryName) {
+        return customCountryDevisionRepository.existsByName(countryName);
     }
 
     private CustomCountryDevisionDto Update(CustomCountryDevision byId) {

@@ -111,4 +111,9 @@ public class CustomCountryDevisionApi {
         }
     }
 
+    @PostMapping("/existsByName")
+    public Boolean existsByName(@RequestBody SelectResponse selectResponse){
+        return customCountryDevisionService.existsByName(selectResponse.getText());
+    }
+
 }

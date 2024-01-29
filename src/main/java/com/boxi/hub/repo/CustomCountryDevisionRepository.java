@@ -16,6 +16,7 @@ public interface CustomCountryDevisionRepository extends JpaRepository<CustomCou
     void logicalDelete(Long id);
 
     boolean existsByCode(String code);
+    boolean existsByName(String name);
 
     CustomCountryDevision findByCode(String customDevision);
 

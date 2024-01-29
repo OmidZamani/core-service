@@ -144,4 +144,8 @@ public class CountryDevisionApi {
         return _service.findByRegionInCity(cityId);
     }
 
+    @PostMapping("/existsByName")
+    public Boolean existsByName(@RequestBody SelectResponse selectResponse){
+        return _service.existsByName(selectResponse.getText());
+    }
 }
