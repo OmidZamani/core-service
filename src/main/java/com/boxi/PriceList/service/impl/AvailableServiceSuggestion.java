@@ -477,7 +477,7 @@ public class AvailableServiceSuggestion {
         });
 
         for (UsingProduct usingProduct : all1) {
-            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getsuggestDetails(usingProduct.getChild().getId(), new Date());
+            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getSuggestDetailsByValue(dto.getDeclarativeValue(),usingProduct.getChild().getId(), new Date());
             for (SuggestDetailServiceInfDto serviceInfDto : serviceInfList) {
                 SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
                 suggestionServiceDto.setId(serviceInfDto.getId());
@@ -501,7 +501,7 @@ public class AvailableServiceSuggestion {
 
 
                             if (checkArrayList(services, suggestionServiceDto)) {
-                                services.add(suggestionServiceDto);
+                                 services.add(suggestionServiceDto);
 
                             }
                             else {
