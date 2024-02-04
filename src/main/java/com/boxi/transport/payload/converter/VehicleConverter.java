@@ -154,15 +154,16 @@ abstract class VehicleSelectConverter implements VehicleConverter {
     public VehicleDto fromModelToDto(Vehicle vehicle) {
         VehicleDto vehicleDto = vehicleConverter.fromModelToDto(vehicle);
 
-        if (vehicleDto != null && vehicleDto.getFixedDriverId() != null) {
-            DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFixedDriverId());
-            vehicleDto.setFixedDriverName(driverDto.getName());
+        if(vehicleDto != null) {
+            if (vehicleDto != null && vehicleDto.getFixedDriverId() != null) {
+                DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFixedDriverId());
+                vehicleDto.setFixedDriverName(driverDto.getName());
+            }
+            if (vehicleDto != null && vehicleDto.getFirstDriverId() != null) {
+                DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFirstDriverId());
+                vehicleDto.setFirstDriverName(driverDto.getName());
+            }
         }
-        if (vehicleDto != null && vehicleDto.getFirstDriverId() != null) {
-            DriverDto driverDto = driverClient.findbyIdbyid(vehicleDto.getFirstDriverId());
-            vehicleDto.setFirstDriverName(driverDto.getName());
-        }
-
 
         return vehicleDto;
     }
