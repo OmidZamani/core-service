@@ -1,4 +1,4 @@
-FROM registry.datsa.ir:5000/openjdk:11-jre
+FROM docker.arvancloud.ir/openjdk:11-jre
 VOLUME /tmp
 ADD ./target/core-service-0.0.1-SNAPSHOT.jar app.jar
 RUN sh -c 'touch /app.jar'
