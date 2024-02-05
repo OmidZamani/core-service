@@ -477,7 +477,7 @@ public class AvailableServiceSuggestion {
         });
 
         for (UsingProduct usingProduct : all1) {
-            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getSuggestDetailsByValue(dto.getDeclarativeValue(),usingProduct.getChild().getId(), new Date());
+            List<SuggestDetailServiceInfDto> serviceInfList = ServiceRepository.getSuggestDetailsByValue(dto.getDeclarativeValue(), usingProduct.getChild().getId(), new Date());
             for (SuggestDetailServiceInfDto serviceInfDto : serviceInfList) {
                 SuggestionServiceDto suggestionServiceDto = new SuggestionServiceDto();
                 suggestionServiceDto.setId(serviceInfDto.getId());
@@ -491,7 +491,9 @@ public class AvailableServiceSuggestion {
                     for (PriceListDetail priceListDetail : byPriceListAndProduct.getPriceList().getPriceListDetails()) {
 
                         if (
-                                (priceListDetail.getFromValue() != null && priceListDetail.getFromValue().doubleValue() <= dto.getDeclarativeValue().doubleValue() && priceListDetail.getToValue().doubleValue() >= dto.getDeclarativeValue().doubleValue())
+                                (priceListDetail.getFromValue() != null && priceListDetail.getFromValue() != null && priceListDetail.getToValue() != null &&
+                                        priceListDetail.getFromValue().doubleValue() <= dto.getDeclarativeValue().doubleValue() &&
+                                        priceListDetail.getToValue().doubleValue() >= dto.getDeclarativeValue().doubleValue())
 
                         ) {
                             suggestionServiceDto.setId(byPriceListAndProduct.getId());
@@ -501,10 +503,9 @@ public class AvailableServiceSuggestion {
 
 
                             if (checkArrayList(services, suggestionServiceDto)) {
-                                 services.add(suggestionServiceDto);
+                                services.add(suggestionServiceDto);
 
-                            }
-                            else {
+                            } else {
                                 for (SuggestionServiceDto service : services) {
                                     if (!Objects.equals(service.getPrice(), priceListDetail.getPrice()))
                                         suggestionServiceDto.setPrice(serviceInfDto.getPrice());
