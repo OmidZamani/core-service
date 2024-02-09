@@ -1,5 +1,7 @@
 package com.boxi.transport.service.impl;
 
+import com.boxi.PriceList.entity.PriceList;
+import com.boxi.PriceList.entity.PriceListDetail;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
 import com.boxi.core.response.SelectResponse;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,6 +241,20 @@ public class DockServiceImpl implements DockService {
 
     @Override
     public List<DockDto> externalFindByHubId(Long hubId) {
+        //TODO Khoshdaman query by id
+
+//        return  dockRepository
+//                .findAll((Specification<Dock>) (root, query, criteriaBuilder) -> {
+//                    List<Predicate> predicates = new ArrayList<>();
+//
+//                    predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+//                    predicates.add(criteriaBuilder.equal(root.get("isActive"), true));
+//
+//                    Join<Dock, Hub> hubJoin = root.join("id", JoinType.LEFT);
+//                    predicates.add(criteriaBuilder.equal(hubJoin.get("id"), hubId));
+//
+//                    return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+//                }).stream().map(dockConverter::fromModelToDto).collect(Collectors.toList());
 
         List<Dock> allByHubAndIsActiveIsTrueAndIsDeletedIsFalse = dockRepository.findAllByHubAndIsActiveIsTrueAndIsDeletedIsFalse(new Hub().setId(hubId));
         return allByHubAndIsActiveIsTrueAndIsDeletedIsFalse.stream().map(dockConverter::fromModelToDto).collect(Collectors.toList());
