@@ -2,9 +2,12 @@ package com.boxi.hub.service.impl;
 
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
+import com.boxi.core.response.SelectResponse;
+import com.boxi.hub.entity.BankAccount;
 import com.boxi.hub.entity.SharePercentage;
 import com.boxi.hub.payload.converter.SharePercentageConverter;
 import com.boxi.hub.payload.dto.SharePercentageDto;
+import com.boxi.hub.repo.BankAccountRepository;
 import com.boxi.hub.repo.SharePercentageRepository;
 import com.boxi.hub.service.SharePercentageService;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,10 +26,12 @@ public class SharePercentageServiceImpl implements SharePercentageService {
 
     private final SharePercentageRepository sharePercentageRepository;
     private final SharePercentageConverter sharePercentageConverter;
+    private final BankAccountRepository bankAccountRepository;
 
-    public SharePercentageServiceImpl(SharePercentageRepository sharePercentageRepository, SharePercentageConverter sharePercentageConverter) {
+    public SharePercentageServiceImpl(SharePercentageRepository sharePercentageRepository, SharePercentageConverter sharePercentageConverter, BankAccountRepository bankAccountRepository) {
         this.sharePercentageRepository = sharePercentageRepository;
         this.sharePercentageConverter = sharePercentageConverter;
+        this.bankAccountRepository = bankAccountRepository;
     }
 
     @Override
@@ -57,11 +62,20 @@ public class SharePercentageServiceImpl implements SharePercentageService {
     @Override
     public List<SharePercentageDto> fetchListOfPercentageByPrice(BigDecimal price) {
 
-        return sharePercentageRepository.findAll((Specification<SharePercentage>) (root, query, criteriaBuilder) -> {
+        List<SharePercentageDto> collect = sharePercentageRepository.findAll((Specification<SharePercentage>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.between(criteriaBuilder.literal(price), root.get("priceFrom"), root.get("priceTo")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }).stream().map(sharePercentageConverter::fromModelToDto).collect(Collectors.toList());
+        for (SharePercentageDto sharePercentageDto : collect) {
+            if (sharePercentageDto.getBankAccount() != null) {
+                BankAccount bankAccount = bankAccountRepository.findById(sharePercentageDto.getBankAccount().getId()).orElseThrow();
+                sharePercentageDto.setBankAccount(new SelectResponse(sharePercentageDto.getBankAccount().getId(), bankAccount.getAccountNumber().toString()));
+            }
+
+        }
+
+        return collect;
     }
 
     private Boolean isExists(Long id) {

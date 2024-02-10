@@ -18,6 +18,8 @@ public interface SharePercentageConverter {
     @AfterMapping
     default void afterFromModelToDto(SharePercentage sharePercentage, @MappingTarget SharePercentageDto dto) {
         if (sharePercentage.getBankAccount() != null)
-            dto.setBankAccount(new SelectResponse(sharePercentage.getBankAccount().getId(), sharePercentage.getBankAccount().getAccountNumber().toString()));
+            dto.setBankAccount(new SelectResponse(sharePercentage.getBankAccount().getId(), ""));
+
+
     }
 }
