@@ -13,9 +13,10 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode
 @Table(name = "TBL_BANKACCOUNT")
+
 public class BankAccount
         extends BaseEntity
-        implements java.io.Serializable {
+         {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
