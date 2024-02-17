@@ -148,4 +148,9 @@ public class CountryDevisionApi {
     public Boolean existsByName(@RequestBody SelectResponse selectResponse){
         return _service.existsByName(selectResponse.getText());
     }
+
+    @GetMapping("/listOfAllCity")
+    public List<SelectResponse> listOfAllCity(){
+        return _service.listOfAllCity();
+    }
 }

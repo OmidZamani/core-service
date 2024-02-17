@@ -73,4 +73,7 @@ public interface CountryDevisionService {
     SelectResponse findByRegionInCity(Long cityId);
 
     Boolean existsByName(String text);
+
+    List<SelectResponse> listOfAllCity();
+
 }

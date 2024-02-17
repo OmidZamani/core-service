@@ -46,4 +46,5 @@ public interface CountryDevisionRepository extends JpaRepository<CountryDevision
     List<Hub> findByCityDelivery(List<CountryType> countryTypes, Long countryDevition);
 
 
+    List<CountryDevision> findAllByCountryType(CountryType countryType);
 }
