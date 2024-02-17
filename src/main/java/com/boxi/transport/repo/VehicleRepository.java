@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -36,5 +37,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
 
     Vehicle findTopByFirstDriverIdOrSecondDriverIdOrderByIdDesc(Long firstDriverId, Long secondDriverId);
 
+    List<Vehicle> findByIdIn(Collection<Long> id);
 
 }

@@ -235,6 +235,10 @@ public class VehicleApi {
         return _service.findByDriverId(driverId);
     }
 
+    @PostMapping("/external/fetchListOfVehicle")
+    public List<VehicleDto>fetchListOfVehicle(@RequestBody List<Long> list){
+        return _service.fetchListOfVehicle(list);
+    }
     @GetMapping("/vehicleStatus")
     public Response<Object> vehicleStatus() {
         return Response.ok().setPayload(VehicleStatus.select());

@@ -517,6 +517,11 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleConverter.fromModelToDto(vehicleRepository.findTopByFirstDriverIdOrSecondDriverIdOrderByIdDesc(driverId, driverId));
     }
 
+    @Override
+    public List<VehicleDto> fetchListOfVehicle(List<Long> list) {
+        return vehicleRepository.findByIdIn(list).stream().map(vehicleConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
 
     private CarTagDto tocartagenumber(Vehicle vehicle) {
         CarTagDto dto = new CarTagDto();
