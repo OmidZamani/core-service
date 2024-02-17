@@ -117,4 +117,7 @@ public interface HubService {
     void deleteSubzone(ZoneDto dto);
 
     void deleteSubzoneMdl(ZoneDto dto);
+
+    List<HubDto> listOfAllHub();
+
 }

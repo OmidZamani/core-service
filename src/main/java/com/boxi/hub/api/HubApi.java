@@ -274,4 +274,9 @@ public class HubApi {
         return Response.ok().setPayload(hubService.findByCityInHub(id));
     }
 
+    @GetMapping("/listOfAllHub")
+    public List<HubDto>listOfAllHub (){
+        return hubService.listOfAllHub();
+    }
+
 }
