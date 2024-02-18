@@ -62,6 +62,7 @@
         <poi.version>5.2.0</poi.version>
         <barcode4j.version>2.1</barcode4j.version>
         <drools-version>7.0.0.Final</drools-version>
+        <openapi.version>1.7.0</openapi.version>
     </properties>
 
     <dependencies>
@@ -274,7 +275,11 @@
             <version>${drools-version}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${openapi.version}</version>
+        </dependency>
 
     </dependencies>
 

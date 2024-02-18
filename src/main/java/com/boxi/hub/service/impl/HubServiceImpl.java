@@ -654,6 +654,11 @@ public class HubServiceImpl implements HubService {
         pudoPlaningClient.updateConsignmentListInGeoMdl(dto.getConsignmentList());
     }
 
+    @Override
+    public List<HubDto> listOfAllHub() {
+        return hubRepository.findAll().stream().map(hubConverter::fromModelToDto).collect(Collectors.toList());
+    }
+
     private SelectResponse listOfParentSelectResponse(Hub hub) {
         if (hub.getParentHub() != null)
             return new SelectResponse(hub.getParentHub().getId(), hub.getParentHub().getName());

@@ -442,6 +442,11 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
         return countryDevisionRepository.existsByName(text);
     }
 
+    @Override
+    public List<SelectResponse> listOfAllCity() {
+        return countryDevisionRepository.findAllByCountryType(CountryType.CITY).stream().map(this::toSelect).collect(Collectors.toList());
+    }
+
     public SelectResponse toSelectHub(Hub hub) {
         return new SelectResponse(hub.getId(), hub.selectToString());
     }

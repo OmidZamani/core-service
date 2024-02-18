@@ -57,4 +57,6 @@ public interface VehicleService {
     List<CarTagDto> clientSelect(CarTagDto dto, Long hubId);
 
     VehicleDto findByDriverId(Long driverId);
+
+    List<VehicleDto> fetchListOfVehicle(List<Long> list);
 }
