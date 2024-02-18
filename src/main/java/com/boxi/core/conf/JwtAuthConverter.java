@@ -21,12 +21,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
-    private final JwtAuthConverterProperties properties;
-
-    public JwtAuthConverter(JwtAuthConverterProperties properties) {
-        this.properties = properties;
-    }
-
     @Override
     public AbstractAuthenticationToken convert( Jwt jwt) throws NullPointerException {
         Collection<GrantedAuthority> authorities = Stream.concat(
@@ -37,19 +31,13 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private String getPrincipalClaimName(Jwt jwt) {
         String claimName = JwtClaimNames.SUB;
-        if (properties.getPrincipalAttribute() != null) {
-            claimName = properties.getPrincipalAttribute();
-        }
-        return jwt.getClaim(claimName);
+         return jwt.getClaim(claimName);
     }
 
+    //Add Additional Roles to scopes list
     private Collection<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
-        Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-        Map<String, Object> resource;
-        Collection<String> resourceRoles;
-        if (resourceAccess == null
-                || (resource = (Map<String, Object>) resourceAccess.get(properties.getResourceId())) == null
-                || (resourceRoles = (Collection<String>) resource.get("roles")) == null) {
+        Collection<String> resourceRoles = jwt.getClaim("role");
+        if (resourceRoles == null){
             return Collections.emptySet();
         }
         return resourceRoles.stream()
