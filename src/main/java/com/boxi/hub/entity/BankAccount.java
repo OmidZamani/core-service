@@ -33,7 +33,7 @@ public class BankAccount
 
     @Basic(optional = true)
     @Column(name = "ACCOUNTNUMBER", insertable = true, updatable = true)
-    private Long accountNumber;
+    private String accountNumber;
 
     @Basic(optional = true)
     @Column(name = "BANK", insertable = true, updatable = true)
