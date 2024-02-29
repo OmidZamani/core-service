@@ -4,6 +4,7 @@ package com.boxi.hub.service.impl;
 import com.boxi.PriceList.payload.dto.CountryDevisionInsDto;
 import com.boxi.core.errors.BusinessException;
 import com.boxi.core.errors.EntityType;
+import com.boxi.core.request.SimpleWrapper;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.CountryDevision;
 import com.boxi.hub.entity.Hub;
@@ -445,6 +446,18 @@ public class CountryDevisionServiceImpl implements CountryDevisionService {
     @Override
     public List<SelectResponse> listOfAllCity() {
         return countryDevisionRepository.findAllByCountryType(CountryType.CITY).stream().map(this::toSelect).collect(Collectors.toList());
+    }
+
+    @Override
+    public SelectResponse selectCityByName(SimpleWrapper filter) {
+        CountryDevision topByName = countryDevisionRepository.findTopByNameAndCountryType(filter.getIn(), CountryType.CITY);
+        return new SelectResponse(topByName.getId(), topByName.getName());
+    }
+
+    @Override
+    public SelectResponse selectProvinceByName(SimpleWrapper filter) {
+        CountryDevision topByName = countryDevisionRepository.findTopByNameAndCountryType(filter.getIn(), CountryType.PROVINCE);
+        return new SelectResponse(topByName.getId(), topByName.getName());
     }
 
     public SelectResponse toSelectHub(Hub hub) {

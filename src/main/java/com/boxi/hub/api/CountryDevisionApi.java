@@ -1,5 +1,6 @@
 package com.boxi.hub.api;
 
+import com.boxi.core.request.SimpleWrapper;
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.service.CountryDevisionService;
@@ -118,6 +119,17 @@ public class CountryDevisionApi {
     public SelectResponse findByName(@RequestParam(name = "filter") String filter) {
         return _service.findByName(filter);
     }
+
+    @PostMapping("/exchange/selectCityByName")
+    public SelectResponse selectCityByName(@RequestBody SimpleWrapper filter) {
+        return _service.selectCityByName(filter);
+    }
+
+    @PostMapping("/exchange/selectProvinceByName")
+    public SelectResponse selectProvinceByName(@RequestBody SimpleWrapper filter) {
+        return _service.selectProvinceByName(filter);
+    }
+
 
     @GetMapping("/findbyCity")
     public Response findByCity(@RequestParam(name = "filter") String filter) {

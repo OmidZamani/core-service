@@ -14,6 +14,7 @@ public class AuthForwardInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate template) throws NullPointerException {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        template.header("internal","feign");
         template.header(HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION));
     }
 }

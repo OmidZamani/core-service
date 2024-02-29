@@ -1,6 +1,7 @@
 package com.boxi.hub.service;
 
 
+import com.boxi.core.request.SimpleWrapper;
 import com.boxi.core.response.Response;
 import com.boxi.core.response.SelectResponse;
 import com.boxi.hub.entity.CountryDevision;
@@ -76,4 +77,7 @@ public interface CountryDevisionService {
 
     List<SelectResponse> listOfAllCity();
 
+    SelectResponse selectCityByName(SimpleWrapper filter);
+
+    SelectResponse selectProvinceByName(SimpleWrapper filter);
 }
